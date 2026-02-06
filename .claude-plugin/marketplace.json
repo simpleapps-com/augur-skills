@@ -1,0 +1,10 @@
+{
+  "name": "augur-skills",
+  "version": "0.0.1",
+  "description": "Curated skills marketplace for Claude Code",
+  "owner": {
+    "name": "SimpleApps",
+    "email": "stuart@simpleapps.com"
+  },
+  "plugins": []
+}
