@@ -2,5 +2,8 @@
   "name": "simpleapps",
   "description": "SimpleApps core development practices, workflows, and tools",
   "version": "0.0.1",
-  "author": "SimpleApps"
+  "author": {
+    "name": "SimpleApps",
+    "email": "stuart@simpleapps.com"
+  }
 }
