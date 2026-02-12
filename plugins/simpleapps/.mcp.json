@@ -1,8 +1,6 @@
 {
-  "mcpServers": {
-    "basecamp": {
-      "command": "uv",
-      "args": ["run", "${CLAUDE_PLUGIN_ROOT}/mcp/basecamp.py"]
-    }
+  "basecamp": {
+    "command": "uv",
+    "args": ["run", "${CLAUDE_PLUGIN_ROOT}/mcp/basecamp.py"]
   }
 }
