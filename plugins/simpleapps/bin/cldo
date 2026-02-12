@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Start Claude Code with Opus model
+set -euo pipefail
+
+claude --model opus "$@"

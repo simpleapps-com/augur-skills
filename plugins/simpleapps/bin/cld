@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Start Claude Code with SimpleApps base configuration
+set -euo pipefail
+
+claude "$@"

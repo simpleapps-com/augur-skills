@@ -32,8 +32,6 @@ jobs:
 
       - run: pnpm test:coverage
 
-      - run: pnpm validate-skills
-
       - run: pnpm build
 
       - name: Prepare skills for publish

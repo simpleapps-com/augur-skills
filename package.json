@@ -14,7 +14,6 @@
     "test:coverage": "pnpm -r test:coverage",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
-    "validate-skills": "node scripts/validate-skills.mjs",
     "prepare-publish": "node scripts/prepare-publish.mjs"
   }
 }

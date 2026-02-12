@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Start Claude Code with Sonnet model
+set -euo pipefail
+
+claude --model sonnet "$@"

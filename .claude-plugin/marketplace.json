@@ -6,5 +6,12 @@
     "name": "SimpleApps",
     "email": "stuart@simpleapps.com"
   },
-  "plugins": []
+  "plugins": [
+    {
+      "name": "simpleapps",
+      "description": "SimpleApps core development practices, workflows, and tools",
+      "source": "./plugins/simpleapps",
+      "version": "0.0.1"
+    }
+  ]
 }
