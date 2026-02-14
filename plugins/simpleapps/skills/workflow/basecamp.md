@@ -1,6 +1,6 @@
 # Basecamp 2 Reference
 
-IMPORTANT: YOU MUST NOT create, edit, or delete anything in Basecamp — except reassigning todos via `assign_todo`.
+IMPORTANT: YOU MUST NOT create, edit, or delete anything in Basecamp — except: reassigning todos via `assign_todo`, closing/reopening todos via `close_todo`/`reopen_todo`, and adding comments via `create_comment`.
 
 ## Setup
 
@@ -32,12 +32,14 @@ The `basecamp` MCP server is bundled with this plugin and starts automatically. 
 ### Todos
 | Tool | Description |
 |------|-------------|
-| `get_todo` | Get a single todo with comments (project_id, todo_id) |
+| `get_todo` | Get a single todo with comments and attachments (project_id, todo_id) |
 | `list_todos` | List todos in a project. status: 'remaining', 'completed', or 'all' |
 | `list_todos_due_since` | List todos due after a date (YYYY-MM-DD) |
 | `list_my_todos` | List all open todos assigned to the current user (paginated) |
 | `list_assigned_todos` | List open todos assigned to any person_id |
 | `assign_todo` | Reassign a todo to a different person_id |
+| `close_todo` | Mark a todo as completed/closed |
+| `reopen_todo` | Reopen a completed todo |
 
 ### Todo Lists
 | Tool | Description |
@@ -73,6 +75,8 @@ Note: Messages may not be available on all Basecamp plans.
 | `list_topics` | List topics. project_id=0 for all. archived=True for archived |
 | `list_events` | Activity log since a datetime. Filter by project_id or person_id |
 | `list_attachments` | List attachments. project_id=0 for all (paginated) |
+| `get_attachment` | Get attachment metadata and download URL (project_id, attachment_id) |
+| `download_attachment` | Download attachment to local file (project_id, attachment_id) |
 | `get_upload` | Get an upload with comments |
 
 ### Other

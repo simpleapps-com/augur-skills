@@ -1,6 +1,6 @@
 {
   "name": "augur-skills",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Curated skills marketplace for Claude Code",
   "owner": {
     "name": "SimpleApps",
@@ -11,7 +11,7 @@
       "name": "simpleapps",
       "description": "SimpleApps core development practices, workflows, and tools",
       "source": "./plugins/simpleapps",
-      "version": "0.0.2"
+      "version": "0.0.3"
     }
   ]
 }

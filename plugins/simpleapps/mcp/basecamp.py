@@ -16,6 +16,7 @@ Add to Claude Code: claude mcp add basecamp -- uv run /path/to/basecamp.py
 import json
 import os
 import re
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -118,6 +119,73 @@ def api_get_all(path: str) -> list:
     return results
 
 
+DOWNLOADS_DIR = os.path.expanduser("~/.simpleapps/downloads")
+
+
+def _format_bytes(n: int) -> str:
+    """Human-readable byte size."""
+    if n < 1024:
+        return f"{n} B"
+    elif n < 1024 * 1024:
+        return f"{n / 1024:.1f} KB"
+    return f"{n / (1024 * 1024):.1f} MB"
+
+
+def _format_attachment(a: dict, include_id: bool = False) -> str:
+    """Format a single attachment as a markdown line item."""
+    name = a.get("name", "Untitled")
+    size = a.get("byte_size", 0)
+    content_type = a.get("content_type", "unknown")
+    url = a.get("url", a.get("link_url", ""))
+    id_str = f" (id: {a['id']})" if include_id and "id" in a else ""
+    linked = " [linked]" if a.get("link_url") and not a.get("url") else ""
+    return f"- **{name}**{id_str} ({_format_bytes(size)}, {content_type}){linked} — {url}"
+
+
+class _NoRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Suppress automatic redirects so we can strip auth on cross-domain hops."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def _download_url(url: str, dest_path: str) -> int:
+    """Download a file from a URL with auth headers. Returns bytes written.
+
+    Basecamp asset URLs redirect (302) to a signed S3 URL that rejects
+    the Bearer token, so we intercept the redirect and fetch without auth.
+    """
+    opener = urllib.request.build_opener(_NoRedirectHandler)
+    req = _build_request(url)
+    try:
+        resp = opener.open(req)
+    except urllib.error.HTTPError as e:
+        if e.code in (301, 302, 303, 307, 308):
+            location = e.headers.get("Location", "")
+            if not location:
+                raise
+            # Follow redirect without auth headers
+            req2 = urllib.request.Request(location)
+            req2.add_header(
+                "User-Agent",
+                "SimpleApps Basecamp MCP (stuart@simpleapps.com)",
+            )
+            resp = urllib.request.urlopen(req2)
+        else:
+            raise
+
+    with resp:
+        with open(dest_path, "wb") as f:
+            total = 0
+            while True:
+                chunk = resp.read(8192)
+                if not chunk:
+                    break
+                f.write(chunk)
+                total += len(chunk)
+    return total
+
+
 # ---------------------------------------------------------------------------
 # Projects
 # ---------------------------------------------------------------------------
@@ -200,12 +268,23 @@ def get_todo(project_id: int, todo_id: int) -> str:
         "",
     ]
 
+    if todo.get("attachments"):
+        lines.append("## Attachments")
+        for a in todo["attachments"]:
+            lines.append(_format_attachment(a, include_id=True))
+        lines.append("")
+
     if todo.get("comments"):
         lines.append("## Comments")
         for c in todo["comments"]:
             content = _strip_html(c.get("content", ""))
             lines.append(f"\n**{c['creator']['name']}** ({c['created_at'][:10]}):")
             lines.append(content)
+            if c.get("attachments"):
+                lines.append("")
+                lines.append("**Attachments:**")
+                for a in c["attachments"]:
+                    lines.append(_format_attachment(a, include_id=True))
 
     return "\n".join(lines)
 
@@ -250,6 +329,26 @@ def assign_todo(project_id: int, todo_id: int, person_id: int) -> str:
     )
     assignee = result.get("assignee", {}).get("name", "Unknown")
     return f"Todo '{result['content']}' reassigned to **{assignee}**."
+
+
+@mcp.tool()
+def close_todo(project_id: int, todo_id: int) -> str:
+    """Mark a todo as completed/closed."""
+    result = api_put(
+        f"/projects/{project_id}/todos/{todo_id}.json",
+        {"completed": True},
+    )
+    return f"Todo '{result['content']}' marked as **completed**."
+
+
+@mcp.tool()
+def reopen_todo(project_id: int, todo_id: int) -> str:
+    """Reopen a completed todo."""
+    result = api_put(
+        f"/projects/{project_id}/todos/{todo_id}.json",
+        {"completed": False},
+    )
+    return f"Todo '{result['content']}' marked as **open**."
 
 
 @mcp.tool()
@@ -411,12 +510,22 @@ def get_message(project_id: int, message_id: int) -> str:
         content,
     ]
 
+    if m.get("attachments"):
+        lines.append("\n## Attachments")
+        for a in m["attachments"]:
+            lines.append(_format_attachment(a, include_id=True))
+
     if m.get("comments"):
         lines.append("\n## Comments")
         for c in m["comments"]:
             c_content = _strip_html(c.get("content", ""))
             lines.append(f"\n**{c['creator']['name']}** ({c['created_at'][:10]}):")
             lines.append(c_content)
+            if c.get("attachments"):
+                lines.append("")
+                lines.append("**Attachments:**")
+                for a in c["attachments"]:
+                    lines.append(_format_attachment(a, include_id=True))
 
     return "\n".join(lines)
 
@@ -530,10 +639,88 @@ def list_attachments(project_id: int = 0) -> str:
         attachments = api_get_all("/attachments.json")
     lines = []
     for a in attachments:
-        name = a.get("name", "Untitled")
-        size = a.get("byte_size", 0)
-        lines.append(f"- **{name}** (id: {a['id']}) — {size} bytes, {a.get('created_at', '')[:10]}")
+        lines.append(_format_attachment(a, include_id=True))
     return "\n".join(lines) if lines else "No attachments found."
+
+
+@mcp.tool()
+def get_attachment(project_id: int, attachment_id: int) -> str:
+    """Get attachment metadata including download URL. Use download_attachment to save to disk."""
+    a = api_get(f"/projects/{project_id}/attachments/{attachment_id}.json")
+    name = a.get("name", "Untitled")
+    content_type = a.get("content_type", "unknown")
+    creator = a.get("creator", {}).get("name", "Unknown")
+
+    lines = [
+        f"# {name}",
+        "",
+        f"- **ID**: {a['id']}",
+        f"- **Size**: {_format_bytes(a.get('byte_size', 0))}",
+        f"- **Content-Type**: {content_type}",
+        f"- **Created by**: {creator}",
+        f"- **Created**: {a.get('created_at', '')[:10]}",
+    ]
+
+    url = a.get("url", "")
+    link_url = a.get("link_url", "")
+    if url:
+        lines.append(f"- **Download URL**: {url}")
+    if link_url:
+        lines.append(f"- **Link URL**: {link_url} (linked document, not downloadable)")
+
+    attachable = a.get("attachable", {})
+    if attachable:
+        lines.append(f"- **Attached to**: {attachable.get('type', 'Unknown')} (id: {attachable.get('id', '')})")
+
+    return "\n".join(lines)
+
+
+@mcp.tool()
+def download_attachment(
+    project_id: int,
+    attachment_id: int,
+    dest_dir: str = "",
+    filename: str = "",
+) -> str:
+    """Download an attachment to a local file. Returns the file path.
+
+    dest_dir: Directory to save to (default: ~/.simpleapps/downloads).
+    filename: Override the filename (default: use original name from Basecamp).
+    """
+    a = api_get(f"/projects/{project_id}/attachments/{attachment_id}.json")
+
+    url = a.get("url", "")
+    if not url:
+        link_url = a.get("link_url", "")
+        if link_url:
+            return f"Cannot download linked attachment '{a.get('name', '')}'. It links to: {link_url}"
+        return f"No download URL found for attachment {attachment_id}."
+
+    save_dir = dest_dir or os.path.join(DOWNLOADS_DIR, str(project_id))
+    os.makedirs(save_dir, mode=0o755, exist_ok=True)
+
+    save_name = filename or a.get("name", f"attachment_{attachment_id}")
+    dest_path = os.path.join(save_dir, save_name)
+
+    if os.path.exists(dest_path):
+        base, ext = os.path.splitext(save_name)
+        counter = 1
+        while os.path.exists(dest_path):
+            dest_path = os.path.join(save_dir, f"{base}_{counter}{ext}")
+            counter += 1
+
+    try:
+        bytes_written = _download_url(url, dest_path)
+    except urllib.error.HTTPError as e:
+        if e.code == 401:
+            return "Unauthorized. Token may be expired. Run 'basecamp-auth' to refresh."
+        return f"Download failed: HTTP {e.code} — {e.reason}"
+
+    return (
+        f"Downloaded **{a.get('name', save_name)}** to `{dest_path}`\n"
+        f"- Size: {_format_bytes(bytes_written)}\n"
+        f"- Content-Type: {a.get('content_type', 'unknown')}"
+    )
 
 
 @mcp.tool()
@@ -644,6 +831,11 @@ def get_forward(project_id: int, forward_id: int) -> str:
             c_content = _strip_html(c.get("content", ""))
             lines.append(f"\n**{c['creator']['name']}** ({c['created_at'][:10]}):")
             lines.append(c_content)
+            if c.get("attachments"):
+                lines.append("")
+                lines.append("**Attachments:**")
+                for a in c["attachments"]:
+                    lines.append(_format_attachment(a, include_id=True))
     return "\n".join(lines)
 
 
