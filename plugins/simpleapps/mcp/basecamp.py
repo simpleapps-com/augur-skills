@@ -105,6 +105,58 @@ def api_post(path: str, body: dict) -> dict:
         raise
 
 
+def api_delete(path: str) -> None:
+    """Send a DELETE request to the BCX API. Returns None (204 No Content)."""
+    url = f"{_base_url()}{path}"
+    req = _build_request(url, method="DELETE")
+    try:
+        with urllib.request.urlopen(req) as resp:
+            pass  # 204 No Content
+    except urllib.error.HTTPError as e:
+        if e.code == 401:
+            raise RuntimeError(
+                "Unauthorized. Token may be expired. Run 'basecamp-auth' to refresh."
+            )
+        raise
+
+
+def api_post_no_body(path: str, body: dict | None = None) -> None:
+    """Send a POST request expecting 204 No Content (e.g., accesses, stars)."""
+    url = f"{_base_url()}{path}"
+    data = json.dumps(body).encode() if body else None
+    req = _build_request(url, method="POST", data=data)
+    try:
+        with urllib.request.urlopen(req) as resp:
+            pass
+    except urllib.error.HTTPError as e:
+        if e.code == 401:
+            raise RuntimeError(
+                "Unauthorized. Token may be expired. Run 'basecamp-auth' to refresh."
+            )
+        raise
+
+
+def api_upload(file_path: str) -> str:
+    """Upload a file to Basecamp. Returns the attachment token for use in create_upload."""
+    url = f"{_base_url()}/attachments.json"
+    with open(file_path, "rb") as f:
+        data = f.read()
+    req = _build_request(url, method="POST", data=data)
+    req.remove_header("Content-type")
+    req.add_header("Content-Type", "application/octet-stream")
+    req.add_header("Content-Length", str(len(data)))
+    try:
+        with urllib.request.urlopen(req) as resp:
+            result = json.loads(resp.read())
+            return result["token"]
+    except urllib.error.HTTPError as e:
+        if e.code == 401:
+            raise RuntimeError(
+                "Unauthorized. Token may be expired. Run 'basecamp-auth' to refresh."
+            )
+        raise
+
+
 def api_get_all(path: str) -> list:
     """Fetch all pages from a paginated BCX API endpoint. Returns combined list."""
     results = []
@@ -212,6 +264,40 @@ def get_project(project_id: int) -> str:
     return json.dumps(p, indent=2)
 
 
+@mcp.tool()
+def create_project(name: str, description: str = "") -> str:
+    """Create a new project."""
+    result = api_post("/projects.json", {"name": name, "description": description})
+    return f"Project created: **{name}** (id: {result['id']})"
+
+
+@mcp.tool()
+def update_project(project_id: int, name: str = "", description: str = "") -> str:
+    """Update a project's name and/or description."""
+    body: dict = {}
+    if name:
+        body["name"] = name
+    if description:
+        body["description"] = description
+    result = api_put(f"/projects/{project_id}.json", body)
+    return f"Project updated: **{result.get('name', '')}** (id: {project_id})"
+
+
+@mcp.tool()
+def archive_project(project_id: int, archive: bool = True) -> str:
+    """Archive or unarchive a project. archive=False to reactivate."""
+    result = api_put(f"/projects/{project_id}.json", {"archived": archive})
+    status = "archived" if archive else "activated"
+    return f"Project **{result.get('name', '')}** {status}."
+
+
+@mcp.tool()
+def delete_project(project_id: int) -> str:
+    """Delete a project permanently."""
+    api_delete(f"/projects/{project_id}.json")
+    return f"Project {project_id} deleted."
+
+
 # ---------------------------------------------------------------------------
 # People
 # ---------------------------------------------------------------------------
@@ -245,6 +331,23 @@ def get_me() -> str:
         f"- Assigned todos: {assigned.get('count', 0)}\n"
         f"- Admin: {me.get('admin', False)}"
     )
+
+
+@mcp.tool()
+def list_person_projects(person_id: int) -> str:
+    """List projects accessible to a specific person."""
+    projects = api_get(f"/people/{person_id}/projects.json")
+    lines = []
+    for p in projects:
+        lines.append(f"- **{p['name']}** (id: {p['id']})")
+    return "\n".join(lines) if lines else "No projects found."
+
+
+@mcp.tool()
+def delete_person(person_id: int) -> str:
+    """Remove a person from the Basecamp account. Admin only."""
+    api_delete(f"/people/{person_id}.json")
+    return f"Person {person_id} removed from account."
 
 
 # ---------------------------------------------------------------------------
@@ -352,14 +455,75 @@ def reopen_todo(project_id: int, todo_id: int) -> str:
 
 
 @mcp.tool()
+def create_todo(
+    project_id: int,
+    todolist_id: int,
+    content: str,
+    assignee_id: int = 0,
+    due_date: str = "",
+) -> str:
+    """Create a new todo in a todo list. Use plain text for content.
+
+    assignee_id: Person to assign (use list_people to find). 0 = unassigned.
+    due_date: Optional due date (YYYY-MM-DD).
+    """
+    body: dict = {"content": content}
+    if assignee_id:
+        body["assignee"] = {"id": assignee_id, "type": "Person"}
+    if due_date:
+        body["due_at"] = due_date
+    result = api_post(
+        f"/projects/{project_id}/todolists/{todolist_id}/todos.json",
+        body,
+    )
+    todo_id = result.get("id", "")
+    assignee = result.get("assignee", {}).get("name", "Unassigned")
+    return f"Todo created: **{content}** (id: {todo_id}) — assigned to {assignee}"
+
+
+@mcp.tool()
 def create_comment(project_id: int, todo_id: int, content: str) -> str:
-    """Add a comment to a todo. Content supports simple HTML (links, bold, etc.)."""
+    """Add a comment to a todo. Use plain text with line breaks for content."""
     result = api_post(
         f"/projects/{project_id}/todos/{todo_id}/comments.json",
         {"content": content},
     )
     author = result.get("creator", {}).get("name", "Unknown")
     return f"Comment added by **{author}** on {result.get('created_at', '')[:10]}."
+
+
+@mcp.tool()
+def update_todo(
+    project_id: int,
+    todo_id: int,
+    content: str = "",
+    due_date: str = "",
+    assignee_id: int = 0,
+) -> str:
+    """Update a todo's content, due date, or assignee. Only provided fields are changed."""
+    body: dict = {}
+    if content:
+        body["content"] = content
+    if due_date:
+        body["due_at"] = due_date
+    if assignee_id:
+        body["assignee"] = {"id": assignee_id, "type": "Person"}
+    result = api_put(f"/projects/{project_id}/todos/{todo_id}.json", body)
+    return f"Todo updated: **{result['content']}** (id: {todo_id})"
+
+
+@mcp.tool()
+def delete_todo(project_id: int, todo_id: int) -> str:
+    """Delete a todo permanently."""
+    api_delete(f"/projects/{project_id}/todos/{todo_id}.json")
+    return f"Todo {todo_id} deleted."
+
+
+@mcp.tool()
+def delete_comment(project_id: int, comment_id: int) -> str:
+    """Delete a comment permanently."""
+    api_delete(f"/projects/{project_id}/comments/{comment_id}.json")
+    return f"Comment {comment_id} deleted."
 
 
 @mcp.tool()
@@ -482,18 +646,57 @@ def get_todolist(project_id: int, todolist_id: int) -> str:
     return "\n".join(lines)
 
 
+@mcp.tool()
+def create_todolist(project_id: int, name: str, description: str = "") -> str:
+    """Create a new todo list in a project. Use plain text for description."""
+    result = api_post(
+        f"/projects/{project_id}/todolists.json",
+        {"name": name, "description": description},
+    )
+    tl_id = result.get("id", "")
+    return f"Todo list created: **{name}** (id: {tl_id})"
+
+
+@mcp.tool()
+def update_todolist(
+    project_id: int, todolist_id: int, name: str = "", description: str = "", position: int = 0
+) -> str:
+    """Update a todo list's name, description, or position."""
+    body: dict = {}
+    if name:
+        body["name"] = name
+    if description:
+        body["description"] = description
+    if position:
+        body["position"] = position
+    result = api_put(f"/projects/{project_id}/todolists/{todolist_id}.json", body)
+    return f"Todo list updated: **{result.get('name', '')}** (id: {todolist_id})"
+
+
+@mcp.tool()
+def delete_todolist(project_id: int, todolist_id: int) -> str:
+    """Delete a todo list permanently."""
+    api_delete(f"/projects/{project_id}/todolists/{todolist_id}.json")
+    return f"Todo list {todolist_id} deleted."
+
+
 # ---------------------------------------------------------------------------
 # Messages
 # ---------------------------------------------------------------------------
 
 @mcp.tool()
 def list_messages(project_id: int) -> str:
-    """List messages in a project."""
-    messages = api_get(f"/projects/{project_id}/messages.json")
+    """List messages (discussions) in a project. Filters the topics endpoint for Message types."""
+    topics = api_get_all(f"/projects/{project_id}/topics.json")
     lines = []
-    for m in messages:
-        author = m.get("creator", {}).get("name", "Unknown")
-        lines.append(f"- **{m['subject']}** (id: {m['id']}) — by {author}, {m['created_at'][:10]}")
+    for t in topics:
+        topicable = t.get("topicable", {})
+        if topicable.get("type") != "Message":
+            continue
+        author = t.get("creator", {}).get("name", "Unknown")
+        lines.append(
+            f"- **{t['title']}** (id: {topicable.get('id', '')}) — by {author}, {t.get('created_at', '')[:10]}"
+        )
     return "\n".join(lines) if lines else "No messages found."
 
 
@@ -530,6 +733,37 @@ def get_message(project_id: int, message_id: int) -> str:
     return "\n".join(lines)
 
 
+@mcp.tool()
+def create_message(project_id: int, subject: str, content: str) -> str:
+    """Create a new discussion (message) in a project. Use plain text with line breaks for content."""
+    result = api_post(
+        f"/projects/{project_id}/messages.json",
+        {"subject": subject, "content": content},
+    )
+    msg_id = result.get("id", "")
+    app_url = result.get("app_url", "")
+    return f"Message created: **{subject}** (id: {msg_id})\n- URL: {app_url}"
+
+
+@mcp.tool()
+def update_message(project_id: int, message_id: int, subject: str = "", content: str = "") -> str:
+    """Update a message's subject and/or content."""
+    body: dict = {}
+    if subject:
+        body["subject"] = subject
+    if content:
+        body["content"] = content
+    result = api_put(f"/projects/{project_id}/messages/{message_id}.json", body)
+    return f"Message updated: **{result.get('subject', '')}** (id: {message_id})"
+
+
+@mcp.tool()
+def delete_message(project_id: int, message_id: int) -> str:
+    """Delete a message permanently."""
+    api_delete(f"/projects/{project_id}/messages/{message_id}.json")
+    return f"Message {message_id} deleted."
+
+
 # ---------------------------------------------------------------------------
 # Documents
 # ---------------------------------------------------------------------------
@@ -553,6 +787,35 @@ def get_document(project_id: int, document_id: int) -> str:
     doc = api_get(f"/projects/{project_id}/documents/{document_id}.json")
     content = _strip_html(doc.get("content", ""))
     return f"# {doc['title']}\n\n{content}"
+
+
+@mcp.tool()
+def create_document(project_id: int, title: str, content: str) -> str:
+    """Create a new text document in a project. Use plain text for content."""
+    result = api_post(
+        f"/projects/{project_id}/documents.json",
+        {"title": title, "content": content},
+    )
+    return f"Document created: **{title}** (id: {result['id']})"
+
+
+@mcp.tool()
+def update_document(project_id: int, document_id: int, title: str = "", content: str = "") -> str:
+    """Update a document's title and/or content."""
+    body: dict = {}
+    if title:
+        body["title"] = title
+    if content:
+        body["content"] = content
+    result = api_put(f"/projects/{project_id}/documents/{document_id}.json", body)
+    return f"Document updated: **{result.get('title', '')}** (id: {document_id})"
+
+
+@mcp.tool()
+def delete_document(project_id: int, document_id: int) -> str:
+    """Delete a document permanently."""
+    api_delete(f"/projects/{project_id}/documents/{document_id}.json")
+    return f"Document {document_id} deleted."
 
 
 # ---------------------------------------------------------------------------
@@ -605,6 +868,68 @@ def get_calendar_event(project_id: int, event_id: int) -> str:
     return json.dumps(e, indent=2)
 
 
+@mcp.tool()
+def create_calendar_event(
+    project_id: int,
+    summary: str,
+    starts_at: str,
+    description: str = "",
+    all_day: bool = False,
+    ends_at: str = "",
+    remind_at: str = "",
+) -> str:
+    """Create a calendar event in a project.
+
+    starts_at: ISO 8601 datetime or YYYY-MM-DD for all-day events.
+    ends_at: Optional end date/time for multi-day or timed events.
+    remind_at: Optional ISO 8601 datetime for email reminder.
+    """
+    body: dict = {"summary": summary, "starts_at": starts_at}
+    if description:
+        body["description"] = description
+    if all_day:
+        body["all_day"] = True
+    if ends_at:
+        body["ends_at"] = ends_at
+    if remind_at:
+        body["remind_at"] = remind_at
+    result = api_post(f"/projects/{project_id}/calendar_events.json", body)
+    return f"Event created: **{summary}** (id: {result['id']})"
+
+
+@mcp.tool()
+def update_calendar_event(
+    project_id: int,
+    event_id: int,
+    summary: str = "",
+    description: str = "",
+    starts_at: str = "",
+    ends_at: str = "",
+    all_day: bool = False,
+) -> str:
+    """Update a calendar event. Only provided fields are changed."""
+    body: dict = {}
+    if summary:
+        body["summary"] = summary
+    if description:
+        body["description"] = description
+    if starts_at:
+        body["starts_at"] = starts_at
+    if ends_at:
+        body["ends_at"] = ends_at
+    if all_day:
+        body["all_day"] = True
+    result = api_put(f"/projects/{project_id}/calendar_events/{event_id}.json", body)
+    return f"Event updated: **{result.get('summary', '')}** (id: {event_id})"
+
+
+@mcp.tool()
+def delete_calendar_event(project_id: int, event_id: int) -> str:
+    """Delete a calendar event."""
+    api_delete(f"/projects/{project_id}/calendar_events/{event_id}.json")
+    return f"Calendar event {event_id} deleted."
+
+
 # ---------------------------------------------------------------------------
 # Topics
 # ---------------------------------------------------------------------------
@@ -624,6 +949,20 @@ def list_topics(project_id: int = 0, archived: bool = False) -> str:
         title = t.get("title", t.get("excerpt", "Untitled"))
         lines.append(f"- **{title}** ({t.get('topicable', {}).get('type', '')}) — updated {t.get('updated_at', '')[:10]}")
     return "\n".join(lines) if lines else "No topics found."
+
+
+@mcp.tool()
+def archive_topic(project_id: int, topic_id: int) -> str:
+    """Archive a topic."""
+    api_put(f"/projects/{project_id}/topics/{topic_id}/archive.json", {})
+    return f"Topic {topic_id} archived."
+
+
+@mcp.tool()
+def activate_topic(project_id: int, topic_id: int) -> str:
+    """Reactivate an archived topic."""
+    api_put(f"/projects/{project_id}/topics/{topic_id}/activate.json", {})
+    return f"Topic {topic_id} activated."
 
 
 # ---------------------------------------------------------------------------
@@ -740,6 +1079,31 @@ def get_upload(project_id: int, upload_id: int) -> str:
     return "\n".join(lines)
 
 
+@mcp.tool()
+def create_upload(project_id: int, file_path: str, content: str = "") -> str:
+    """Upload a file to a project's Files section.
+
+    file_path: Local path to the file to upload.
+    content: Optional description text (plain text).
+    """
+    if not os.path.exists(file_path):
+        return f"File not found: {file_path}"
+    filename = os.path.basename(file_path)
+    token = api_upload(file_path)
+    body: dict = {"attachments": [{"token": token, "name": filename}]}
+    if content:
+        body["content"] = content
+    result = api_post(f"/projects/{project_id}/uploads.json", body)
+    return f"Uploaded **{filename}** (id: {result.get('id', '')})"
+
+
+@mcp.tool()
+def delete_upload(project_id: int, upload_id: int) -> str:
+    """Delete an upload (move to trash)."""
+    api_delete(f"/projects/{project_id}/uploads/{upload_id}.json")
+    return f"Upload {upload_id} deleted."
+
+
 # ---------------------------------------------------------------------------
 # Events (Activity Log)
 # ---------------------------------------------------------------------------
@@ -780,6 +1144,45 @@ def list_accesses(project_id: int) -> str:
     return "\n".join(lines) if lines else "No accesses found."
 
 
+@mcp.tool()
+def grant_access(project_id: int, ids: str = "", email_addresses: str = "") -> str:
+    """Grant team access to a project.
+
+    ids: Comma-separated person IDs (e.g., "5,6,10").
+    email_addresses: Comma-separated emails for new invitations.
+    """
+    body: dict = {}
+    if ids:
+        body["ids"] = [int(i.strip()) for i in ids.split(",")]
+    if email_addresses:
+        body["email_addresses"] = [e.strip() for e in email_addresses.split(",")]
+    api_post_no_body(f"/projects/{project_id}/accesses.json", body)
+    return f"Access granted to project {project_id}."
+
+
+@mcp.tool()
+def grant_client_access(project_id: int, ids: str = "", email_addresses: str = "") -> str:
+    """Grant client-level access to a project.
+
+    ids: Comma-separated person IDs.
+    email_addresses: Comma-separated emails for new invitations.
+    """
+    body: dict = {}
+    if ids:
+        body["ids"] = [int(i.strip()) for i in ids.split(",")]
+    if email_addresses:
+        body["email_addresses"] = [e.strip() for e in email_addresses.split(",")]
+    api_post_no_body(f"/projects/{project_id}/accesses/clients.json", body)
+    return f"Client access granted to project {project_id}."
+
+
+@mcp.tool()
+def revoke_access(project_id: int, person_id: int) -> str:
+    """Revoke a person's access to a project."""
+    api_delete(f"/projects/{project_id}/accesses/{person_id}.json")
+    return f"Access revoked for person {person_id} on project {project_id}."
+
+
 # ---------------------------------------------------------------------------
 # Stars
 # ---------------------------------------------------------------------------
@@ -792,6 +1195,20 @@ def list_stars() -> str:
     for s in stars:
         lines.append(f"- Project id: {s.get('id', '')} — starred {s.get('created_at', '')[:10]}")
     return "\n".join(lines) if lines else "No starred projects."
+
+
+@mcp.tool()
+def star_project(project_id: int) -> str:
+    """Star (bookmark) a project."""
+    api_post_no_body(f"/projects/{project_id}/star.json")
+    return f"Project {project_id} starred."
+
+
+@mcp.tool()
+def unstar_project(project_id: int) -> str:
+    """Remove star from a project."""
+    api_delete(f"/projects/{project_id}/star.json")
+    return f"Project {project_id} unstarred."
 
 
 # ---------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 # Basecamp 2 Reference
 
-IMPORTANT: YOU MUST NOT create, edit, or delete anything in Basecamp — except: reassigning todos via `assign_todo`, closing/reopening todos via `close_todo`/`reopen_todo`, and adding comments via `create_comment`.
+IMPORTANT: YOU MUST NOT create, edit, or delete anything in Basecamp without user permission.
+
+**Content format**: All write tools SHOULD use plain text with line breaks, NOT HTML. Basecamp returns HTML in responses but prefers plain text for creation.
 
 ## Setup
 
@@ -21,6 +23,10 @@ The `basecamp` MCP server is bundled with this plugin and starts automatically. 
 |------|-------------|
 | `list_projects` | List projects. status: 'active', 'drafts', or 'archived' |
 | `get_project` | Get project details by project_id |
+| `create_project` | Create a new project (name, description) |
+| `update_project` | Update project name/description |
+| `archive_project` | Archive or unarchive a project (archive=False to reactivate) |
+| `delete_project` | Delete a project permanently |
 
 ### People
 | Tool | Description |
@@ -28,6 +34,8 @@ The `basecamp` MCP server is bundled with this plugin and starts automatically. 
 | `list_people` | List all people on the account |
 | `get_person` | Get person details by person_id |
 | `get_me` | Get the authenticated user's profile |
+| `list_person_projects` | List projects accessible to a person |
+| `delete_person` | Remove a person from the account (admin only) |
 
 ### Todos
 | Tool | Description |
@@ -37,9 +45,18 @@ The `basecamp` MCP server is bundled with this plugin and starts automatically. 
 | `list_todos_due_since` | List todos due after a date (YYYY-MM-DD) |
 | `list_my_todos` | List all open todos assigned to the current user (paginated) |
 | `list_assigned_todos` | List open todos assigned to any person_id |
+| `create_todo` | Create a todo in a todo list (project_id, todolist_id, content, assignee_id, due_date) |
+| `update_todo` | Update a todo's content, due date, or assignee |
 | `assign_todo` | Reassign a todo to a different person_id |
 | `close_todo` | Mark a todo as completed/closed |
 | `reopen_todo` | Reopen a completed todo |
+| `delete_todo` | Delete a todo permanently |
+
+### Comments
+| Tool | Description |
+|------|-------------|
+| `create_comment` | Add a comment to a todo (plain text) |
+| `delete_comment` | Delete a comment permanently |
 
 ### Todo Lists
 | Tool | Description |
@@ -47,12 +64,18 @@ The `basecamp` MCP server is bundled with this plugin and starts automatically. 
 | `list_todolists` | List active todo lists in a project |
 | `list_all_todolists` | List todo lists across all projects. status: 'active', 'completed', or 'trashed' |
 | `get_todolist` | Get all todos in a specific todo list |
+| `create_todolist` | Create a new todo list (project_id, name, description) |
+| `update_todolist` | Update a todo list's name, description, or position |
+| `delete_todolist` | Delete a todo list permanently |
 
 ### Messages
 | Tool | Description |
 |------|-------------|
-| `list_messages` | List messages in a project |
-| `get_message` | Get a message with comments |
+| `list_messages` | List messages/discussions in a project (via topics) |
+| `get_message` | Get a message with comments and attachments |
+| `create_message` | Create a new discussion (project_id, subject, content) |
+| `update_message` | Update a message's subject/content |
+| `delete_message` | Delete a message permanently |
 
 Note: Messages may not be available on all Basecamp plans.
 
@@ -61,6 +84,9 @@ Note: Messages may not be available on all Basecamp plans.
 |------|-------------|
 | `list_documents` | List documents. project_id=0 for all projects |
 | `get_document` | Get a single document (e.g., site-info) |
+| `create_document` | Create a new document (title, content) |
+| `update_document` | Update a document's title/content |
+| `delete_document` | Delete a document permanently |
 
 ### Calendar Events
 | Tool | Description |
@@ -68,24 +94,56 @@ Note: Messages may not be available on all Basecamp plans.
 | `list_calendars` | List all calendars |
 | `list_calendar_events` | List events. Filter by project_id, start_date, end_date, past |
 | `get_calendar_event` | Get a specific calendar event |
+| `create_calendar_event` | Create an event (summary, starts_at, description, all_day, ends_at, remind_at) |
+| `update_calendar_event` | Update an event's fields |
+| `delete_calendar_event` | Delete a calendar event |
 
-### Topics, Events, Attachments
+### Topics
 | Tool | Description |
 |------|-------------|
 | `list_topics` | List topics. project_id=0 for all. archived=True for archived |
-| `list_events` | Activity log since a datetime. Filter by project_id or person_id |
+| `archive_topic` | Archive a topic |
+| `activate_topic` | Reactivate an archived topic |
+
+### Attachments & Uploads
+| Tool | Description |
+|------|-------------|
 | `list_attachments` | List attachments. project_id=0 for all (paginated) |
 | `get_attachment` | Get attachment metadata and download URL (project_id, attachment_id) |
 | `download_attachment` | Download attachment to local file (project_id, attachment_id) |
 | `get_upload` | Get an upload with comments |
+| `create_upload` | Upload a local file to a project's Files section |
+| `delete_upload` | Delete an upload (move to trash) |
 
-### Other
+### Activity
+| Tool | Description |
+|------|-------------|
+| `list_events` | Activity log since a datetime. Filter by project_id or person_id |
+
+### Access Management
 | Tool | Description |
 |------|-------------|
 | `list_accesses` | List people with access to a project |
+| `grant_access` | Grant team access (comma-separated ids and/or email_addresses) |
+| `grant_client_access` | Grant client-level access (comma-separated ids and/or email_addresses) |
+| `revoke_access` | Revoke a person's project access |
+
+### Stars
+| Tool | Description |
+|------|-------------|
 | `list_stars` | List starred/favorite projects |
+| `star_project` | Star (bookmark) a project |
+| `unstar_project` | Remove star from a project |
+
+### Forwards
+| Tool | Description |
+|------|-------------|
 | `list_forwards` | List email forwards. project_id=0 for all |
 | `get_forward` | Get a specific email forward with comments |
+
+### Search
+| Tool | Description |
+|------|-------------|
 | `search` | Search across all projects |
 
 **Extracting IDs from Basecamp URLs**: A URL like `https://basecamp.com/2805226/projects/18932786/todos/514631271` gives you project_id=`18932786` and todo_id=`514631271`.
