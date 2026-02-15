@@ -49,22 +49,26 @@ grep -rl '"version": "OLD_VERSION"' --include="*.json" .
 
 This SHOULD return no results.
 
-### Step 4: Stage and commit
+### Step 4: Check working tree
 
-Stage all version-bumped files plus any other staged changes:
+Run `git status` to check for unstaged or untracked files. If any exist beyond the version-bumped files, ask the user whether to include them in this commit or leave them out.
+
+### Step 5: Stage and commit
+
+Stage all version-bumped files plus any user-approved changes:
 
 ```bash
-git add VERSION .claude-plugin/marketplace.json plugins/*/. claude-plugin/plugin.json packages/cli/package.json
+git add VERSION .claude-plugin/marketplace.json plugins/*/.claude-plugin/plugin.json packages/cli/package.json
 git commit -m "chore: bump version to X.Y.Z"
 ```
 
-### Step 5: Tag
+### Step 6: Tag
 
 ```bash
 git tag vX.Y.Z
 ```
 
-### Step 6: Push commit and tag
+### Step 7: Push commit and tag
 
 Both the commit and the tag MUST be pushed. The tag triggers the release workflow.
 

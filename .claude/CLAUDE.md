@@ -18,6 +18,15 @@ pnpm typecheck      # TypeScript check
 pnpm validate-skills # Validate SKILL.md frontmatter
 ```
 
+## Deploy / Release
+
+"Deploy" means: bump version → commit → tag → push. Full procedure in `.claude/rules/versioning.md`.
+
+- Check `git status` before committing — ask the user about any unstaged/untracked files
+- Use `gh auth setup-git` before pushing (handles expired HTTPS credentials)
+- Push with `git push origin main && git push origin vX.Y.Z`
+- Tag push triggers `.github/workflows/release.yml` (typecheck → test → build → npm publish → GitHub Release)
+
 ## Conventions
 - Plugins are directories under `plugins/`, each with `.claude-plugin/plugin.json`
 - Skills live in `plugins/<name>/skills/<skill-name>/SKILL.md`
