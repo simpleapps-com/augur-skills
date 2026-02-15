@@ -23,7 +23,7 @@ All versions MUST stay in sync with the `VERSION` file:
 
 ## Version Bump Procedure
 
-MUST follow these steps in order. MUST NOT commit and push without explicit user approval at each step.
+When the user says "bump the version" (with or without commit/push/tag), execute all steps below in sequence.
 
 ### Step 1: Update VERSION file
 
@@ -49,35 +49,33 @@ grep -rl '"version": "OLD_VERSION"' --include="*.json" .
 
 This SHOULD return no results.
 
-### Step 4: Wait for user approval to commit
+### Step 4: Stage and commit
 
-Show the user what changed and wait for explicit approval before committing.
-
-### Step 5: Commit
+Stage all version-bumped files plus any other staged changes:
 
 ```bash
-git add -A
+git add VERSION .claude-plugin/marketplace.json plugins/*/. claude-plugin/plugin.json packages/cli/package.json
 git commit -m "chore: bump version to X.Y.Z"
 ```
 
-### Step 6: Tag
+### Step 5: Tag
 
 ```bash
 git tag vX.Y.Z
 ```
 
-### Step 7: Wait for user approval to push
-
-MUST NOT push without explicit user approval.
-
-### Step 8: Push commit and tag
+### Step 6: Push commit and tag
 
 Both the commit and the tag MUST be pushed. The tag triggers the release workflow.
 
+Use `gh` for authentication (handles expired HTTPS credentials):
+
 ```bash
-git push origin main
-git push origin vX.Y.Z
+gh auth setup-git
+git push origin main && git push origin vX.Y.Z
 ```
+
+**Note**: If `git push` fails with 401/403, run `gh auth setup-git` first to configure gh as the credential helper.
 
 ## Release Workflow
 
