@@ -23,7 +23,7 @@ All versions MUST stay in sync with the `VERSION` file:
 
 ## Version Bump Procedure
 
-When the user says "bump the version" (with or without commit/push/tag), execute all steps below in sequence.
+MUST NOT deploy (commit + tag + push) without explicit user approval. The user MUST say "deploy" before executing steps 5-7. Bumping version files (steps 1-4) is safe to do on request, but pushing to remote is irreversible and may ship bugs.
 
 ### Step 1: Update VERSION file
 

@@ -20,8 +20,11 @@ pnpm validate-skills # Validate SKILL.md frontmatter
 
 ## Deploy / Release
 
+**MUST NOT deploy without explicit user approval.** The user MUST say "deploy" (or equivalent) before you commit, tag, or push. Deploying prematurely may ship bugs.
+
 "Deploy" means: bump version → commit → tag → push. Full procedure in `.claude/rules/versioning.md`.
 
+- MUST wait for the user to explicitly approve before committing and pushing
 - Check `git status` before committing — ask the user about any unstaged/untracked files
 - Use `gh auth setup-git` before pushing (handles expired HTTPS credentials)
 - Push with `git push origin main && git push origin vX.Y.Z`

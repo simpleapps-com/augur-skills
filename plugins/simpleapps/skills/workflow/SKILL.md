@@ -34,5 +34,6 @@ The `basecamp` MCP server (bundled with this plugin) provides direct API access 
 ## References
 
 - See `basecamp.md` for MCP tools, Chrome fallback, and Basecamp navigation
-- See `github.md` for GitHub issue creation and cross-linking
+- See `github.md` for Basecamp-to-GitHub cross-linking
+- See `simpleapps:github` skill for GitHub org conventions and `gh` CLI usage
 - See `simpleapps:fyxer` skill for Fyxer meeting transcript processing and Basecamp posting
