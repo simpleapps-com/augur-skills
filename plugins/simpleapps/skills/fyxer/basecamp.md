@@ -11,7 +11,7 @@ Post Fyxer meeting recordings as searchable Discussions in Basecamp projects.
 
 ### 1. Check for duplicate
 
-Extract the meeting UUID from the Fyxer URL (the part before the colon). Call `search("<meeting-uuid>")` to check if this meeting has already been posted to Basecamp. The frontmatter in posted messages contains the fyxer-id, so search will find it. If found, inform the user and stop.
+Extract the meeting UUID from the Fyxer URL (the part before the colon). Call `list_messages(project_id)` and scan titles for a matching `Fyxer: YYYY-MM-DD` entry. If found, call `get_message` to check if its frontmatter contains the same `fyxer-id`. If it matches, inform the user and stop.
 
 ### 2. Check local cache
 
@@ -63,10 +63,9 @@ Use `create_message(project_id, subject, content)`:
 
 ## Finding Posted Transcripts
 
-Search by date: `search("Fyxer YYYY-MM-DD")`
-Search by keyword: `search("topic or participant name")`
-Browse by project: `list_messages(project_id)`
+Browse by project: `list_messages(project_id)` — Fyxer posts use the title format `Fyxer: YYYY-MM-DD`
+View a specific transcript: `get_message(project_id, message_id)`
 
 ## Dependencies
 
-- Basecamp MCP (`create_message`, `search` tools) — see `simpleapps:workflow` skill (`basecamp.md`) for full MCP tool reference
+- Basecamp MCP (`create_message`, `list_messages`, `get_message` tools) — see `simpleapps:workflow` skill (`basecamp.md`) for full MCP tool reference

@@ -141,10 +141,7 @@ Note: Messages may not be available on all Basecamp plans.
 | `list_forwards` | List email forwards. project_id=0 for all |
 | `get_forward` | Get a specific email forward with comments |
 
-### Search
-| Tool | Description |
-|------|-------------|
-| `search` | Search across all projects |
+**Note**: The BCX API does not have a search endpoint. To find content, use `list_topics(project_id)` to browse, or `list_messages(project_id)` for messages. For cross-project browsing, use `list_topics()` (no project_id) to get recent topics across all projects.
 
 **Extracting IDs from Basecamp URLs**: A URL like `https://basecamp.com/2805226/projects/18932786/todos/514631271` gives you project_id=`18932786` and todo_id=`514631271`.
 

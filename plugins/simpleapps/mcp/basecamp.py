@@ -1172,7 +1172,7 @@ def grant_client_access(project_id: int, ids: str = "", email_addresses: str = "
         body["ids"] = [int(i.strip()) for i in ids.split(",")]
     if email_addresses:
         body["email_addresses"] = [e.strip() for e in email_addresses.split(",")]
-    api_post_no_body(f"/projects/{project_id}/accesses/clients.json", body)
+    api_post_no_body(f"/projects/{project_id}/client_accesses.json", body)
     return f"Client access granted to project {project_id}."
 
 
@@ -1257,24 +1257,5 @@ def get_forward(project_id: int, forward_id: int) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Search
-# ---------------------------------------------------------------------------
-
-@mcp.tool()
-def search(query: str) -> str:
-    """Search across all Basecamp 2 projects."""
-    encoded_query = urllib.parse.quote(query)
-    results = api_get(f"/search.json?query={encoded_query}")
-
-    if not results:
-        return f"No results for '{query}'."
-
-    lines = []
-    for r in results:
-        lines.append(f"- **{r.get('title', r.get('content', 'Untitled'))}** ({r['type']}) — {r.get('url', '')}")
-
-    return "\n".join(lines)
-
-
 if __name__ == "__main__":
     mcp.run()
