@@ -185,6 +185,10 @@ If the MCP server is unavailable (credentials expired, server not running), use 
 
 **JSON API via Chrome**: Navigate to `/api/v1/projects/<project_id>/todos/<todo_id>.json` then use `get_page_text`. WebFetch will NOT work — Chrome carries session cookies.
 
+## Fyxer Meeting Transcripts
+
+To post Fyxer meeting recordings as Basecamp Discussions, see the `simpleapps:fyxer` skill. It handles extraction, local caching, duplicate detection, and posting via `create_message`.
+
 ## Site Info Documents
 
 Each Basecamp project SHOULD have a **site-info** text document in its Documents section. It contains site-specific details like siteId and domain name needed for GitHub issues and development work. Use `list_documents` + `get_document` to find it. If no site-info document exists, ask the user to create one.

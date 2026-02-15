@@ -2,9 +2,9 @@
 
 ## Creating Issues from Basecamp Todos
 
-Before creating an issue, gather context:
-1. Use `get_todo` (MCP) to read the Basecamp todo and summarize the client request
-2. Use `list_documents` + `get_document` (MCP) to find the project's **site-info** document for siteId and domain name. If no site-info document exists, ask the user to create one in Basecamp.
+Before creating an issue, gather context from Basecamp (see `basecamp.md` for full MCP tool reference):
+1. Use `get_todo` to read the Basecamp todo and summarize the client request
+2. Use `list_documents` + `get_document` to find the project's **site-info** document for siteId and domain name. If no site-info document exists, ask the user to create one in Basecamp.
 
 Use `gh issue create` to create issues linked to Basecamp todos:
 

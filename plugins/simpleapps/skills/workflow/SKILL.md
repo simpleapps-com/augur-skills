@@ -35,4 +35,4 @@ The `basecamp` MCP server (bundled with this plugin) provides direct API access 
 
 - See `basecamp.md` for MCP tools, Chrome fallback, and Basecamp navigation
 - See `github.md` for GitHub issue creation and cross-linking
-- See `fyxer.md` for posting Fyxer meeting transcripts to Basecamp
+- See `simpleapps:fyxer` skill for Fyxer meeting transcript processing and Basecamp posting
