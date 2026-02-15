@@ -148,6 +148,17 @@ Note: Messages may not be available on all Basecamp plans.
 
 **Extracting IDs from Basecamp URLs**: A URL like `https://basecamp.com/2805226/projects/18932786/todos/514631271` gives you project_id=`18932786` and todo_id=`514631271`.
 
+## Downloading Attachments
+
+Attachments can be on todos, comments, messages, or uploads. To retrieve them:
+
+1. **Discover**: Call `get_todo` or `get_message` — attachments appear with IDs in both the top-level section and within individual comments
+2. **Inspect** (optional): Call `get_attachment(project_id, attachment_id)` to see metadata, size, content type, and download URL
+3. **Download**: Call `download_attachment(project_id, attachment_id)` — saves to `~/.simpleapps/downloads/{project_id}/`
+4. **Read**: Use the `Read` tool on the local file path to view content (works for images, PDFs, Excel, text)
+
+To browse all attachments in a project, use `list_attachments(project_id)`.
+
 ## Chrome Fallback
 
 If the MCP server is unavailable (credentials expired, server not running), use Chrome:
