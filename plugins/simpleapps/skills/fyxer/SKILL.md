@@ -87,6 +87,7 @@ MUST clean up `~/Downloads/` after copying downloaded files to the cache directo
 ## Processes
 
 - See `basecamp.md` for posting meeting transcripts as Basecamp Discussions
+- See `basecamp-index.md` for the Fyxer Index document (duplicate detection, reconciliation)
 
 ## Dependencies
 

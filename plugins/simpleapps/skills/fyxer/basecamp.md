@@ -11,7 +11,13 @@ Post Fyxer meeting recordings as searchable Discussions in Basecamp projects.
 
 ### 1. Check for duplicate
 
-Extract the meeting UUID from the Fyxer URL (the part before the colon). Call `list_messages(project_id)` and scan titles for a matching `Fyxer: YYYY-MM-DD` entry. If found, call `get_message` to check if its frontmatter contains the same `fyxer-id`. If it matches, inform the user and stop.
+Extract the meeting UUID from the Fyxer URL (the part before the colon).
+
+Find the **Fyxer Index** document in the project: `list_documents(project_id)` → scan for title `Fyxer Index`. If found, `get_document(project_id, document_id)` and search the content for the meeting UUID. If the UUID appears, the meeting has already been posted — inform the user and stop.
+
+If no Fyxer Index document exists, there are no tracked meetings in this project. Proceed with posting.
+
+See `basecamp-index.md` for full index format and reconciliation.
 
 ### 2. Check local cache
 
@@ -54,6 +60,19 @@ Use `create_message(project_id, subject, content)`:
 - **Subject**: `Fyxer: YYYY-MM-DD`
 - **Content**: contents of `message.txt`
 
+Capture the **message_id** from the response.
+
+### 5. Update Fyxer Index
+
+After a successful post, update the Fyxer Index document:
+
+1. If no Fyxer Index document exists, create one: `create_document(project_id, "Fyxer Index", "")`
+2. Read current content: `get_document(project_id, document_id)`
+3. Prepend a new line (newest first): `<meeting-uuid> | <date> | <message-id> | <subject>`
+4. Update: `update_document(project_id, document_id, title="Fyxer Index", content=updated_content)`
+
+If the index update fails after a successful post, warn the user. The message is posted but the index is stale. Run reconciliation later (see `basecamp-index.md`).
+
 ## Format Rules
 
 - **Plain text only** — Basecamp prefers plain text over HTML
@@ -63,9 +82,10 @@ Use `create_message(project_id, subject, content)`:
 
 ## Finding Posted Transcripts
 
-Browse by project: `list_messages(project_id)` — Fyxer posts use the title format `Fyxer: YYYY-MM-DD`
-View a specific transcript: `get_message(project_id, message_id)`
+Check the index: `list_documents(project_id)` → find `Fyxer Index` → `get_document`
+View a specific transcript: `get_message(project_id, message_id)` using the message_id from the index
+Browse all messages: `list_messages(project_id)` — Fyxer posts use the title format `Fyxer: YYYY-MM-DD`
 
 ## Dependencies
 
-- Basecamp MCP (`create_message`, `list_messages`, `get_message` tools) — see `simpleapps:workflow` skill (`basecamp.md`) for full MCP tool reference
+- Basecamp MCP (`create_message`, `create_document`, `update_document`, `list_documents`, `get_document` tools) — see `simpleapps:workflow` skill (`basecamp.md`) for full MCP tool reference
