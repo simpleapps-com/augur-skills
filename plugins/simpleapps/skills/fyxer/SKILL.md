@@ -9,15 +9,21 @@ Fyxer AI records and summarizes meetings. This skill covers extracting data from
 
 ## Fyxer URLs
 
-Recording page: `https://app.fyxer.com/call-recordings/<fyxer-id>`
+Recording page: `https://app.fyxer.com/call-recordings/<meeting-uuid>:<calendar-event-id>`
+
+The URL path after `/call-recordings/` contains two parts separated by a colon:
+- **Meeting UUID** (before colon): `52f0cf2b-fdb8-4e95-8b01-2afb6d367c69`
+- **Calendar event ID** (after colon): `2fg5k3v3hffl91dnuqauc15suk_20260119T190000Z`
+
+Use only the **meeting UUID** for cache folders, duplicate checks, and frontmatter.
 
 Each recording has two tabs:
-- **Summary** — AI-generated summary with section headings, participants, action items
-- **Transcript** — Speaker-attributed, timestamped full transcript
+- **Summary** — AI-generated summary with section headings, participants, action items. Has "Copy summary" and "Download PDF" buttons.
+- **Transcript** — Speaker-attributed, timestamped full transcript. Has "Copy transcript" and "Download transcript" buttons.
 
 ## Local Cache
 
-All extracted data is cached at `~/.simpleapps/fyxer/<fyxer-id>/`:
+All extracted data is cached at `~/.simpleapps/fyxer/<meeting-uuid>/`:
 
 ```
 summary.txt     - raw Fyxer summary (from Summary tab)
@@ -31,18 +37,52 @@ Cache is populated via Chrome extraction (see below) and reused across processes
 
 Only needed when local cache files are missing.
 
-### Extract summary
-
-Navigate to the Fyxer recording URL. The Summary tab is the default view. Extract the full summary text using `get_page_text` and save to `~/.simpleapps/fyxer/<fyxer-id>/summary.txt`.
-
 ### Extract transcript
 
-Click the **Transcript** tab. Extraction options (in order of preference):
-1. **"Copy transcript" button** — copies to clipboard, then paste into `transcript.txt`
-2. **"Download transcript" button** — saves a text file directly
-3. **`get_page_text`** — scrape the Transcript tab as a fallback
+Click the **Transcript** tab. Extraction methods (in order of preference):
 
-Save to `~/.simpleapps/fyxer/<fyxer-id>/transcript.txt`.
+1. **"Download transcript" button** (BEST) — Downloads a `.txt` file to `~/Downloads/`. Complete content, no truncation. Copy to cache dir, then delete the download.
+2. **"Copy transcript" button** + `pbpaste` — Copies to system clipboard. Write to disk: `pbpaste > transcript.txt`. Reliable but requires clipboard access.
+3. **`get_page_text`** — UNRELIABLE. Only captures visible/partial content. Missed most of a 30-minute transcript in testing. DO NOT USE for transcripts.
+
+Save to `~/.simpleapps/fyxer/<meeting-uuid>/transcript.txt`.
+
+### Extract summary
+
+The Summary tab is the default view. Extraction methods (in order of preference):
+
+1. **"Copy summary" button** + `pbpaste` (BEST) — Copies markdown to clipboard. Write to disk: `pbpaste > summary.txt`. Summaries are short (~1,700 chars) so this works well.
+2. **`get_page_text`** — Works for short summaries but mixes in page chrome. Not recommended.
+
+Save to `~/.simpleapps/fyxer/<meeting-uuid>/summary.txt`.
+
+### Extract participants
+
+Click the **participant count dropdown** (e.g. "3 participants") in the page header to reveal attendee names and emails. Take a screenshot to read them.
+
+### Clipboard verification
+
+To verify clipboard content is complete before writing to disk:
+
+```javascript
+(async () => {
+  const text = await navigator.clipboard.readText();
+  window.__temp = text;
+  return JSON.stringify({
+    length: text.length,
+    first50: text.substring(0, 50),
+    last100: text.substring(text.length - 100)
+  });
+})()
+```
+
+Then write and verify: `pbpaste > target.txt && wc -c target.txt`
+
+**Note**: Do NOT try to read full clipboard content via JS — Chrome MCP truncates JS output at ~1,000 characters. Always use `pbpaste` to write to disk.
+
+### Download cleanup
+
+MUST clean up `~/Downloads/` after copying downloaded files to the cache directory. Fyxer names downloads like `transcript-SA_USCCO.txt`. Repeated downloads append `(1)`, `(2)`, etc.
 
 ## Processes
 

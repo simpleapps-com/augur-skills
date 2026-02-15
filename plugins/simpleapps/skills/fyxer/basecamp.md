@@ -4,22 +4,22 @@ Post Fyxer meeting recordings as searchable Discussions in Basecamp projects.
 
 ## Inputs
 
-- **Fyxer recording URL**: `https://app.fyxer.com/call-recordings/<fyxer-id>`
+- **Fyxer recording URL**: `https://app.fyxer.com/call-recordings/<meeting-uuid>:<calendar-event-id>`
 - **Basecamp project ID**: Target project for the Discussion
 
 ## Process
 
 ### 1. Check for duplicate
 
-Extract the `<fyxer-id>` UUID from the Fyxer recording URL. Call `search("<fyxer-id>")` to check if this meeting has already been posted to Basecamp. The frontmatter in posted messages contains the fyxer-id, so search will find it. If found, inform the user and stop.
+Extract the meeting UUID from the Fyxer URL (the part before the colon). Call `search("<meeting-uuid>")` to check if this meeting has already been posted to Basecamp. The frontmatter in posted messages contains the fyxer-id, so search will find it. If found, inform the user and stop.
 
 ### 2. Check local cache
 
-If `~/.simpleapps/fyxer/<fyxer-id>/summary.txt` and `transcript.txt` both exist, skip to step 3 (build message). Otherwise, follow the Chrome extraction steps in `SKILL.md`.
+If `~/.simpleapps/fyxer/<meeting-uuid>/summary.txt` and `transcript.txt` both exist, skip to step 3. Otherwise, follow the Chrome extraction steps in `SKILL.md`.
 
 ### 3. Build message.txt
 
-Parse `summary.txt` for frontmatter fields and combine with the full transcript from `transcript.txt`:
+Parse `summary.txt` for frontmatter fields, extract participants (see `SKILL.md` participant extraction), and combine with the full transcript from `transcript.txt`:
 
 ```
 ---
@@ -28,7 +28,7 @@ date: YYYY-MM-DD
 time: HH:MM-HH:MM
 participants: Person A, Person B, Person C
 topics: Topic One, Topic Two, Topic Three
-fyxer-id: <recording-uuid>
+fyxer-id: <meeting-uuid>
 ---
 
 [contents of transcript.txt]
@@ -41,11 +41,11 @@ Frontmatter field sources:
 | meeting | Meeting title from the page header |
 | date | Recording date |
 | time | Recording time range |
-| participants | Participant list |
+| participants | Participant dropdown (click to reveal names) |
 | topics | Section headings from the Summary |
-| fyxer-id | UUID from the URL |
+| fyxer-id | Meeting UUID from the URL (before the colon) |
 
-Save as `~/.simpleapps/fyxer/<fyxer-id>/message.txt`.
+Save as `~/.simpleapps/fyxer/<meeting-uuid>/message.txt`.
 
 ### 4. Post to Basecamp
 
