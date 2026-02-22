@@ -3,16 +3,9 @@ description: Marketplace configuration rules
 globs: .claude-plugin/**/*
 ---
 
-# Marketplace Rules
+# Marketplace
 
-`.claude-plugin/marketplace.json` MUST contain:
-- `name` - Marketplace identifier
-- `description` - Human-readable description
-- `owner` - Object with `name` and `email`
-- `plugins` - Array of plugin entries
+Full docs: [Marketplace](../../../wiki/Marketplace.md)
 
-When adding a plugin to the marketplace, each entry MUST have:
-- `name` - Plugin identifier (matches directory name under `plugins/`)
-- `description` - Brief description
-- `source` - Relative path (e.g., `./plugins/<name>`)
-- `version` - SemVer version
+`marketplace.json` MUST have: `name`, `description`, `owner`, `plugins[]`.
+Each plugin entry MUST have: `name`, `description`, `source`, `version`.

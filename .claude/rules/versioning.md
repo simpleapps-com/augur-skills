@@ -3,88 +3,10 @@ description: Version management across the monorepo
 globs: ["**/package.json", "**/marketplace.json", "**/plugin.json", "VERSION"]
 ---
 
-# Versioning Rules
+# Versioning
 
-## Source of Truth
+Full docs: [Versioning](../../../wiki/Versioning.md)
 
-The `VERSION` file at the repo root contains the canonical version. All other version fields MUST match it.
+`VERSION` file = source of truth. All `version` fields in `marketplace.json`, `plugin.json`, and `packages/cli/package.json` MUST match.
 
-## Versioned Files
-
-All versions MUST stay in sync with the `VERSION` file:
-
-1. `VERSION` → single line, e.g. `0.0.2`
-2. `.claude-plugin/marketplace.json` → top-level `version` field
-3. `.claude-plugin/marketplace.json` → each plugin entry `version` field
-4. `packages/cli/package.json` → `version` field
-5. `plugins/<name>/.claude-plugin/plugin.json` → `version` field (all plugins)
-
-`src/index.ts` reads from `package.json` at runtime — no manual update needed there.
-
-## Version Bump Procedure
-
-MUST NOT deploy (commit + tag + push) without explicit user approval. The user MUST say "deploy" before executing steps 5-7. Bumping version files (steps 1-4) is safe to do on request, but pushing to remote is irreversible and may ship bugs.
-
-### Step 1: Update VERSION file
-
-Update the `VERSION` file to the new version number.
-
-### Step 2: Update all matching files
-
-Search for all JSON files still containing the old version:
-
-```bash
-grep -rl '"version": "OLD_VERSION"' --include="*.json" .
-```
-
-Update `version` in ALL matched files to match the `VERSION` file.
-
-### Step 3: Verify
-
-Confirm no files were missed:
-
-```bash
-grep -rl '"version": "OLD_VERSION"' --include="*.json" .
-```
-
-This SHOULD return no results.
-
-### Step 4: Check working tree
-
-Run `git status` to check for unstaged or untracked files. If any exist beyond the version-bumped files, ask the user whether to include them in this commit or leave them out.
-
-### Step 5: Stage and commit
-
-Stage all version-bumped files plus any user-approved changes:
-
-```bash
-git add VERSION .claude-plugin/marketplace.json plugins/*/.claude-plugin/plugin.json packages/cli/package.json
-git commit -m "chore: bump version to X.Y.Z"
-```
-
-### Step 6: Tag
-
-```bash
-git tag vX.Y.Z
-```
-
-### Step 7: Push commit and tag
-
-Both the commit and the tag MUST be pushed. The tag triggers the release workflow.
-
-Use `gh` for authentication (handles expired HTTPS credentials):
-
-```bash
-gh auth setup-git
-git push origin main && git push origin vX.Y.Z
-```
-
-**Note**: If `git push` fails with 401/403, run `gh auth setup-git` first to configure gh as the credential helper.
-
-## Release Workflow
-
-Pushing a `v*` tag triggers `.github/workflows/release.yml` which:
-1. Runs typecheck and tests
-2. Builds the CLI
-3. Publishes to npm
-4. Creates a GitHub Release with auto-generated notes
+**MUST NOT deploy without explicit user approval.**
