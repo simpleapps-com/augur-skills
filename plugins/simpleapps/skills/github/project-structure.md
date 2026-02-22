@@ -6,11 +6,13 @@ Every project MUST use this layout:
 
 ```
 {project}/
-├── repo/    # Main git repo (simpleapps-com/<name>.git)
-└── wiki/    # GitHub wiki repo (simpleapps-com/<name>.wiki.git)
+├── repo/        # Main git repo (simpleapps-com/<name>.git)
+├── wiki/        # GitHub wiki repo (simpleapps-com/<name>.wiki.git)
+├── wip/         # Work-in-progress files for active tasks (not in git)
+└── protected/   # Secrets and credentials for dev testing (not in git)
 ```
 
-The parent `{project}/` directory is NOT a git repo — it's a local wrapper that keeps the code repo and wiki side-by-side.
+The parent `{project}/` directory is NOT a git repo — it's a local wrapper that keeps the code repo and wiki side-by-side. The `wip/` and `protected/` directories sit outside both git trees so their contents can never be accidentally committed.
 
 ## Why This Pattern
 
@@ -38,8 +40,46 @@ If the wiki repo doesn't exist yet, create it by adding any page via the GitHub 
 | Repo README | `repo/README.md` | Minimal — quick start + link to wiki |
 | Repo `.claude/rules/` | `repo/` | Minimal summaries referencing wiki pages |
 | Repo `.claude/CLAUDE.md` | `repo/` | Quick reference + wiki links |
+| Active task context | `wip/` | WIP files for Basecamp todos or GitHub issues |
+| Dev secrets | `protected/` | API keys, tokens, test credentials |
 
-Rule of thumb: if a `.md` file isn't built into the end product, it belongs in the wiki.
+Rule of thumb: if a `.md` file isn't built into the end product, it belongs in the wiki. If it contains secrets or ephemeral task state, it belongs outside both git trees.
+
+## WIP Directory
+
+The `wip/` directory holds work-in-progress files that AI agents create when picking up tasks from Basecamp or GitHub issues. Each file tracks research, plans, and progress for an active task.
+
+### Naming Convention
+
+`{issue-number}-{short-description}.md` — e.g., `14-basecamp-mcp-auto-refresh-oauth.md`
+
+### Lifecycle
+
+1. Agent picks up a Basecamp todo or GitHub issue
+2. Creates a WIP file with research findings and implementation plan
+3. Updates the file as work progresses
+4. File remains after completion as a record of decisions made
+
+### What belongs in WIP
+
+- Research findings and code analysis
+- Detailed implementation plans
+- Decision rationale
+- Test results and verification notes
+
+### What does NOT belong in WIP
+
+- Secrets, credentials, or tokens (use `protected/`)
+- Final documentation (use `wiki/`)
+- Code (use `repo/`)
+
+## Protected Directory
+
+The `protected/` directory stores secrets and credentials needed during development and testing. It sits outside all git trees so nothing can be accidentally committed.
+
+Examples: API keys, OAuth tokens, test credentials, `.env` files for local testing.
+
+MUST NOT be committed to any git repository. MUST NOT be copied into `repo/` or `wiki/`.
 
 ## Referencing Wiki from Repo
 
