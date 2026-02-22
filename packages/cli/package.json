@@ -1,6 +1,6 @@
 {
   "name": "@simpleapps-com/augur-skills",
-  "version": "0.0.2",
+  "version": "0.0.12",
   "description": "Install curated Claude Code skills",
   "license": "MIT",
   "type": "module",

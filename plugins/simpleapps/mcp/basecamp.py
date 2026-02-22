@@ -23,6 +23,9 @@ import urllib.request
 from mcp.server.fastmcp import FastMCP
 
 CREDS_FILE = os.path.expanduser("~/.simpleapps/basecamp.json")
+TOKEN_URL = "https://launchpad.37signals.com/authorization/token"
+CLIENT_ID = "0ff91e9b1365da1686eb1ac639ae30cc915f10f9"
+CLIENT_SECRET = "7e1e63759ec32a3f00813d32b93d339116d0ff62"
 
 mcp = FastMCP("basecamp")
 
@@ -40,6 +43,33 @@ def load_creds() -> dict:
         )
     with open(CREDS_FILE) as f:
         return json.load(f)
+
+
+def refresh_access_token() -> str:
+    """Refresh the Basecamp OAuth token and persist to disk. Returns new access token."""
+    creds = load_creds()
+    data = urllib.parse.urlencode({
+        "type": "refresh",
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+        "refresh_token": creds["refresh_token"],
+    }).encode()
+    req = urllib.request.Request(TOKEN_URL, data=data, method="POST")
+    req.add_header("Content-Type", "application/x-www-form-urlencoded")
+    try:
+        with urllib.request.urlopen(req) as resp:
+            token_data = json.loads(resp.read())
+    except urllib.error.HTTPError:
+        raise RuntimeError(
+            "Token refresh failed. Run 'basecamp-auth' to re-authenticate."
+        )
+    creds["access_token"] = token_data["access_token"]
+    if "refresh_token" in token_data:
+        creds["refresh_token"] = token_data["refresh_token"]
+    with open(CREDS_FILE, "w") as f:
+        json.dump(creds, f, indent=2)
+    os.chmod(CREDS_FILE, 0o600)
+    return creds["access_token"]
 
 
 def _build_request(url: str, method: str = "GET", data: bytes | None = None) -> urllib.request.Request:
@@ -67,9 +97,10 @@ def api_get(path: str) -> dict | list:
             return json.loads(resp.read())
     except urllib.error.HTTPError as e:
         if e.code == 401:
-            raise RuntimeError(
-                "Unauthorized. Token may be expired. Run 'basecamp-auth' to refresh."
-            )
+            refresh_access_token()
+            req = _build_request(url)
+            with urllib.request.urlopen(req) as resp:
+                return json.loads(resp.read())
         raise
 
 
@@ -83,9 +114,10 @@ def api_put(path: str, body: dict) -> dict:
             return json.loads(resp.read())
     except urllib.error.HTTPError as e:
         if e.code == 401:
-            raise RuntimeError(
-                "Unauthorized. Token may be expired. Run 'basecamp-auth' to refresh."
-            )
+            refresh_access_token()
+            req = _build_request(url, method="PUT", data=data)
+            with urllib.request.urlopen(req) as resp:
+                return json.loads(resp.read())
         raise
 
 
@@ -99,9 +131,10 @@ def api_post(path: str, body: dict) -> dict:
             return json.loads(resp.read())
     except urllib.error.HTTPError as e:
         if e.code == 401:
-            raise RuntimeError(
-                "Unauthorized. Token may be expired. Run 'basecamp-auth' to refresh."
-            )
+            refresh_access_token()
+            req = _build_request(url, method="POST", data=data)
+            with urllib.request.urlopen(req) as resp:
+                return json.loads(resp.read())
         raise
 
 
@@ -114,9 +147,11 @@ def api_delete(path: str) -> None:
             pass  # 204 No Content
     except urllib.error.HTTPError as e:
         if e.code == 401:
-            raise RuntimeError(
-                "Unauthorized. Token may be expired. Run 'basecamp-auth' to refresh."
-            )
+            refresh_access_token()
+            req = _build_request(url, method="DELETE")
+            with urllib.request.urlopen(req) as resp:
+                pass
+            return
         raise
 
 
@@ -130,9 +165,11 @@ def api_post_no_body(path: str, body: dict | None = None) -> None:
             pass
     except urllib.error.HTTPError as e:
         if e.code == 401:
-            raise RuntimeError(
-                "Unauthorized. Token may be expired. Run 'basecamp-auth' to refresh."
-            )
+            refresh_access_token()
+            req = _build_request(url, method="POST", data=data)
+            with urllib.request.urlopen(req) as resp:
+                pass
+            return
         raise
 
 
@@ -151,9 +188,14 @@ def api_upload(file_path: str) -> str:
             return result["token"]
     except urllib.error.HTTPError as e:
         if e.code == 401:
-            raise RuntimeError(
-                "Unauthorized. Token may be expired. Run 'basecamp-auth' to refresh."
-            )
+            refresh_access_token()
+            req = _build_request(url, method="POST", data=data)
+            req.remove_header("Content-type")
+            req.add_header("Content-Type", "application/octet-stream")
+            req.add_header("Content-Length", str(len(data)))
+            with urllib.request.urlopen(req) as resp:
+                result = json.loads(resp.read())
+                return result["token"]
         raise
 
 
@@ -1052,8 +1094,13 @@ def download_attachment(
         bytes_written = _download_url(url, dest_path)
     except urllib.error.HTTPError as e:
         if e.code == 401:
-            return "Unauthorized. Token may be expired. Run 'basecamp-auth' to refresh."
-        return f"Download failed: HTTP {e.code} — {e.reason}"
+            try:
+                refresh_access_token()
+                bytes_written = _download_url(url, dest_path)
+            except urllib.error.HTTPError:
+                return "Token refresh failed. Run 'basecamp-auth' to re-authenticate."
+        else:
+            return f"Download failed: HTTP {e.code} — {e.reason}"
 
     return (
         f"Downloaded **{a.get('name', save_name)}** to `{dest_path}`\n"
