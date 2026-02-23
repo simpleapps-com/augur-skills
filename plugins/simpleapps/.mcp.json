@@ -2,5 +2,9 @@
   "basecamp": {
     "command": "uv",
     "args": ["run", "${CLAUDE_PLUGIN_ROOT}/mcp/basecamp.py"]
+  },
+  "augur-api": {
+    "command": "uvx",
+    "args": ["simpleapps-com-augur-mcp"]
   }
 }
