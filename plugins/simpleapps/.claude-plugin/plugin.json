@@ -1,9 +1,10 @@
 {
   "name": "simpleapps",
   "description": "SimpleApps core development practices, workflows, and tools",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "author": {
     "name": "SimpleApps",
     "email": "stuart@simpleapps.com"
-  }
+  },
+  "lspServers": "../.lsp.json"
 }

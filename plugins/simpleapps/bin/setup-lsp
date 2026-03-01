@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Install TypeScript language server prerequisites
+set -euo pipefail
+
+echo "Installing TypeScript language server..."
+
+if command -v typescript-language-server &>/dev/null; then
+  echo "typescript-language-server already installed: $(typescript-language-server --version)"
+else
+  npm install -g typescript-language-server
+  echo "typescript-language-server installed"
+fi
+
+if command -v tsc &>/dev/null; then
+  echo "typescript already installed: $(tsc --version)"
+else
+  npm install -g typescript
+  echo "typescript installed"
+fi
+
+echo "LSP setup complete. Restart Claude Code to activate."

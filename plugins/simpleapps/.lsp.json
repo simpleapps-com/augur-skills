@@ -1,0 +1,15 @@
+{
+  "typescript": {
+    "command": "typescript-language-server",
+    "args": ["--stdio"],
+    "extensionToLanguage": {
+      ".ts": "typescript",
+      ".tsx": "typescriptreact",
+      ".js": "javascript",
+      ".jsx": "javascriptreact"
+    },
+    "startupTimeout": 10000,
+    "restartOnCrash": true,
+    "maxRestarts": 5
+  }
+}
