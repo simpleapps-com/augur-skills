@@ -6,13 +6,13 @@ Every project MUST use this layout:
 
 ```
 {project}/
-├── repo/        # Main git repo (simpleapps-com/<name>.git)
-├── wiki/        # GitHub wiki repo (simpleapps-com/<name>.wiki.git)
-├── wip/         # Work-in-progress files for active tasks (not in git)
-└── protected/   # Secrets and credentials for dev testing (not in git)
+├── repo/           # Main git repo (simpleapps-com/<name>.git)
+├── wiki/           # GitHub wiki repo (simpleapps-com/<name>.wiki.git)
+├── wip/            # Work-in-progress files for active tasks (not in git)
+└── .simpleapps/    # Project-level secrets and credentials (not in git)
 ```
 
-The parent `{project}/` directory is NOT a git repo — it's a local wrapper that keeps the code repo and wiki side-by-side. The `wip/` and `protected/` directories sit outside both git trees so their contents can never be accidentally committed.
+The parent `{project}/` directory is NOT a git repo — it's a local wrapper that keeps the code repo and wiki side-by-side. The `wip/` and `.simpleapps/` directories sit outside both git trees so their contents can never be accidentally committed.
 
 ## Why This Pattern
 
@@ -41,7 +41,8 @@ If the wiki repo doesn't exist yet, create it by adding any page via the GitHub 
 | Repo `.claude/rules/` | `repo/` | Minimal summaries referencing wiki pages |
 | Repo `.claude/CLAUDE.md` | `repo/` | Quick reference + wiki links |
 | Active task context | `wip/` | WIP files for Basecamp todos or GitHub issues |
-| Dev secrets | `protected/` | API keys, tokens, test credentials |
+| Project secrets | `{project}/.simpleapps/` | Site-specific credentials, `{siteId}.json` |
+| Global secrets | `~/.simpleapps/` | Shared credentials across all projects |
 
 Rule of thumb: if a `.md` file isn't built into the end product, it belongs in the wiki. If it contains secrets or ephemeral task state, it belongs outside both git trees.
 
@@ -69,15 +70,18 @@ The `wip/` directory holds work-in-progress files that AI agents create when pic
 
 ### What does NOT belong in WIP
 
-- Secrets, credentials, or tokens (use `protected/`)
+- Secrets, credentials, or tokens (use `.simpleapps/`)
 - Final documentation (use `wiki/`)
 - Code (use `repo/`)
 
-## Protected Directory
+## Credentials (`.simpleapps/`)
 
-The `protected/` directory stores secrets and credentials needed during development and testing. It sits outside all git trees so nothing can be accidentally committed.
+Secrets and credentials live in `.simpleapps/` directories at two levels:
 
-Examples: API keys, OAuth tokens, test credentials, `.env` files for local testing.
+- **`~/.simpleapps/`** (user-level) — shared credentials across all projects (e.g., `augur-api.json`, `basecamp.json`)
+- **`{project}/.simpleapps/`** (project-level) — credentials specific to that project (e.g., `{siteId}.json` with test user creds)
+
+Project-level credentials override user-level ones when both exist. Both directories sit outside git trees so nothing can be accidentally committed.
 
 MUST NOT be committed to any git repository. MUST NOT be copied into `repo/` or `wiki/`.
 
