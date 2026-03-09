@@ -25,6 +25,7 @@ If `git push` fails with 401/403, run `gh auth setup-git` to fix credentials.
 ## Key Topics
 
 - **Wiki as context** — See `wiki-as-context.md` for why the wiki is the source of truth and how to write for both humans and AI agents.
+- **Wiki maintenance** — See `wiki-maintenance.md` for how to verify, update, and maintain wiki content correctly.
 - **Project structure** — See `project-structure.md` for the `{project}/[repo|wiki]` layout, what goes where, and wiki conventions.
 - **Issues & pull requests** — See `issues-prs.md` for issue templates, PR commands, and cross-linking with Basecamp.
 
