@@ -110,24 +110,23 @@ This matters for two reasons:
 - **Devs** jump straight to the answer instead of scrolling through a page
 - **AI agents** use anchor links as an attention signal — a `#section` reference tells the agent exactly which part of a page is relevant to the current task, reducing noise in a 20K token wiki
 
-### The 20K Token Budget
+### Keep It Lean
 
-The entire wiki MUST stay under **20K tokens** (~60KB of markdown). This is a hard constraint, not a guideline.
+Wikis SHOULD be as small as possible while remaining complete. The goal: an AI agent can load the **entire wiki** into context at session start and keep it there throughout.
 
-Why 20K: with a 200K token context window, the full wiki never exceeds 10% of available context. This means an AI agent can load the **entire wiki** into active context at the start of a session and keep it there throughout. No selective loading, no missed context, no stale references — the agent always has the complete picture.
-
-If the wiki approaches the budget:
+Guidelines:
 - Tighten language — cut filler, use tables over prose
 - Merge overlapping pages
-- Move implementation details back to code comments where they belong
+- Document patterns and principles, not exhaustive implementation details (see `wiki-maintenance.md`)
 - Archive obsolete pages (delete, don't hoard)
+- Move implementation specifics back to code comments where they belong
 
-To check the current budget:
+To check wiki size:
 ```bash
 wc -c {project}/wiki/*.md
 ```
 
-Rough conversion: 1 token ≈ 3 bytes of markdown. So 20K tokens ≈ 60KB.
+Rough conversion: 1 token ≈ 3 bytes of markdown.
 
 ### Right-Size Each Page
 
