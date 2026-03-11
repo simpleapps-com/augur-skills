@@ -1,18 +1,24 @@
 ---
 name: triage
 description: Show triage status for the current site repo — open PRs, linked issues, and unlinked issues
-allowed-tools: Bash(gh pr list:*), Bash(gh issue list:*), Bash(gh pr view:*), Bash(git remote:*), Bash(git -C:*), Bash(basename:*), Bash(pwd:*)
+allowed-tools: Bash(gh pr list:*), Bash(gh issue list:*), Bash(gh pr view:*), Bash(git remote:*), Bash(git -C:*), Bash(basename:*), Bash(pwd:*), Skill(project-defaults), Skill(github)
 ---
+
+First, use Skill("project-defaults") to load the project layout, then Skill("github") to load GitHub conventions.
 
 Show the triage status for the current site repo.
 
 ## Determine the repo
 
-1. Run `git -C repo remote -v` to read the remote from the `repo/` subdirectory without changing directories
-2. If that fails, run `git remote -v` in the current directory
+Per the github skill's project layout, the git repo is at `repo/`.
+
+1. Run `git -C repo remote -v` to read the remote
+2. If that fails, fall back to `git remote -v` in the current directory
 3. Extract the `org/repo` from the remote URL (strip `.git` suffix)
 
 ## Gather data
+
+MUST run each command as a separate, simple call. MUST NOT combine commands with `&&`, pipes, or sub-shells — complex commands trigger permission prompts and break automation.
 
 1. List all open PRs: `gh pr list --repo <org>/<repo> --state open --json number,title,body --limit 100`
 2. List all open issues: `gh issue list --repo <org>/<repo> --state open --json number,title,labels --limit 100`

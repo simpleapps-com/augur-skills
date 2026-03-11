@@ -1,46 +1,89 @@
 ---
 name: github
-description: GitHub conventions for SimpleApps. Covers org structure, local project layout, wiki-as-docs workflow, issue creation, PR workflows, and gh CLI usage. Use when creating issues, PRs, setting up repos, or working with GitHub wikis.
+description: GitHub conventions for SimpleApps. Covers org structure, git safety, issue creation, PR workflows, and gh CLI usage. Use when creating issues, PRs, or working with GitHub repos.
+allowed-tools: Skill(project-defaults)
 ---
+
+First, use Skill("project-defaults") to load the project layout.
 
 # GitHub
 
 ## Organization
 
-All SimpleApps repos live under the **`simpleapps-com`** GitHub org.
-
-Repository pattern: `simpleapps-com/<repo-name>`
+All SimpleApps repos live under **`simpleapps-com`**. Pattern: `simpleapps-com/<repo-name>`
 
 ## Authentication
 
-Use the `gh` CLI for all GitHub operations:
-
 ```bash
-gh auth status          # Check auth status
-gh auth setup-git       # Configure gh as git credential helper
+gh auth status          # Check auth
+gh auth setup-git       # Fix git credential helper (run if push fails 401/403)
 ```
 
-If `git push` fails with 401/403, run `gh auth setup-git` to fix credentials.
+## Project Layout
 
-## Key Topics
+See `simpleapps:project-defaults` for the full directory layout, symlink setup, and permission defaults. Key point: the git repo is always at `repo/`. Use `git -C repo` for git operations from the project root.
 
-- **Wiki as context** — See `wiki-as-context.md` for why the wiki is the source of truth and how to write for both humans and AI agents.
-- **Wiki maintenance** — See `wiki-maintenance.md` for how to verify, update, and maintain wiki content correctly.
-- **Project structure** — See `project-structure.md` for the `{project}/[repo|wiki]` layout, what goes where, and wiki conventions.
-- **Issues & pull requests** — See `issues-prs.md` for issue templates, PR commands, and cross-linking with Basecamp.
+## Wiki
 
-## Quick Reference
+See `simpleapps:wiki` for wiki conventions, token budget, and maintenance rules.
+
+## Git Safety
+
+MUST NOT commit, push, create PRs, or merge unless the user explicitly asks. After making changes, report what was done and stop. Do not offer or suggest the next git action — wait for instructions.
+
+- **Commits**: Do not commit until the user says "commit" or equivalent
+- **Pushes**: Do not push until the user explicitly asks
+- **PRs**: Do not create or offer to create a PR — report the work, stop
+- **Merges**: Do not merge unless the user explicitly asks
+
+The pattern is always: **do the work → report results → wait**.
+
+## Issues
+
+MUST use `--repo simpleapps-com/<repo>` on every `gh` call. MUST ask the user which repo — never assume.
+
+### Title
+
+Conventional commit style: `fix: description`, `feat: description`, `chore: description`. Under 70 characters.
+
+### Body
+
+```markdown
+## Problem
+What is broken, missing, or needed?
+
+## Expected Behavior
+What SHOULD happen instead?
+
+## Acceptance Criteria
+- [ ] Concrete, testable criteria
+
+## Context
+Related issues, affected files, workarounds, reproduction steps.
+```
+
+Bug reports also include **Steps to Reproduce** and **Current Behavior** with error messages.
+
+### Commands
 
 ```bash
-# Pushing
-gh auth setup-git && git push origin <branch>
-git push origin <tag>
-
-# Issues
 gh issue create --repo simpleapps-com/<repo> --title "type: desc" --body "..."
 gh issue list --repo simpleapps-com/<repo>
+gh issue view <number> --repo simpleapps-com/<repo>
+gh issue close <number> --repo simpleapps-com/<repo> --comment "message"
+```
 
-# PRs
+Include `Closes #N` in commit body to auto-close issues.
+
+## Pull Requests
+
+```bash
 gh pr create --repo simpleapps-com/<repo> --title "title" --body "..."
 gh pr list --repo simpleapps-com/<repo>
+gh pr view <number> --repo simpleapps-com/<repo>
+gh pr merge <number> --repo simpleapps-com/<repo>
 ```
+
+## Cross-Linking with Basecamp
+
+For client tasks originating in Basecamp, see `simpleapps:workflow` for the full cross-linking process.
