@@ -1,6 +1,6 @@
 ---
 name: workflow
-description: How we track and deliver work. Covers the Basecamp-to-GitHub flow for client requests, task tracking, and cross-linking. Use when working on client tasks, creating issues, or checking assignments.
+description: How we track and deliver work. Covers the Basecamp-to-GitHub flow for client requests, task tracking, cross-linking, and issue templates. Use when working on client tasks, creating issues, or checking assignments.
 ---
 
 # Workflow
@@ -27,13 +27,41 @@ Basecamp todos and GitHub issues SHOULD cross-link (many-to-many — one todo MA
 
 ## Tooling
 
-The `basecamp` MCP server (bundled with this plugin) provides direct API access to Basecamp 2. Use MCP tools (`get_todo`, `list_my_todos`, `list_documents`, etc.) as the primary method. Chrome browser automation is the fallback if MCP is unavailable.
+Load `simpleapps:basecamp` for Basecamp MCP tools and Chrome fallback. Load `simpleapps:github` for `gh` CLI usage and org conventions.
 
-**First-time setup**: User MUST run `uv run basecamp-auth` once to authorize. Credentials are saved to `~/.simpleapps/basecamp.json`.
+## Creating Issues from Basecamp Todos
+
+Before creating an issue, gather context from Basecamp (see `simpleapps:basecamp` skill for full MCP tool reference):
+1. Use `get_todo` to read the Basecamp todo and summarize the client request
+2. Use `list_documents` + `get_document` to find the project's **site-info** document for siteId and domain name. If no site-info document exists, ask the user to create one in Basecamp.
+
+See the `simpleapps:github` skill for `gh` CLI usage and org conventions.
+
+Issue template for Basecamp-linked issues:
+
+```bash
+gh issue create --repo simpleapps-com/<repo> \
+  --title "<brief technical title>" \
+  --body "## Basecamp
+<basecamp_todo_url>
+
+## Client
+<client/project name> — <domain> (siteId: <siteId>)
+
+## Summary
+<technical summary of what needs to be done>
+
+## Acceptance Criteria
+- [ ] <criteria from the Basecamp request>"
+```
+
+## Cross-Linking
+
+- Include the Basecamp todo URL in the GitHub issue body (under a `## Basecamp` heading)
+- After creating the issue, provide the GitHub issue URL to the user so they can add it to the Basecamp todo comments
 
 ## References
 
-- See `basecamp.md` for MCP tools, Chrome fallback, and Basecamp navigation
-- See `github.md` for Basecamp-to-GitHub cross-linking
+- See `simpleapps:basecamp` skill for MCP tools, Chrome fallback, and Basecamp navigation
 - See `simpleapps:github` skill for GitHub org conventions and `gh` CLI usage
 - See `simpleapps:fyxer` skill for Fyxer meeting transcript processing and Basecamp posting
