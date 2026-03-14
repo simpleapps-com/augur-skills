@@ -10,6 +10,8 @@ Curate the project wiki. This is an ongoing improvement process — each run mak
 
 The working code is the ground truth. The current session is the hint where to start — use what was learned, discussed, or changed this session to guide where the wiki most needs attention. Then verify against the actual codebase.
 
+**MUST complete ALL steps below in sequence without stopping.** Do not pause between steps or wait for prompts — run through the entire process and only stop at step 4 to get user approval on proposed changes.
+
 ## 1. Check token budget
 
 Run `wc -w wiki/*.md`. Multiply total by 1.3 for token estimate. Record the current usage — this is the budget you have to work within. Every change MUST keep the wiki under 20K tokens.

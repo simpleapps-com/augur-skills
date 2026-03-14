@@ -2,7 +2,7 @@
 name: investigate
 description: Load a WIP file, read the wiki, explore the codebase, and update the WIP with research findings and suggestions. No code changes.
 argument-hint: "[wip/GH14-slug.md]"
-allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(git log:*), Bash(git blame:*), Skill(wiki), Skill(basecamp), Skill(github), Skill(project-defaults), mcp__plugin_simpleapps_basecamp__*, Read, Glob, Grep, Edit, Agent
+allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(git log:*), Bash(git blame:*), Skill(wiki), Skill(basecamp), Skill(github), Skill(project-defaults), Skill(augur-packages), mcp__plugin_simpleapps_basecamp__*, Read, Glob, Grep, Edit, Agent
 ---
 
 First, use Skill("wiki") to load the project wiki for codebase context, then Skill("project-defaults") for directory layout, then Skill("github") for GH conventions.
@@ -27,13 +27,15 @@ Read the WIP file. Extract:
 
 Based on the problem statement, systematically investigate:
 
-1. **Search for relevant code** — use Grep and Glob to find files related to the problem. Use Agent with subagent_type=Explore for broader searches.
-2. **Read key files** — understand the current implementation
-3. **Trace the flow** — follow the code path affected by the problem
-4. **Check git history** — `git -C repo log --oneline -10 -- <file>` for recent changes to relevant files
-5. **Download and review attachments** — if the WIP lists BC attachments, use Basecamp MCP tools to download and read them
+1. **Check augur-\* packages first** — if this is a NextJS site using `@simpleapps-com/augur-*` packages, use Skill("augur-packages") to check if any package already provides the needed functionality. Sites MUST use augur package features before building custom solutions.
+2. **Search for relevant code** — use Grep and Glob to find files related to the problem. Use Agent with subagent_type=Explore for broader searches.
+3. **Read key files** — understand the current implementation
+4. **Trace the flow** — follow the code path affected by the problem
+5. **Check for existing packages** — search `repo/package.json` for dependencies that may already solve the problem. Check if the project is duplicating functionality that a dependency provides.
+6. **Check git history** — `git -C repo log --oneline -10 -- <file>` for recent changes to relevant files
+7. **Download and review attachments** — if the WIP lists BC attachments, use Basecamp MCP tools to download and read them
 
-Focus on understanding the problem deeply. Identify root causes, not just symptoms.
+Focus on understanding the problem deeply. Identify root causes, not just symptoms. Always prefer using existing package functionality over custom code.
 
 ## 4. Update the WIP
 

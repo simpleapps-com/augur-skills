@@ -2,7 +2,7 @@
 name: research
 description: Deep web research on best practices — verify assumptions, find long-term solutions, document findings with sources. Use anytime the agent is guessing instead of knowing.
 argument-hint: "[topic or question]"
-allowed-tools: Bash(git -C:*), Skill(wiki), Skill(project-defaults), Read, Write, Glob, Grep, Edit, Agent, WebSearch, WebFetch
+allowed-tools: Bash(git -C:*), Skill(wiki), Skill(project-defaults), Skill(augur-packages), Read, Write, Glob, Grep, Edit, Agent, WebSearch, WebFetch
 ---
 
 First, use Skill("wiki") to load project context — the wiki may already document relevant patterns or decisions.
@@ -28,7 +28,16 @@ Identify specifically what needs verification:
 - What does the official documentation say?
 - What pitfalls have others encountered?
 
-## 2. Research
+## 2. Check for existing packages first
+
+Before researching custom solutions, check if a package already solves the problem:
+
+1. **augur-\* packages** — use Skill("augur-packages") to check if any `@simpleapps-com/augur-*` package provides the functionality. NextJS sites using augur packages MUST use package features before building custom solutions.
+2. **npm/pip/composer packages** — search for well-maintained packages that solve the problem. A proven package with active maintenance beats custom code.
+
+If a package exists, recommend using it. Only research custom approaches when no suitable package is available or when the package doesn't fit the project's specific needs.
+
+## 3. Research
 
 Use WebSearch and WebFetch to find authoritative sources. Research in layers:
 
@@ -53,7 +62,7 @@ Search for alternative approaches. For each, evaluate:
 - Community adoption and support
 - Fit with the current project's stack and patterns
 
-## 3. Evaluate findings
+## 4. Evaluate findings
 
 Do NOT just list what you found. Analyze it against the specific project:
 
@@ -62,7 +71,7 @@ Do NOT just list what you found. Analyze it against the specific project:
 - **What's the trade-off?** — Every approach has downsides. Name them.
 - **What do we stop doing?** — If adopting a new pattern, what existing approach does it replace?
 
-## 4. Present findings
+## 5. Present findings
 
 Structure the output as a conversation, not a document. Present:
 
@@ -74,7 +83,7 @@ Structure the output as a conversation, not a document. Present:
 
 Include source URLs for every claim. No unsourced assertions.
 
-## 5. Update WIP (if one exists)
+## 6. Update WIP (if one exists)
 
 If a WIP file is being used, add research findings to the Research section. Include sources and links so the reasoning is traceable later.
 
