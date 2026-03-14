@@ -69,6 +69,8 @@ The wiki is a separate git repo at `wiki/`. No branch protection, no PRs.
 
 ```bash
 git -C wiki add -A
-git -C wiki commit -m "docs: describe the change"
+# Write commit message using Write tool → tmp/commit-msg.txt
+git -C wiki commit -F tmp/commit-msg.txt
+rm tmp/commit-msg.txt
 git -C wiki push
 ```

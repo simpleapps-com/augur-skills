@@ -38,6 +38,26 @@ MUST NOT commit, push, create PRs, or merge unless the user explicitly asks. Aft
 
 The pattern is always: **do the work → report results → wait**.
 
+## Git Commands (no `cd`)
+
+`cd` is denied. MUST use `git -C repo` for all git operations. For multi-line commit messages, write the message to a tmp file and use `git commit -F`:
+
+```bash
+# Stage files
+git -C repo add path/to/file.md
+
+# Write commit message to tmp file (use Write tool, not echo/cat)
+# → /tmp/commit-msg.txt
+
+# Commit using -F flag
+git -C repo commit -F /tmp/commit-msg.txt
+
+# Clean up
+rm /tmp/commit-msg.txt
+```
+
+This avoids shell quoting issues with HEREDOCs and `cd` permission blocks. The Write tool creates the tmp file safely.
+
 ## Issues
 
 MUST use `--repo simpleapps-com/<repo>` on every `gh` call. MUST ask the user which repo — never assume.
