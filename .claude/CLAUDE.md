@@ -21,7 +21,6 @@ pnpm build          # Build CLI
 pnpm test           # Run tests
 pnpm test:coverage  # Coverage
 pnpm typecheck      # TypeScript check
-pnpm validate-skills # Validate SKILL.md frontmatter
 ```
 
 ## Deploy
