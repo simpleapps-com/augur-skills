@@ -100,6 +100,10 @@ gh issue close <number> --repo simpleapps-com/<repo> --comment "message"
 
 Include `Closes #N` in commit body to auto-close issues.
 
+### Commenting on existing issues
+
+Before adding a comment to a closed issue, check its state first with `gh issue view`. If the issue is closed but the problem still exists, reopen it with `gh issue reopen` before commenting — a comment on a closed issue is easily missed.
+
 ## Cross-Repo Issues
 
 When a project hits a blocker that depends on another team's repo, create two issues and keep working:
