@@ -32,6 +32,10 @@ MUST NOT use `cd` in any Bash command — not even in compound commands like `cd
 
 Run tests, check output, compare results. YOU MUST NOT mark work complete without verification. If you can't verify, say so.
 
+## Own every issue you find
+
+If a check fails or a bug surfaces, fix it. Do not classify issues as "pre-existing" to justify skipping them — context compaction erases your memory of changes made earlier in the session, so what looks pre-existing is often something you introduced. Even if you truly did not cause it, the goal is zero issues, not blame assignment. Fix it anyway.
+
 ## Track progress
 
 Use TodoRead/TodoWrite on multi-step tasks. Mark items in-progress before starting, completed after verifying.
@@ -41,6 +45,19 @@ Use TodoRead/TodoWrite on multi-step tasks. Mark items in-progress before starti
 **Ask** when: requirements are ambiguous, multiple valid approaches exist, an action is destructive or irreversible, you've failed the same approach twice.
 
 **Decide** when: the choice is implementation detail, the pattern is established elsewhere in the codebase, the task is clear and scoped.
+
+## Be persistent with browser automation
+
+When using Chrome tools, do not give up after the first failure. Pages are dynamic — elements may not be visible yet, selectors may need adjusting, or the page may need time to load.
+
+Before giving up on a browser task:
+- Try a different selector or approach (text search, CSS selector, coordinates)
+- Scroll to reveal elements that may be off-screen
+- Wait for the page to finish loading, then retry
+- Use `get_page_text` or `read_page` to understand the current page state before retrying
+- Try navigating to the page again if it seems stuck
+
+Two failed attempts with the *same* approach means change strategy, not stop entirely.
 
 ## Recover from mistakes
 

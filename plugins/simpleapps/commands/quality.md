@@ -6,7 +6,7 @@ allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(pyth
 
 First, use Skill("quality") to load quality tooling awareness, then Skill("wiki") to check for project-specific conventions, then Skill("project-defaults") for layout.
 
-Run all code quality checks, fix every issue found, and repeat until clean. There are no "pre-existing" issues — most were introduced this session and lost to context compaction. Fix everything.
+Run all code quality checks, fix every issue found, and repeat until clean.
 
 ## 1. Discover quality tools
 
@@ -40,7 +40,9 @@ For each failing check:
 
 ### Rules
 
-- Fix EVERY issue. No exceptions. No "this is pre-existing." No skipping.
+- Fix EVERY issue. No exceptions. No skipping.
+- "Pre-existing" is not an excuse. Context compaction erases your memory of introducing issues earlier in the session. If a check fails, you own it. Fix it.
+- If you did not introduce an issue, fix it anyway. The goal is zero issues, not blame assignment.
 - If a fix is unclear, explore the codebase to understand the intent before changing code
 - Do NOT disable linting rules, skip tests, or suppress warnings to make checks pass
 - Do NOT modify coverage thresholds or quality configs to lower the bar
