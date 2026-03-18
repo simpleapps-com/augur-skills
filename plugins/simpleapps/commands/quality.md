@@ -1,47 +1,20 @@
 ---
 name: quality
 description: Discover and run all code quality checks, fix every issue, and flag missing quality tooling. No pre-existing excuses.
-allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Skill(wiki), Skill(project-defaults), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Skill(quality), Skill(wiki), Skill(project-defaults), Read, Write, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("wiki") to check for project-specific quality conventions, then Skill("project-defaults") for layout.
+First, use Skill("quality") to load quality tooling awareness, then Skill("wiki") to check for project-specific conventions, then Skill("project-defaults") for layout.
 
 Run all code quality checks, fix every issue found, and repeat until clean. There are no "pre-existing" issues — most were introduced this session and lost to context compaction. Fix everything.
 
 ## 1. Discover quality tools
 
-Read the project configuration to find what's available. The config files are the source of truth — only run what's defined.
-
-### Node (pnpm)
-
-Read `repo/package.json`. Look for scripts containing: `lint`, `format`, `typecheck`, `test`, `check`, `validate`. Also check for:
-- `repo/.eslintrc*`, `repo/eslint.config.*` — linting
-- `repo/.prettierrc*`, `repo/prettier.config.*` — formatting
-- `repo/tsconfig.json` — type checking
-- `repo/vitest.config.*`, `repo/jest.config.*` — testing
-- `repo/lefthook.yml`, `repo/.lefthook.yml` — pre-commit hooks
-
-### PHP
-
-Read `repo/composer.json` for scripts. Check for PHPStan, PHP-CS-Fixer, PHPUnit configs.
-
-### Python
-
-Read `repo/pyproject.toml` or `repo/setup.cfg`. Check for ruff, black, mypy, pytest configs.
+Use the tool table and config files from the quality skill to check what's configured. Read `repo/package.json` (or equivalent for PHP/Python). The config files are the source of truth — only run what's defined.
 
 ## 2. Flag missing tooling
 
-Every project SHOULD have at minimum: **lint**, **format**, **test**. Increasingly, **pre-commit hooks (lefthook)** are expected.
-
-If any are missing, report what's missing and suggest the right setup for the project type. Ask the user before adding anything.
-
-```
-Missing quality tooling:
-- [ ] Linting — suggest: eslint / ruff / phpstan
-- [ ] Formatting — suggest: prettier / black / php-cs-fixer
-- [ ] Testing — suggest: vitest / pytest / phpunit
-- [ ] Pre-commit hooks — suggest: lefthook
-```
+Use the minimum expected tooling checklist from the quality skill. Report what's missing and suggest the right setup for the project type. Ask the user before adding anything.
 
 Do NOT silently skip missing tools. Flag them every time.
 
@@ -53,7 +26,8 @@ Run each discovered check as a separate command. Order matters — fix formattin
 2. **Lint** — `pnpm lint` (or equivalent). If a `lint:fix` script exists, use it.
 3. **Typecheck** — `pnpm typecheck` (or equivalent).
 4. **Test** — `pnpm test` (or equivalent).
-5. **Other checks** — any additional scripts like `validate-skills`, `check`, etc.
+5. **Dead code** — `pnpm knip` (if configured). Report findings but do not auto-fix — unused exports may be intentional public API.
+6. **Other checks** — any additional scripts like `validate-skills`, `check`, etc.
 
 ## 4. Fix all issues
 
