@@ -100,6 +100,25 @@ gh issue close <number> --repo simpleapps-com/<repo> --comment "message"
 
 Include `Closes #N` in commit body to auto-close issues.
 
+## Cross-Repo Issues
+
+When a project hits a blocker that depends on another team's repo, create two issues and keep working:
+
+1. **Local issue** (in the site/project repo) — describe the impact and what's blocked
+2. **Upstream issue** (in the dependency repo) — describe the ask, include reproduction steps or specifics
+3. **Cross-link** — reference the other issue using `simpleapps-com/repo#N` syntax in both issue bodies
+4. **Don't block** — continue with other tasks while waiting for the upstream fix
+
+Target repos:
+
+| Dependency | Repo |
+|------------|------|
+| Backend microservices | `simpleapps-com/augur` |
+| Shared frontend packages | `simpleapps-com/augur-packages` |
+| TypeScript API SDK | `simpleapps-com/augur-api` |
+
+Example cross-link in issue body: `Upstream: simpleapps-com/augur#44` or `Local impact: simpleapps-com/spotweldingsupplies#3`
+
 ## Pull Requests
 
 ```bash
