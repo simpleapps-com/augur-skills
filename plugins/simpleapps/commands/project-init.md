@@ -2,7 +2,7 @@
 name: project-init
 description: Check and fix the project directory structure — create missing folders, set up symlinks, clone repos, verify layout
 argument-hint: "[repo-name]"
-allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(ln:*), Bash(readlink:*), Bash(gh repo clone:*), Read, Write, Skill(project-defaults)
+allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(ln:*), Bash(readlink:*), Bash(gh repo clone:*), Bash(grep:*), Read, Write, Edit, Skill(project-defaults)
 ---
 
 First, use Skill("project-defaults") to load project conventions.
@@ -24,7 +24,17 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    - `ln -sf ../repo/.claude/rules .claude/rules` (if repo has rules)
    - `ln -sf ../repo/.claude/commands .claude/commands` (if repo has commands)
 5. Check if `.claude/settings.local.json` exists using Read. If missing or missing deny rules, create/update it with the standard deny list from the `project-defaults` skill.
-6. Final verification: `ls -la .claude/`
+6. Check if the augur-skills bin directory is in the user's PATH:
+   - The bin path is: `$HOME/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/bin`
+   - Run `grep -q 'augur-skills/plugins/simpleapps/bin' ~/.zshrc` to check
+   - If not found, append the export line to `~/.zshrc` using the Edit tool:
+     ```
+     # SimpleApps augur-skills bin scripts
+     export PATH="$PATH:$HOME/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/bin"
+     ```
+   - Tell the user to run `source ~/.zshrc` or open a new terminal for the change to take effect
+   - If already present, report it as already configured
+7. Final verification: `ls -la .claude/`
 
 ## Output
 

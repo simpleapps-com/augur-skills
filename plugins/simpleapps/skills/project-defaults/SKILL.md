@@ -1,11 +1,32 @@
 ---
 name: project-defaults
 description: SimpleApps project conventions. Covers directory layout, symlink setup for .claude integration, permission defaults (deny cd, kill), and per-project baseline settings. Use when setting up projects, checking structure, or configuring Claude Code defaults.
+allowed-tools:
+  - Read
+  - Bash
 ---
 
 # Project Defaults
 
-## Directory Layout
+## Base Directory Standard
+
+All projects live under `~/projects/` in two groups:
+
+```
+~/projects/
+├── simpleapps/          # Internal repos (augur-*, shared infra)
+│   ├── augur-skills/
+│   ├── augur-packages/
+│   └── augur/
+└── clients/             # Client site repos
+    ├── ampro-online/
+    └── directsupplyinc/
+```
+
+- Internal repos go in `~/projects/simpleapps/`
+- Client site repos go in `~/projects/clients/`
+
+## Project Directory Layout
 
 Every project MUST use this layout:
 
@@ -57,6 +78,9 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
 ```json
 {
   "permissions": {
+    "allow": [
+      "Bash(pnpm:*)"
+    ],
     "deny": [
       "Bash(cd:*)",
       "Bash(cat:*)",
@@ -64,7 +88,12 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
       "Bash(grep:*)",
       "Bash(sleep:*)",
       "Bash(kill:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(find:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(awk:*)",
+      "Bash(rg:*)"
     ]
   }
 }
@@ -77,7 +106,28 @@ Why each is denied:
 - **`sed`** — Use the Edit tool instead.
 - **`grep`** — Use the Grep tool instead.
 - **`sleep`** — Unnecessary; use proper sequencing or background tasks.
+- **`find`** — Use the Glob tool instead.
+- **`head`/`tail`** — Use the Read tool with `offset` and `limit` parameters instead.
+- **`awk`** — Use the Edit tool instead.
+- **`rg`** — Use the Grep tool instead (it uses ripgrep internally).
 - **`kill`/`pkill`** — Use `TaskStop` to manage background processes. For internal tasks running in the background (dev servers, watchers, etc.), always use `TaskStop` instead of shell kill commands. `TaskStop` cleanly shuts down the task and updates Claude Code's internal tracking.
+
+## Bin Scripts (PATH)
+
+The augur-skills plugin includes shell scripts (`cld`, `cldo`, `tmcld`, etc.) in `plugins/simpleapps/bin/`. When installed via the Claude Code marketplace, these live at:
+
+```
+~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/bin/
+```
+
+To make them available on PATH, add to `~/.zshrc`:
+
+```bash
+# SimpleApps augur-skills bin scripts
+export PATH="$PATH:$HOME/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/bin"
+```
+
+This path is stable across plugin updates (marketplace updates are git pulls). The `project-init` command checks for this and adds it if missing.
 
 ## New Project Setup
 

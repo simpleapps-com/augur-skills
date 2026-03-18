@@ -7,6 +7,10 @@ globs: ["**/package.json", "**/marketplace.json", "**/plugin.json", "VERSION"]
 
 Full docs: [Versioning](../../../wiki/Versioning.md)
 
+## Scheme: CalVer (YYYY.MM.seq)
+
+Format: `2026.03.1` = first release of March 2026. Versions signal knowledge freshness, not API compatibility.
+
 ## Source of truth
 
 `VERSION` file. All `version` fields in `marketplace.json` (top-level AND each plugin entry), `plugin.json`, and `packages/cli/package.json` MUST match.
@@ -16,9 +20,9 @@ Full docs: [Versioning](../../../wiki/Versioning.md)
 MUST NOT deploy without explicit user approval.
 
 1. **Bump version** in all 4 files (VERSION, marketplace.json x2, plugin.json, packages/cli/package.json)
-2. **Commit**: `chore: bump version to X.Y.Z`
-3. **Tag**: `git tag vX.Y.Z`
-4. **Push commit and tag**: `git push origin main && git push origin vX.Y.Z`
+2. **Commit**: `chore: bump version to YYYY.MM.seq`
+3. **Tag**: `git tag vYYYY.MM.seq`
+4. **Push commit and tag**: `git push origin main && git push origin vYYYY.MM.seq`
 
 ## What the tag triggers
 

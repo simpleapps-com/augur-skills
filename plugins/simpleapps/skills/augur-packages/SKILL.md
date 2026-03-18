@@ -1,6 +1,10 @@
 ---
 name: augur-packages
 description: Shared npm packages under @simpleapps-com/augur-*. Directs agents to check installed packages before writing custom code. This skill is a starting point — always read the actual package code for current API surface.
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
 ---
 
 # Augur Packages

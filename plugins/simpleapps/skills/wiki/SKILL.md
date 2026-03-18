@@ -1,6 +1,13 @@
 ---
 name: wiki
 description: Wiki conventions for SimpleApps projects. Covers token budget, writing for three audiences, page conventions, maintenance rules, and git workflow. Use when reading, writing, or auditing wiki content.
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - Edit
+  - Write
+  - Bash
 ---
 
 # Wiki

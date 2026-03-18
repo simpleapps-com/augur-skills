@@ -1,6 +1,9 @@
 ---
 name: claude-code-docs
 description: Claude Code documentation reference and discovery. Use when looking up Claude Code features, configuration, plugins, skills, hooks, or troubleshooting.
+allowed-tools:
+  - Read
+  - WebFetch
 ---
 
 # Claude Code Documentation

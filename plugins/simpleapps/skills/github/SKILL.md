@@ -1,7 +1,12 @@
 ---
 name: github
 description: GitHub conventions for SimpleApps. Covers org structure, git safety, issue creation, PR workflows, and gh CLI usage. Use when creating issues, PRs, or working with GitHub repos.
-allowed-tools: Skill(project-defaults)
+allowed-tools:
+  - Skill(project-defaults)
+  - Read
+  - Glob
+  - Grep
+  - Bash
 ---
 
 First, use Skill("project-defaults") to load the project layout.

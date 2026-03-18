@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Create or attach to a tmux session and launch Claude Code
+set -euo pipefail
+
+# Check tmux is installed
+if ! command -v tmux &>/dev/null; then
+  echo "tmux is not installed."
+  echo ""
+  echo "Install it with:"
+  echo "  brew install tmux        # macOS"
+  echo "  sudo apt install tmux    # Debian/Ubuntu"
+  echo "  sudo dnf install tmux    # Fedora"
+  exit 1
+fi
+
+SESSION_NAME="$(basename "$PWD")"
+
+# tmux session names can't contain dots or colons
+SESSION_NAME="${SESSION_NAME//./-}"
+SESSION_NAME="${SESSION_NAME//:/-}"
+
+# If session exists, attach to it
+if tmux has-session -t "=$SESSION_NAME" 2>/dev/null; then
+  echo "Attaching to existing session: $SESSION_NAME"
+  exec tmux attach-session -t "=$SESSION_NAME"
+fi
+
+# Update Claude Code before launching
+claude update
+
+# Create new session with Claude Code
+echo "Creating session: $SESSION_NAME"
+exec tmux new-session -s "$SESSION_NAME" "claude; exec $SHELL"

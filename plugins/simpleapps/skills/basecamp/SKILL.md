@@ -1,6 +1,12 @@
 ---
 name: basecamp
 description: Basecamp 2 integration via MCP. Covers MCP tool reference, URL parsing, authentication, Chrome fallback, attachments, and site-info documents. Use when reading or writing Basecamp data.
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - mcp__plugin_simpleapps_basecamp__*
+  - mcp__claude-in-chrome__*
 ---
 
 # Basecamp 2

@@ -1,6 +1,10 @@
 ---
 name: workflow
 description: How we track and deliver work. Covers the Basecamp-to-GitHub flow for client requests, task tracking, cross-linking, and issue templates. Use when working on client tasks, creating issues, or checking assignments.
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
 ---
 
 # Workflow

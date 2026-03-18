@@ -1,6 +1,13 @@
 ---
 name: fyxer
 description: Fyxer AI meeting recording integration. Covers extraction, local caching, posting to Basecamp, and Fyxer Index management. Use when processing Fyxer recordings or meeting transcripts.
+allowed-tools:
+  - Read
+  - Write
+  - Glob
+  - Bash
+  - mcp__plugin_simpleapps_basecamp__*
+  - mcp__claude-in-chrome__*
 ---
 
 # Fyxer
