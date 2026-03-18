@@ -65,6 +65,7 @@ The repo contains `.claude/rules/` and `.claude/commands/` with project-specific
 
 ```bash
 mkdir -p {project}/.claude
+mkdir -p {project}/repo/.claude/rules {project}/repo/.claude/commands
 ln -sf ../repo/.claude/rules {project}/.claude/rules
 ln -sf ../repo/.claude/commands {project}/.claude/commands
 ```
@@ -136,6 +137,7 @@ mkdir {project} && cd {project}
 git clone https://github.com/simpleapps-com/<name>.git repo
 git clone https://github.com/simpleapps-com/<name>.wiki.git wiki
 mkdir -p wip tmp .simpleapps .claude
+mkdir -p repo/.claude/rules repo/.claude/commands
 ln -sf ../repo/.claude/rules .claude/rules
 ln -sf ../repo/.claude/commands .claude/commands
 ```

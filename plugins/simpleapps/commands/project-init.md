@@ -20,11 +20,14 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    - `mkdir -p .simpleapps` (if missing)
    - `mkdir -p .claude` (if missing)
 3. Check current symlink state: `readlink .claude/rules` and `readlink .claude/commands`
-4. Create or fix symlinks if needed:
-   - `ln -sf ../repo/.claude/rules .claude/rules` (if repo has rules)
-   - `ln -sf ../repo/.claude/commands .claude/commands` (if repo has commands)
-5. Check if `.claude/settings.local.json` exists using Read. If missing or missing deny rules, create/update it with the standard deny list from the `project-defaults` skill.
-6. Check if the augur-skills bin directory is in the user's PATH:
+4. If `repo/` exists, ensure symlink targets exist:
+   - `mkdir -p repo/.claude/rules` (if missing)
+   - `mkdir -p repo/.claude/commands` (if missing)
+5. Create or fix symlinks:
+   - `ln -sf ../repo/.claude/rules .claude/rules`
+   - `ln -sf ../repo/.claude/commands .claude/commands`
+6. Check if `.claude/settings.local.json` exists using Read. If missing or missing deny rules, create/update it with the standard deny list from the `project-defaults` skill.
+7. Check if the augur-skills bin directory is in the user's PATH:
    - The bin path is: `$HOME/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/bin`
    - Run `grep -q 'augur-skills/plugins/simpleapps/bin' ~/.zshrc` to check
    - If not found, append the export line to `~/.zshrc` using the Edit tool:
@@ -34,7 +37,7 @@ Run each command as a separate, simple call. MUST NOT combine commands.
      ```
    - Tell the user to run `source ~/.zshrc` or open a new terminal for the change to take effect
    - If already present, report it as already configured
-7. Final verification: `ls -la .claude/`
+8. Final verification: `ls -la .claude/`
 
 ## Output
 
