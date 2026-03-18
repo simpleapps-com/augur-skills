@@ -33,6 +33,7 @@ Evaluate each page against the wiki conventions (from the wiki skill) and the cu
 - Does each page explain *why*, not just *what*?
 - Are decisions documented with rationale?
 - Can an AI agent reading this page act on it without ambiguity?
+- Would someone on a different project find this useful? Tag platform patterns vs site-specific content (see wiki skill's Learning Organization section).
 
 ### Organization
 - Is information in the right place? Would readers find it where they expect?

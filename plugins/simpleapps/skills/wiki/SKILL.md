@@ -30,6 +30,16 @@ Wiki defines → Code implements → Learnings update wiki → Repeat
 
 When code reveals the wiki is wrong or incomplete, update immediately. The wiki MUST reflect reality, not aspirations.
 
+## Learning Organization
+
+Wikis are not just for the current project. They build institutional knowledge across the organization:
+
+- **Site → Site**: Other projects using the same tools learn from this wiki. Document what worked, what didn't, and why — future sites benefit from your experience.
+- **Site → Packages**: The packages team reads site wikis to understand real usage patterns, pain points, and gaps. Your wiki helps them build better shared tools.
+- **Packages → Site**: Package docs and conventions flow back into site wikis as shared patterns.
+
+Write as if someone on a different project will read this wiki to understand how you solved a similar problem. Tag sections **(platform pattern)** when the approach applies to all sites using the same stack, and **(site-specific)** when it's unique to this project.
+
 ## Three Audiences
 
 Every page serves junior devs (explanations, examples), senior devs (quick reference, decisions), and AI agents (unambiguous specs, MUST/SHOULD/MAY). Write for all three:
@@ -67,8 +77,6 @@ Every page serves junior devs (explanations, examples), senior devs (quick refer
 Cross-check wiki against code before updating. Staleness-prone: versions, file counts, CI workflows, TODO markers, API surfaces. **Never echo what the wiki says — read the code, then write.**
 
 When adding/removing pages, MUST update: `Home.md`, `_Sidebar.md`, `llms.txt` (if present).
-
-**Lead-site wikis** (e.g., ampro-online) serve as platform reference. Tag sections **(platform pattern)** vs **(site-specific)** so agents on other sites know what to replicate vs customize.
 
 ## Git Workflow
 
