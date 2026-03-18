@@ -29,5 +29,9 @@ fi
 claude update
 
 # Create new session with Claude Code
+# Enable mouse support and pass scroll events through to the application
+# so that scrolling controls Claude Code's output, not the tmux scrollback
 echo "Creating session: $SESSION_NAME"
-exec tmux new-session -s "$SESSION_NAME" "claude; exec $SHELL"
+exec tmux new-session -s "$SESSION_NAME" \; \
+  set-option mouse on \; \
+  send-keys "claude; exec $SHELL" Enter
