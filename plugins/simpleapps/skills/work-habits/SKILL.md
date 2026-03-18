@@ -19,6 +19,8 @@ Prefer dedicated tools over Bash equivalents — they are faster, need no permis
 
 Reserve Bash for commands that have no dedicated tool equivalent.
 
+MUST NOT use `cd` in any Bash command — not even in compound commands like `cd /path && git log`. Use `git -C repo` for git, and path arguments for everything else. The `cd` deny rule does not suppress Claude Code's built-in security prompt for compound cd+git commands, so any `cd` usage will interrupt the user.
+
 ## Protect the context window
 
 - Prefer targeted searches over broad exploration

@@ -101,7 +101,7 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
 
 Why each is denied:
 
-- **`cd`** — Use `git -C` or tool-specific flags (`--repo`, `-C`) instead. `cd` loses working directory context.
+- **`cd`** — MUST NOT use in any Bash command, including compound commands (`cd /path && git`). Use `git -C repo` for git, path arguments for everything else. Compound cd+git commands trigger an unblockable Claude Code security prompt that interrupts the user even when `cd` is denied.
 - **`cat`** — Use the Read tool instead.
 - **`sed`** — Use the Edit tool instead.
 - **`grep`** — Use the Grep tool instead.
