@@ -65,6 +65,10 @@ Every page serves junior devs (explanations, examples), senior devs (quick refer
 - Repo references: use relative paths (`../../../wiki/Versioning.md`)
 - Default branch: `master` (not `main`)
 
+## Cross-Linking
+
+Pages SHOULD link to related sections on other pages using `[[Page-Name#section]]`. Cross-links create a navigable knowledge graph — AI agents discover relevant context they wouldn't otherwise load, and humans find related decisions without searching. Link to specific sections, not just pages.
+
 ## Keep It Lean
 
 - Document patterns and principles, not exhaustive lists
