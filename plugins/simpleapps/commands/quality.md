@@ -1,10 +1,10 @@
 ---
 name: quality
 description: Discover and run all code quality checks, fix every issue, and flag missing quality tooling. No pre-existing excuses.
-allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Skill(quality), Skill(wiki), Skill(project-defaults), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Skill(quality), Skill(wiki), Skill(project-defaults), Skill(git-safety), Read, Write, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("quality") to load quality tooling awareness, then Skill("wiki") to check for project-specific conventions, then Skill("project-defaults") for layout.
+First, use Skill("quality") to load quality tooling awareness, then Skill("wiki") to check for project-specific conventions, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails.
 
 Run all code quality checks, fix every issue found, and repeat until clean.
 

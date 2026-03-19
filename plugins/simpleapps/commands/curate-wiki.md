@@ -1,16 +1,16 @@
 ---
 name: curate-wiki
 description: Continuously improve the project wiki — better content, context, organization, and usability within the 20K token budget
-allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Skill(wiki), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Skill(wiki), Skill(git-safety), Read, Write, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("wiki") to load wiki conventions and constraints.
+First, use Skill("wiki") to load wiki conventions and Skill("git-safety") to load git guardrails.
 
 Curate the project wiki. This is an ongoing improvement process — each run makes the wiki clearer, more accurate, better organized, and more useful for its three audiences (junior devs, senior devs, AI agents). The wiki MUST stay within its 20K token budget so it can be loaded into context without consuming the working window.
 
 The working code is the ground truth. The current session is the hint where to start — use what was learned, discussed, or changed this session to guide where the wiki most needs attention. Then verify against the actual codebase.
 
-**MUST complete ALL steps below in sequence without stopping.** Do not pause between steps or wait for prompts — run through the entire process and only stop at step 4 to get user approval on proposed changes.
+**MUST complete ALL steps below in sequence without stopping.** Do not pause between steps or wait for prompts — run through the entire process, stopping only at step 4 (approve changes) and step 7 (approve commit/push).
 
 ## 1. Check token budget
 

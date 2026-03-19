@@ -3,13 +3,14 @@ name: github
 description: GitHub conventions for SimpleApps. Covers org structure, git safety, issue creation, PR workflows, and gh CLI usage. Use when creating issues, PRs, or working with GitHub repos.
 allowed-tools:
   - Skill(project-defaults)
+  - Skill(git-safety)
   - Read
   - Glob
   - Grep
   - Bash
 ---
 
-First, use Skill("project-defaults") to load the project layout.
+First, use Skill("project-defaults") to load the project layout and Skill("git-safety") to load git guardrails.
 
 # GitHub
 
@@ -34,14 +35,7 @@ See `simpleapps:wiki` for wiki conventions, token budget, and maintenance rules.
 
 ## Git Safety
 
-MUST NOT commit, push, create PRs, or merge unless the user explicitly asks. After making changes, report what was done and stop. Do not offer or suggest the next git action — wait for instructions.
-
-- **Commits**: Do not commit until the user says "commit" or equivalent
-- **Pushes**: Do not push until the user explicitly asks
-- **PRs**: Do not create or offer to create a PR — report the work, stop
-- **Merges**: Do not merge unless the user explicitly asks
-
-The pattern is always: **do the work → report results → wait**.
+See `simpleapps:git-safety` (loaded above). MUST NOT commit, push, create PRs, or merge unless the user explicitly asks.
 
 ## Git Commands (no `cd`)
 
