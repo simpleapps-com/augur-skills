@@ -52,8 +52,8 @@ Every page serves junior devs (explanations, examples), senior devs (quick refer
 
 ## Content Rules
 
-- Wiki pages SHOULD NOT contain raw code. Describe patterns and principles instead.
-- If implementation details are needed, link to the source file in `repo/` rather than duplicating code in the wiki.
+- The wiki documents **process and principles**, not code. Minimize code examples — describe the pattern, then link to a real file in the repo that demonstrates it. A link to working code is always better than a pasted snippet that can go stale.
+- If a code block is necessary (e.g., a command to run), keep it to 1-3 lines max.
 - The wiki documents *what* and *why*. The repo is the source of truth for *how*.
 
 ## Conventions
@@ -67,7 +67,11 @@ Every page serves junior devs (explanations, examples), senior devs (quick refer
 
 ## Cross-Linking
 
-Pages SHOULD link to related sections on other pages using `[[Page-Name#section]]`. Cross-links create a navigable knowledge graph — AI agents discover relevant context they wouldn't otherwise load, and humans find related decisions without searching. Link to specific sections, not just pages.
+Cross-linking is the most important structural feature of a wiki. Without it, a wiki is just a collection of files. With it, a wiki becomes a **knowledge graph** — each link is an attention signal that tells readers (human and AI) "this concept connects to that one."
+
+Pages MUST link to related sections on other pages using `[[Page-Name#section]]`. Link to specific sections, not just pages. Every concept that is explained in more detail elsewhere MUST have a cross-link. When writing or reviewing a page, actively look for opportunities to connect it to related pages — the denser the link graph, the faster a reader builds understanding.
+
+Cross-linking also eliminates duplication. If two pages explain the same concept, one MUST become the source of truth and the other MUST link to it. Never duplicate content across pages — link instead. This keeps the wiki lean and ensures updates happen in one place.
 
 ## Keep It Lean
 

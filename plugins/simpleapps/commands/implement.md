@@ -2,12 +2,14 @@
 name: implement
 description: Execute an implementation plan — from a WIP file or session context. Work autonomously, document what was done.
 argument-hint: "[wip/GH30-slug.md]"
-allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Skill(wiki), Skill(project-defaults), Skill(github), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Skill(wiki), Skill(project-defaults), Skill(github), Skill(git-safety), Read, Write, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("wiki") to load project context, then Skill("project-defaults") for layout.
+First, use Skill("wiki") to load project context, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails.
 
 Execute an implementation plan. Work autonomously — only stop for user input when stuck or when a decision has no clear answer.
+
+**Scope: implementation means code changes only.** Write code, edit files, run build/test commands. Do NOT commit, create branches, or open PRs — those are separate actions the user will request when ready. When done, report what changed and stop.
 
 ## 1. Determine the plan
 
@@ -76,7 +78,7 @@ Update the "Files to modify" table to reflect what was actually changed (add new
 
 Change the WIP status to `## Status: Implemented`.
 
-## 6. Report
+## 6. Report and stop
 
 Tell the user:
 - What was implemented (brief summary)
@@ -85,3 +87,5 @@ Tell the user:
 - Any open questions
 - Suggest running `/quality` next to verify code quality
 - Remind that the WIP has full implementation details for review
+
+**Then stop.** Do not commit, push, or create PRs. The user decides when and how to package the changes.

@@ -30,7 +30,11 @@ If `wiki/llms.txt` exists, Read it and compare against the actual `.md` files fo
 - Files in `llms.txt` that don't exist on disk
 - Files on disk that aren't listed in `llms.txt`
 
-### 4. Orphan detection
+### 4. Cross-link density
+
+Count the number of `[[...]]` outbound links on each page. Cross-linking is the most important structural feature of a wiki — it turns files into a knowledge graph. Pages with fewer than 2 outbound links are poorly connected and SHOULD be flagged. Report a table of pages sorted by link count (lowest first) so the user can see which pages are isolated.
+
+### 5. Orphan detection
 
 Build a list of all pages referenced from any other page (via `[[links]]` or markdown links). Report pages not referenced from any other page. Exclude `Home.md`, `_Sidebar.md`, and `llms.txt` — these are entry points, not orphans.
 
@@ -47,6 +51,12 @@ Build a list of all pages referenced from any other page (via `[[links]]` or mar
 **llms.txt**: in sync / N issues
 - missing from llms.txt: Page.md
 - missing from disk: Old-Page.md
+
+**Cross-link density**:
+| Page | Outbound links |
+|------|---------------|
+| Isolated-Page.md | 0 |
+| Another-Page.md | 1 |
 
 **Orphan pages**: N found
 - Orphan-Page.md

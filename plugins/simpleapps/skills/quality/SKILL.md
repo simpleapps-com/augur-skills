@@ -55,6 +55,12 @@ Do not install or configure tools without the user's approval. Flag what's missi
 - **No tests for changed code** — suggest vitest
 - **No pre-commit hooks** — suggest lefthook
 
+## Resolve, never hide
+
+When a check fails, fix the underlying code. NEVER disable lint rules, skip tests, suppress warnings, lower thresholds, or add ignore comments to make checks pass. The goal is to resolve issues, not hide them. If a rule seems wrong, investigate why it exists and ask the user before changing it.
+
+When reviewing code, scan for existing suppressions (`eslint-disable`, `@ts-ignore`, `.skip`, `noqa`, etc.) and flag them to the user. These are hidden technical debt that should be evaluated for resolution.
+
 ## Running quality checks
 
 Use the `/quality` command to discover and run all configured checks. It handles the full cycle: discover, run, fix, repeat until clean.

@@ -44,11 +44,39 @@ For each failing check:
 - "Pre-existing" is not an excuse. Context compaction erases your memory of introducing issues earlier in the session. If a check fails, you own it. Fix it.
 - If you did not introduce an issue, fix it anyway. The goal is zero issues, not blame assignment.
 - If a fix is unclear, explore the codebase to understand the intent before changing code
-- Do NOT disable linting rules, skip tests, or suppress warnings to make checks pass
-- Do NOT modify coverage thresholds or quality configs to lower the bar
 - If a test fails because of a real bug, fix the bug
 
-## 5. Loop until clean
+### Resolve, never hide
+
+The solution to a failing check is ALWAYS to fix the underlying code. NEVER:
+
+- Disable or weaken a lint rule (no `eslint-disable`, no rule removal)
+- Skip, delete, or `.skip` a failing test
+- Add `@ts-ignore`, `// @ts-expect-error`, or `type: any` to silence type errors
+- Suppress warnings, lower coverage thresholds, or modify quality configs
+- Add `--no-verify`, `--force`, or flags that bypass checks
+
+If a rule or test seems wrong, investigate why it exists before concluding it should change. Rules exist for reasons. If after investigation a rule genuinely does not apply, explain the reasoning to the user and let them decide — do not unilaterally disable it.
+
+### Detect existing suppressions
+
+Scan the codebase for existing disabled checks: `eslint-disable`, `@ts-ignore`, `@ts-expect-error`, `.skip` tests, `noqa`, `phpcs:ignore`, and similar suppression comments. Report every instance found to the user so they can decide whether each should be resolved. These are technical debt — make them visible.
+
+## 5. Check package freshness
+
+For Node projects, check whether `@simpleapps-com/augur-*` and `augur-api` packages are at their latest versions:
+
+1. Run `ls repo/node_modules/@simpleapps-com/` to find installed packages
+2. For each, compare the installed version (`repo/node_modules/@simpleapps-com/<pkg>/package.json`) against the latest on npm (`npm view @simpleapps-com/<pkg> version`)
+3. Also check `augur-api` if installed
+
+**augur-* packages (semver):** All `@simpleapps-com/augur-*` packages are published together from a monorepo and MUST be on the same version. If any are mismatched, flag it as an error — mixed versions cause subtle bugs. If any are outdated, all MUST be updated together.
+
+**augur-api (CalVer):** `@simpleapps-com/augur-api` is versioned independently using CalVer (YYYY.MM.seq). Check it separately.
+
+Report any outdated or mismatched packages to the user. Outdated shared packages mean the project is missing bug fixes, new features, and consistency improvements that other sites already have. Suggest updating but let the user decide — updates can require code changes.
+
+## 6. Loop until clean
 
 After fixing all issues from one round:
 
@@ -57,7 +85,7 @@ After fixing all issues from one round:
 3. Repeat until all checks pass with zero issues
 4. MUST restart from step 3 after ANY code change — a fix in one area can break another
 
-## 6. Report
+## 7. Report
 
 ```
 ## Quality Report

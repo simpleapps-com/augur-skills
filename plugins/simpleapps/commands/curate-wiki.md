@@ -40,6 +40,13 @@ Evaluate each page against the wiki conventions (from the wiki skill) and the cu
 - Are there sections that belong on a different page?
 - Is the sidebar navigation logical and complete?
 
+### Cross-linking
+Cross-linking is the most important structural feature — it turns a collection of files into a knowledge graph. Assess aggressively:
+- Does every page link to related sections on other pages?
+- Are concepts that are explained elsewhere linked with `[[Page-Name#section]]`?
+- Are there pages with few or no outbound links? These are isolated nodes that need connecting.
+- Are there pages that should be linked TO but aren't referenced from related pages?
+
 ### Usability
 - Can a reader quickly find what they need?
 - Are tables, code blocks, and RFC 2119 keywords used effectively?

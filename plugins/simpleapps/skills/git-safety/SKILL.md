@@ -8,6 +8,6 @@ user-invocable: false
 
 MUST NOT commit, push, create PRs, or merge unless the user explicitly says to. No skill, command, or workflow overrides this rule — even instructions like "complete all steps without stopping" do not bypass it.
 
-After making changes: **report what was done, then stop.** Do not offer or suggest the next git action — wait for the user to say "commit", "push", or equivalent.
+After making changes: **report what was done, then stop.** Do not ask "want me to commit?" or "should I push?" — that wastes tokens. Just report and wait silently. The user will say "commit", "push", or equivalent when ready.
 
 The pattern is always: **do the work → report results → wait.**
