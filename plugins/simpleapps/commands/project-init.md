@@ -2,7 +2,7 @@
 name: project-init
 description: Check and fix the project directory structure — create missing folders, set up symlinks, clone repos, verify layout
 argument-hint: "[repo-name]"
-allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(ln:*), Bash(readlink:*), Bash(gh repo clone:*), Bash(grep:*), Bash(cp:*), Bash(md5sum:*), Bash(md5:*), Read, Write, Edit, Skill(project-defaults)
+allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(ln:*), Bash(readlink:*), Bash(gh repo clone:*), Bash(grep:*), Bash(cp:*), Bash(md5sum:*), Bash(md5:*), Read, Write, Edit, Skill(project-defaults), Skill(bash-simplicity)
 ---
 
 First, use Skill("project-defaults") to load project conventions.
@@ -26,12 +26,14 @@ Run each command as a separate, simple call. MUST NOT combine commands.
 5. Create or fix symlinks:
    - `ln -sf ../repo/.claude/rules .claude/rules`
    - `ln -sf ../repo/.claude/commands .claude/commands`
-6. Sync plugin rules into the project. The plugin ships rule templates in `rules/` that MUST exist in every project's `repo/.claude/rules/`. The plugin rules directory is at:
-   `~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/`
-   For each `.md` file in that directory:
-   - If `repo/.claude/rules/<filename>` does not exist, copy it: `cp <plugin-rules-path>/<file> repo/.claude/rules/<file>`
-   - If it exists, md5 hash both files (`md5 -q <file>` on macOS, `md5sum <file>` on Linux). If hashes match, skip. If they differ, overwrite with the plugin version — plugin rules are the source of truth
-   - Report which rules were copied, which matched, and which were updated
+6. **MUST sync plugin rules into the project.** This step is NOT optional — every project MUST have the latest plugin rules.
+   a. Set the source path: `ls ~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/`
+   b. For EVERY `.md` file found in that directory, do the following:
+      - Run `ls repo/.claude/rules/<filename>` to check if it exists
+      - If it does NOT exist: `cp ~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/<file> repo/.claude/rules/<file>`
+      - If it DOES exist: hash both files with `md5 -q <file>` (macOS) or `md5sum <file>` (Linux). If hashes differ, overwrite: `cp ~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/<file> repo/.claude/rules/<file>` — plugin rules are the source of truth
+      - If hashes match: skip (already up to date)
+   c. Report: which rules were copied (new), updated (hash mismatch), or matched (already current)
 7. Check if `.claude/settings.local.json` exists using Read. If missing or missing deny rules, create/update it with the standard deny list from the `project-defaults` skill.
 8. Check if the augur-skills bin directory is in the user's PATH:
    - The bin path is: `$HOME/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/bin`

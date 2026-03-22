@@ -2,7 +2,7 @@
 name: commit-message
 description: Generate a conventional commit message from staged changes
 disable-model-invocation: true
-allowed-tools: Bash(git diff:*), Bash(git log:*), Bash(git status:*), Skill(conventional-commits)
+allowed-tools: Bash(git diff:*), Bash(git log:*), Bash(git status:*), Skill(conventional-commits), Skill(bash-simplicity)
 ---
 
 First, use Skill("conventional-commits") to load the commit format rules.

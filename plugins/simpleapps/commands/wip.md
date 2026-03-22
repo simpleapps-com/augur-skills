@@ -2,10 +2,10 @@
 name: wip
 description: Fetch a Basecamp URL or GitHub issue with full comments and scaffold a WIP file
 argument-hint: "<basecamp-url or github-issue>"
-allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(basename:*), Skill(basecamp), Skill(workflow), Skill(github), mcp__plugin_simpleapps_basecamp__*, Read, Write, Edit, Glob
+allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(basename:*), Skill(basecamp), Skill(workflow), Skill(github), Skill(bash-simplicity), mcp__plugin_simpleapps_basecamp__*, Read, Write, Edit, Glob
 ---
 
-First, use Skill("basecamp") to load the Basecamp MCP reference, then Skill("workflow") for the Basecamp-to-GitHub flow, then Skill("github") for GH CLI conventions.
+First, use Skill("basecamp") to load the Basecamp MCP reference, then Skill("workflow") for the Basecamp-to-GitHub flow, then Skill("github") for GH CLI conventions, then Skill("bash-simplicity") for Bash conventions.
 
 Fetch a Basecamp URL or GitHub issue and scaffold a WIP file.
 

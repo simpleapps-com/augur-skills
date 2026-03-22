@@ -1,7 +1,7 @@
 ---
 name: audit-augur-packages
 description: Audit site for custom code that duplicates augur package functionality
-allowed-tools: Grep, Glob, Read, Bash(gh issue create:*), Bash(gh issue list:*), Skill(project-defaults), Skill(github), Skill(augur-packages)
+allowed-tools: Grep, Glob, Read, Bash(gh issue create:*), Bash(gh issue list:*), Skill(project-defaults), Skill(github), Skill(augur-packages), Skill(bash-simplicity)
 ---
 
 First, use Skill("augur-packages") to load the package reference and anti-pattern catalog, then Skill("project-defaults") for the project layout.

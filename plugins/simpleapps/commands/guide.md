@@ -1,7 +1,7 @@
 ---
 name: guide
 description: Learn how we work — workflow, available commands, skills, and conventions. Run this first if you're new to the project.
-allowed-tools: Skill(workflow), Skill(project-defaults), Skill(github), Skill(writing-style), Skill(work-habits), Skill(conventional-commits), Read, Glob
+allowed-tools: Skill(workflow), Skill(project-defaults), Skill(github), Skill(writing-style), Skill(work-habits), Skill(conventional-commits), Skill(bash-simplicity), Read, Glob
 ---
 
 First, load these skills for context:

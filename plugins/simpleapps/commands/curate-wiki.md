@@ -1,10 +1,10 @@
 ---
 name: curate-wiki
 description: Continuously improve the project wiki — better content, context, organization, and usability within the 20K token budget
-allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Skill(wiki), Skill(git-safety), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Skill(wiki), Skill(git-safety), Skill(bash-simplicity), Read, Write, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("wiki") to load wiki conventions and Skill("git-safety") to load git guardrails.
+First, use Skill("wiki") to load wiki conventions, Skill("git-safety") to load git guardrails, and Skill("bash-simplicity") for Bash conventions.
 
 Curate the project wiki. This is an ongoing improvement process — each run makes the wiki clearer, more accurate, better organized, and more useful for its three audiences (junior devs, senior devs, AI agents). The wiki MUST stay within its 20K token budget so it can be loaded into context without consuming the working window.
 

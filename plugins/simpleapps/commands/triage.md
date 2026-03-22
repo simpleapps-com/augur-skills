@@ -1,10 +1,10 @@
 ---
 name: triage
 description: Show triage status for the current site repo — open PRs, linked issues, and unlinked issues
-allowed-tools: Bash(gh pr list:*), Bash(gh issue list:*), Bash(gh pr view:*), Bash(git remote:*), Bash(git -C:*), Bash(basename:*), Bash(pwd:*), Skill(project-defaults), Skill(github)
+allowed-tools: Bash(gh pr list:*), Bash(gh issue list:*), Bash(gh pr view:*), Bash(git remote:*), Bash(git -C:*), Bash(basename:*), Bash(pwd:*), Skill(project-defaults), Skill(github), Skill(bash-simplicity)
 ---
 
-First, use Skill("project-defaults") to load the project layout, then Skill("github") to load GitHub conventions.
+First, use Skill("project-defaults") to load the project layout, Skill("github") to load GitHub conventions, and Skill("bash-simplicity") to load Bash conventions.
 
 Show the triage status for the current site repo.
 
