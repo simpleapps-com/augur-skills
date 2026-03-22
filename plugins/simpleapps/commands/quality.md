@@ -66,20 +66,17 @@ Scan the codebase for existing disabled checks: `eslint-disable`, `@ts-ignore`, 
 
 ## 5. Check package freshness
 
-For Node projects, check whether `@simpleapps-com/augur-*` and `augur-api` packages are at their latest versions:
+For Node projects with `@simpleapps-com/augur-*` packages installed:
 
-1. Use `Glob("repo/**/node_modules/@simpleapps-com/*")` to find installed packages
-2. For each package found, use the Read tool to read its `package.json` and extract the version
-3. For each package, run `npm view @simpleapps-com/<pkg> version` as a separate Bash call to get the latest version
-4. Also check `augur-api` if installed
+**If `augur-doctor` is available** (ships with `@simpleapps-com/augur-config`): run `pnpm augur-doctor .` from the site directory. This checks version alignment, latest versions, and platform standard conformance in one pre-approved command. No permission prompt.
 
-MUST NOT use `node -e`, `require()`, or any script to check versions. Use the Read tool for installed versions and separate `npm view` calls for latest versions.
+**If `augur-doctor` is NOT available**: use the Read tool to check each package's `package.json` for its version, and `npm view @simpleapps-com/<pkg> version` as separate Bash calls for latest versions. MUST NOT use `node -e` or `require()`.
 
 **augur-* packages (semver):** All `@simpleapps-com/augur-*` packages are published together from a monorepo and MUST be on the same version. If any are mismatched, flag it as an error — mixed versions cause subtle bugs. If any are outdated, all MUST be updated together.
 
 **augur-api (CalVer):** `@simpleapps-com/augur-api` is versioned independently using CalVer (YYYY.MM.seq). Check it separately.
 
-Report any outdated or mismatched packages to the user. Outdated shared packages mean the project is missing bug fixes, new features, and consistency improvements that other sites already have. Suggest updating but let the user decide — updates can require code changes.
+Report any outdated or mismatched packages to the user. Suggest updating but let the user decide — updates can require code changes.
 
 ## 6. Loop until clean
 

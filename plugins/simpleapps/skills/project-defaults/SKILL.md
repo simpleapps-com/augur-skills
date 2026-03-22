@@ -15,12 +15,9 @@ All projects live under `~/projects/` in two groups:
 ```
 ~/projects/
 ├── simpleapps/          # Internal repos (augur-*, shared infra)
-│   ├── augur-skills/
-│   ├── augur-packages/
-│   └── augur/
+│   └── <repo-name>/
 └── clients/             # Client site repos
-    ├── ampro-online/
-    └── directsupplyinc/
+    └── <site-name>/
 ```
 
 - Internal repos go in `~/projects/simpleapps/`

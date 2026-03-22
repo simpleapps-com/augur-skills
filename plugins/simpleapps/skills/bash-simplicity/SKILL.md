@@ -17,8 +17,8 @@ MUST run each Bash command as a separate, simple call. MUST NOT chain commands w
 Wrong: `git -C repo status && pnpm typecheck && pnpm test`
 Right: Three separate Bash calls, one per command.
 
-Wrong: `pnpm --filter ampro-online run typecheck 2>&1; echo "EXIT: $?"`
-Right: `pnpm --filter ampro-online run typecheck` — the Bash tool already captures stderr and exit codes. Never add `2>&1`, `; echo $?`, or other shell plumbing — it triggers permission prompts for no benefit.
+Wrong: `pnpm --filter <site> run typecheck 2>&1; echo "EXIT: $?"`
+Right: `pnpm --filter <site> run typecheck` — the Bash tool already captures stderr and exit codes. Never add `2>&1`, `; echo $?`, or other shell plumbing — it triggers permission prompts for no benefit.
 
 Wrong: `gh issue close 367 --repo org/repo --comment "$(< tmp/file.txt)" 2>&1`
 Right: Write the comment to a tmp file, then use two separate calls:
@@ -48,13 +48,13 @@ MUST NOT use `node -e` or `python -c` to run inline scripts — these trigger pe
 
 ## Cross-Project Searching
 
-When looking at another project's code (e.g., the reference site ampro-online), use dedicated tools with the known project path — MUST NOT use shell commands:
+When looking at another project's code, use dedicated tools with the project path — MUST NOT use shell commands:
 
-Wrong: `find ~/projects/clients/ampro-online/repo -name "*.ts" -exec grep -l "pattern" {} \; 2>/dev/null | head -10`
-Right: `Grep(pattern: "pattern", path: "~/projects/clients/ampro-online/repo", glob: "*.ts")`
+Wrong: `find {path}/repo -name "*.ts" -exec grep -l "pattern" {} \; 2>/dev/null | head -10`
+Right: `Grep(pattern: "pattern", path: "{path}/repo", glob: "*.ts")`
 
-Wrong: `ls ~/projects/clients/ampro-online/repo/src/components/`
-Right: `Glob(pattern: "~/projects/clients/ampro-online/repo/src/components/**/*")`
+Wrong: `ls {path}/repo/src/components/`
+Right: `Glob(pattern: "{path}/repo/src/components/**/*")`
 
 All project paths are known and predictable (see `simpleapps:wiki` Cross-Project Wiki Access). MUST NOT search the filesystem with `find` or download from the internet — just use the dedicated tool with the known path.
 

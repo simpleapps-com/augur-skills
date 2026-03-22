@@ -70,10 +70,14 @@ The augur packages exist to share common code across ALL Node projects. When you
 
 The goal is to grow the packages over time so sites write less custom code.
 
+## augur-doctor
+
+`augur-doctor` ships with `@simpleapps-com/augur-config`. It checks version alignment, latest versions, and platform standard conformance. Run via `pnpm augur-doctor .` from the site directory — pre-approved, no permission prompt. For full documentation, see the augur-packages wiki page `guide-site-assessment.md` (use the cross-project wiki path from `simpleapps:wiki`).
+
 ## Platform Standards
 
 - **Icons:** `react-icons/lu`
 - **Tailwind:** v4, CSS-first
 - **Validation:** Valibot (not Zod, not Yup)
 - **Auth:** NextAuth 5 via package auth factory
-- **Reference site:** ampro-online — use `Grep`, `Glob`, and `Read` with path `~/projects/clients/ampro-online/repo` to see how patterns are implemented. MUST NOT use `find`, `grep`, or other shell commands.
+- **Reference site:** Ask the user which site to reference. Use `Grep`, `Glob`, and `Read` with the project path (see `simpleapps:project-defaults` for layout). MUST NOT use `find`, `grep`, or other shell commands.

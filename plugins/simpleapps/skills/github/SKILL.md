@@ -122,7 +122,7 @@ Target repos:
 | Shared frontend packages | `simpleapps-com/augur-packages` |
 | TypeScript API SDK | `simpleapps-com/augur-api` |
 
-Example cross-link in issue body: `Upstream: simpleapps-com/augur#44` or `Local impact: simpleapps-com/spotweldingsupplies#3`
+Example cross-link in issue body: `Upstream: simpleapps-com/augur#44` or `Local impact: simpleapps-com/<site>#3`
 
 ## Pull Requests
 
