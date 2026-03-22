@@ -2,7 +2,7 @@
 name: project-init
 description: Check and fix the project directory structure — create missing folders, set up symlinks, clone repos, verify layout
 argument-hint: "[repo-name]"
-allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(ln:*), Bash(readlink:*), Bash(gh repo clone:*), Bash(grep:*), Bash(cp:*), Bash(md5sum:*), Bash(md5:*), Read, Write, Edit, Skill(project-defaults), Skill(bash-simplicity)
+allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(ln:*), Bash(readlink:*), Bash(gh repo clone:*), Bash(grep:*), Bash(cp:*), Bash(md5sum:*), Bash(md5:*), Read, Write, Edit, Skill(project-defaults), Skill(bash-simplicity), Skill(context-efficiency)
 ---
 
 First, use Skill("project-defaults") to load project conventions.

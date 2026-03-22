@@ -73,6 +73,21 @@ Pages MUST link to related sections on other pages using `[[Page-Name#section]]`
 
 Cross-linking also eliminates duplication. If two pages explain the same concept, one MUST become the source of truth and the other MUST link to it. Never duplicate content across pages — link instead. This keeps the wiki lean and ensures updates happen in one place.
 
+## Wiki Over Memory
+
+When asked to save, document, or record knowledge — use the wiki, MUST NOT use memory. The wiki is shared across all agents, all projects, and all computers. Memory is personal to one user on one machine — invisible to everyone else.
+
+| Knowledge type | Where it belongs |
+|---------------|-----------------|
+| Conventions, patterns, decisions | **Wiki** |
+| Learnings from a task or session | **Wiki** |
+| Architecture and process docs | **Wiki** |
+| How a problem was solved | **Wiki** |
+| Personal preferences (writing style, response length) | Memory |
+| User role and background | Memory |
+
+If in doubt, it belongs in the wiki. The cost of putting shared knowledge in memory is that it dies with the session — no other agent, project, or computer will ever see it.
+
 ## Keep It Lean
 
 - Document patterns and principles, not exhaustive lists

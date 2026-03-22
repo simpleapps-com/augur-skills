@@ -1,16 +1,16 @@
 ---
 name: curate-wiki
 description: Continuously improve the project wiki — better content, context, organization, and usability within the 20K token budget
-allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Skill(wiki), Skill(git-safety), Skill(bash-simplicity), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Skill(wiki), Skill(git-safety), Skill(bash-simplicity), Skill(context-efficiency), Read, Write, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("wiki") to load wiki conventions, Skill("git-safety") to load git guardrails, and Skill("bash-simplicity") for Bash conventions.
+First, use Skill("wiki") to load wiki conventions, Skill("git-safety") to load git guardrails, Skill("bash-simplicity") for Bash conventions, and Skill("context-efficiency") for always-loaded content guidelines.
 
 Curate the project wiki. This is an ongoing improvement process — each run makes the wiki clearer, more accurate, better organized, and more useful for its three audiences (junior devs, senior devs, AI agents). The wiki MUST stay within its 20K token budget so it can be loaded into context without consuming the working window.
 
 The working code is the ground truth. The current session is the hint where to start — use what was learned, discussed, or changed this session to guide where the wiki most needs attention. Then verify against the actual codebase.
 
-**MUST complete ALL steps below in sequence without stopping.** Do not pause between steps or wait for prompts — run through the entire process, stopping only at step 4 (approve changes) and step 7 (approve commit/push).
+**MUST complete ALL steps below in sequence without stopping.** Do not pause between steps or wait for prompts — run through the entire process, stopping only at step 5 (approve changes) and step 8 (approve commit/push).
 
 ## 1. Check token budget
 
@@ -61,7 +61,20 @@ Cross-linking is the most important structural feature — it turns a collection
 - Is there filler or verbose text that can be tightened?
 - Can anything be removed to free token budget for higher-value content?
 
-## 4. Propose changes
+## 4. Audit always-loaded content
+
+Check `repo/.claude/CLAUDE.md` and `repo/.claude/rules/*.md` against the context-efficiency skill. These files load on every prompt — they MUST be lean, evergreen, and follow the pointer pattern.
+
+Read each file and check:
+- **Line count**: `wc -l repo/.claude/CLAUDE.md` — MUST be under 200 lines (official platform limit)
+- **Evergreen violations**: hardcoded file counts, version numbers, timestamps, process data, or content that duplicates the code
+- **Pointer pattern**: rules SHOULD be short triggers that invoke a skill for detail. Flag any rule that contains full behavioral guidance instead of invoking a skill.
+- **Staleness**: claims that no longer match reality (verify against the codebase)
+- **Duplication**: content that duplicates what's in the wiki or a skill
+
+Include any issues found in the proposal alongside wiki changes.
+
+## 5. Propose changes
 
 Present a prioritized list of improvements:
 
@@ -74,7 +87,7 @@ Actions: CORRECT, EXTEND, CONSOLIDATE, PRUNE, REORGANIZE, TIGHTEN.
 
 Ask the user to confirm before applying. The user may approve all, select specific changes, or modify the plan.
 
-## 5. Apply changes
+## 6. Apply changes
 
 For each approved change, use Edit to update wiki pages. Follow wiki conventions:
 
@@ -90,11 +103,11 @@ If a change requires a new wiki page:
 2. Add it to `wiki/_Sidebar.md` and `wiki/Home.md`
 3. Update `wiki/llms.txt` if it exists
 
-## 6. Final token budget check
+## 7. Final token budget check
 
 Run `wc -w wiki/*.md` again. Compare against the starting count. If over 18K tokens, identify content to prune or tighten before finishing. The wiki MUST NOT exceed 20K tokens.
 
-## 7. Commit and report
+## 8. Commit and report
 
 Ask the user if they want to commit. MUST NOT use `cd`. Write commit message to tmp file, commit with `-F`, then clean up:
 
