@@ -30,6 +30,9 @@ Dedicated tools are faster, require no permission, and produce better output. MU
 
 Reserve Bash for commands that have no dedicated tool equivalent: build tools, test runners, git, package managers, and system commands.
 
+These commands are **denied** in project settings and will always be rejected — do not attempt them:
+`cd`, `cat`, `grep`, `rg`, `find`, `sed`, `awk`, `head`, `tail`, `sleep`, `kill`, `pkill`
+
 ## Check Before Prompting
 
 Before running a command that will trigger a permission prompt, check the wiki and project settings for approved commands. The wiki documents which commands are pre-approved and how to invoke them. Unnecessary permission prompts interrupt the user's flow.
