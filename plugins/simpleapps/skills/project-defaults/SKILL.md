@@ -81,7 +81,16 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm:*)"
+      "Bash(pnpm:*)",
+      "Bash(ls:*)",
+      "Bash(wc:*)",
+      "Bash(md5:*)",
+      "Bash(md5sum:*)",
+      "Bash(readlink:*)",
+      "Bash(which:*)",
+      "Bash(basename:*)",
+      "Bash(dirname:*)",
+      "Bash(pwd:*)"
     ],
     "deny": [
       "Bash(cd:*)",
