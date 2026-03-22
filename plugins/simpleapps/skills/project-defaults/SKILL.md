@@ -59,6 +59,10 @@ The parent `{project}/` is NOT a git repo — it keeps code and wiki side-by-sid
 
 **Credentials**: Project-level (`.simpleapps/`) overrides user-level (`~/.simpleapps/`). MUST NOT be committed.
 
+## Plugin Rules
+
+The plugin ships rule templates in `plugins/simpleapps/rules/` that MUST exist in every project's `repo/.claude/rules/`. Rules are always loaded into context — they enforce baseline guardrails (like git safety) without depending on a skill being invoked. The `/project-init` command copies missing rules from the plugin into the project.
+
 ## Symlink Setup
 
 The repo contains `.claude/rules/` and `.claude/commands/` with project-specific rules and commands. To make these active from the project root (without starting Claude Code inside `repo/`), symlink them into the project-level `.claude/` folder:
