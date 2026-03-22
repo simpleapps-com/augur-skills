@@ -61,6 +61,8 @@ This avoids shell quoting issues with HEREDOCs and `cd` permission blocks. The W
 
 MUST use `--repo simpleapps-com/<repo>` on every `gh` call. MUST ask the user which repo — never assume.
 
+**MUST NOT use `$()` or inline content in `gh` commands.** Any `gh` command that needs a body, comment, or multi-line text MUST use the file-based flag (`--body-file`, `--comment-file`, etc.). Write the content to `tmp/` using the Write tool first, then pass the file path. This avoids `$()` command substitution which triggers a permission prompt every time. Delete the tmp file after the command succeeds.
+
 ### Title
 
 Conventional commit style: `fix: description`, `feat: description`, `chore: description`. Under 70 characters.
@@ -89,8 +91,13 @@ Bug reports also include **Steps to Reproduce** and **Current Behavior** with er
 gh issue create --repo simpleapps-com/<repo> --title "type: desc" --body "..."
 gh issue list --repo simpleapps-com/<repo>
 gh issue view <number> --repo simpleapps-com/<repo>
-gh issue close <number> --repo simpleapps-com/<repo> --comment "message"
+gh issue close <number> --repo simpleapps-com/<repo>
 ```
+
+For closing with a comment, use two calls (avoids `$()` permission prompts):
+1. Write comment to `tmp/issue-comment.txt` using the Write tool
+2. `gh issue comment <number> --repo simpleapps-com/<repo> --body-file tmp/issue-comment.txt`
+3. `gh issue close <number> --repo simpleapps-com/<repo>`
 
 Include `Closes #N` in commit body to auto-close issues.
 
@@ -120,11 +127,13 @@ Example cross-link in issue body: `Upstream: simpleapps-com/augur#44` or `Local 
 ## Pull Requests
 
 ```bash
-gh pr create --repo simpleapps-com/<repo> --title "title" --body "..."
+gh pr create --repo simpleapps-com/<repo> --title "title" --body-file tmp/pr-body.txt
 gh pr list --repo simpleapps-com/<repo>
 gh pr view <number> --repo simpleapps-com/<repo>
 gh pr merge <number> --repo simpleapps-com/<repo>
 ```
+
+Write PR body to `tmp/pr-body.txt` using the Write tool first — MUST NOT use `--body "$(cat ...)"` or any `$()` substitution.
 
 ## Cross-Linking with Basecamp
 

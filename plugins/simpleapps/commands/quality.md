@@ -18,6 +18,8 @@ Use the minimum expected tooling checklist from the quality skill. Report what's
 
 Do NOT silently skip missing tools. Flag them every time.
 
+When suggesting new tools, always suggest adding them as `package.json` scripts (e.g., `"knip": "knip"`, `"format": "prettier --write ."`). Scripts run via `pnpm` are pre-approved (`pnpm:*` is in the allow list) — no permission prompts. A tool that isn't in `package.json` will trigger a permission prompt every time it runs, defeating the purpose of autonomous quality checks.
+
 ## 3. Run quality checks
 
 Run each discovered check as a separate command. Order matters — fix formatting first, then lint, then typecheck, then test:
@@ -66,9 +68,12 @@ Scan the codebase for existing disabled checks: `eslint-disable`, `@ts-ignore`, 
 
 For Node projects, check whether `@simpleapps-com/augur-*` and `augur-api` packages are at their latest versions:
 
-1. Run `ls repo/node_modules/@simpleapps-com/` to find installed packages
-2. For each, compare the installed version (`repo/node_modules/@simpleapps-com/<pkg>/package.json`) against the latest on npm (`npm view @simpleapps-com/<pkg> version`)
-3. Also check `augur-api` if installed
+1. Use `Glob("repo/**/node_modules/@simpleapps-com/*")` to find installed packages
+2. For each package found, use the Read tool to read its `package.json` and extract the version
+3. For each package, run `npm view @simpleapps-com/<pkg> version` as a separate Bash call to get the latest version
+4. Also check `augur-api` if installed
+
+MUST NOT use `node -e`, `require()`, or any script to check versions. Use the Read tool for installed versions and separate `npm view` calls for latest versions.
 
 **augur-* packages (semver):** All `@simpleapps-com/augur-*` packages are published together from a monorepo and MUST be on the same version. If any are mismatched, flag it as an error — mixed versions cause subtle bugs. If any are outdated, all MUST be updated together.
 

@@ -45,7 +45,7 @@ List each command with a one-line description and when to use it:
 | `/commit-message` | After coding — generate a conventional commit message |
 | `/wiki` | Need context — load the project wiki |
 | `/wiki-audit` | Maintenance — check wiki health |
-| `/project-init` | First time — set up directory structure |
+| `/project-init` | First time + periodically — set up directory structure and sync latest plugin rules |
 | `/audit-augur-packages` | Migration — find custom code to replace with shared packages |
 | `/guide` | Right now — you're reading it |
 
@@ -80,15 +80,22 @@ Skills load reference material into context. They're loaded automatically by com
 | `augur-packages` | Shared npm packages and anti-patterns |
 | `fyxer` | Meeting transcript extraction and Basecamp posting |
 
-## 6. Key conventions
+## 6. Plugin rules
+
+The plugin ships rules that enforce baseline guardrails (git safety, bash simplicity, wiki over memory). These live in `repo/.claude/rules/` and load on every prompt — but they only get there when `/project-init` copies them from the plugin.
+
+**Run `/project-init` periodically** — especially after a plugin update — to sync the latest rules into the project. After the first sync, rules are committed to the project's git repo, so all teammates get them via `git pull`.
+
+## 7. Key conventions
 
 Highlight the most important rules:
 - **Git safety**: MUST NOT commit, push, create PRs, or merge unless explicitly asked
+- **Bash simplicity**: one command per call, no `$()` or `2>&1`, use dedicated tools
 - **Conventional commits**: `feat:`, `fix:`, `chore:`, etc.
 - **RFC 2119**: MUST/SHOULD/MAY in ALL CAPS for requirements
 - **Token efficiency**: be concise, action verbs first, no filler
 - **WIP files**: named `{BC|GH}{#}-{slug}.md` in `wip/`
 
-## 7. Ask
+## 8. Ask
 
 After presenting the guide, ask: "What would you like to work on?" or "Want me to run `/triage` to see what's open?"

@@ -19,7 +19,7 @@ This skill is a **stub, not an archive**. New packages are created, existing pac
 
 **Always read the installed packages in your project's `node_modules/`:**
 
-1. Run `ls repo/node_modules/@simpleapps-com/` to discover ALL available packages — there may be packages not listed here
+1. Use `Glob("repo/node_modules/@simpleapps-com/*")` to discover ALL available packages — there may be packages not listed here
 2. Read `repo/node_modules/@simpleapps-com/<package>/package.json` for the `exports` field to find available sub-paths
 3. Read files in `repo/node_modules/@simpleapps-com/<package>/dist/` to understand the current API surface
 4. Do NOT look at the source repo or other folders — only read what is installed in your project's `node_modules/`
@@ -42,7 +42,7 @@ These are starting hints — not a complete list. Always check `node_modules/@si
 
 When considering custom code:
 
-1. Run `ls repo/node_modules/@simpleapps-com/` to see what's installed
+1. Use `Glob("repo/node_modules/@simpleapps-com/*")` to see what's installed
 2. Read the package's `package.json` `exports` and its `dist/` files for available functions, hooks, and components
 3. Look for the hook triple pattern in augur-hooks: `use<Name>`, `get<Name>Options`, `get<Name>Key`
 4. Check augur-web for UI components before building custom ones
@@ -76,4 +76,4 @@ The goal is to grow the packages over time so sites write less custom code.
 - **Tailwind:** v4, CSS-first
 - **Validation:** Valibot (not Zod, not Yup)
 - **Auth:** NextAuth 5 via package auth factory
-- **Reference site:** ampro-online
+- **Reference site:** ampro-online — use `Grep`, `Glob`, and `Read` with path `~/projects/clients/ampro-online/repo` to see how patterns are implemented. MUST NOT use `find`, `grep`, or other shell commands.

@@ -88,6 +88,32 @@ When asked to save, document, or record knowledge — use the wiki, MUST NOT use
 
 If in doubt, it belongs in the wiki. The cost of putting shared knowledge in memory is that it dies with the session — no other agent, project, or computer will ever see it.
 
+## Cross-Project Wiki Access
+
+All SimpleApps projects follow the same directory layout under `~/projects/`. Every project's wiki is at a known, predictable path:
+
+| Project type | Wiki path |
+|-------------|-----------|
+| Client sites | `~/projects/clients/<site-name>/wiki/` |
+| Internal repos | `~/projects/simpleapps/<repo-name>/wiki/` |
+
+**Reference site:** `~/projects/clients/ampro-online/` is the reference implementation. When you need to see how something was done, check its wiki and repo first.
+
+**Key wikis to consult:**
+- `~/projects/simpleapps/augur-packages/wiki/` — shared package conventions, API surfaces, component patterns
+- `~/projects/simpleapps/augur-skills/wiki/` — plugin and skill authoring conventions
+- `~/projects/clients/ampro-online/wiki/` — reference site patterns, real-world usage examples
+
+**Before reading another project's wiki, pull the latest:**
+`git -C ~/projects/clients/<site>/wiki pull`
+
+**MUST use dedicated tools for cross-project access — MUST NOT use shell commands:**
+- Read files: `Read("~/projects/clients/<site>/wiki/Page.md")` or `Read("~/projects/clients/<site>/repo/path/to/file")`
+- Search code: `Grep(pattern: "...", path: "~/projects/clients/<site>/repo")`
+- Find files: `Glob(pattern: "~/projects/clients/<site>/repo/**/*.ts")`
+
+MUST NOT use `find`, `grep`, `cat`, `ls`, or any shell command to explore other projects. The paths are known — use the dedicated tools directly.
+
 ## Keep It Lean
 
 - Document patterns and principles, not exhaustive lists
