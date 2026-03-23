@@ -35,7 +35,19 @@ Run each command as a separate, simple call. MUST NOT combine commands.
       - If hashes match: skip (already up to date)
    c. Report: which rules were copied (new), updated (hash mismatch), or matched (already current)
 7. Check if `.claude/settings.local.json` exists using Read. If missing or missing deny rules, create/update it with the standard deny list from the `project-defaults` skill.
-8. Check if the augur-skills bin directory is in the user's PATH:
+8. Check if cross-project directory access is configured. Read `~/.claude/settings.json` and check for `additionalDirectories`. If missing, suggest adding it so agents can read other project wikis and repos without permission prompts each session:
+   ```json
+   {
+     "additionalDirectories": [
+       "~/projects/clients/*/wiki",
+       "~/projects/clients/*/repo",
+       "~/projects/simpleapps/*/wiki",
+       "~/projects/simpleapps/*/repo"
+     ]
+   }
+   ```
+   This is a global setting — ask the user before modifying `~/.claude/settings.json`. If already configured, report it as already set up.
+9. Check if the augur-skills bin directory is in the user's PATH:
    - The bin path is: `$HOME/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/bin`
    - Run `grep -q 'augur-skills/plugins/simpleapps/bin' ~/.zshrc` to check
    - If not found, append the export line to `~/.zshrc` using the Edit tool:
@@ -45,7 +57,7 @@ Run each command as a separate, simple call. MUST NOT combine commands.
      ```
    - Tell the user to run `source ~/.zshrc` or open a new terminal for the change to take effect
    - If already present, report it as already configured
-9. Final verification: `ls -la .claude/`
+10. Final verification: `ls -la .claude/`
 
 ## Output
 
