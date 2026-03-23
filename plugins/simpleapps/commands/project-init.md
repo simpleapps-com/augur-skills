@@ -34,8 +34,12 @@ Run each command as a separate, simple call. MUST NOT combine commands.
       - If it DOES exist: hash both files with `md5 -q <file>` (macOS) or `md5sum <file>` (Linux). If hashes differ, overwrite: `cp ~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/<file> repo/.claude/rules/<file>` — plugin rules are the source of truth
       - If hashes match: skip (already up to date)
    c. Report: which rules were copied (new), updated (hash mismatch), or matched (already current)
-7. Check if `.claude/settings.local.json` exists using Read. If missing or missing deny rules, create/update it with the standard deny list from the `project-defaults` skill.
-8. Check if cross-project directory access is configured. Read `~/.claude/settings.json` and check for `additionalDirectories`. If missing, suggest adding it so agents can read other project wikis and repos without permission prompts each session:
+7. Check `.simpleapps/` configuration:
+   a. Check if `~/.simpleapps/settings.json` exists using Read. If missing, create it with default content: `{"projectRoot": "~/projects"}`. Ask the user to confirm the projectRoot value.
+   b. Check for old `{siteId}.json` files in `.simpleapps/` — any `.json` file that is NOT `settings.json`, `site.json`, `basecamp.json`, or `augur-api.json` is likely an old site ID file. If found, report them and suggest migrating their content to `site.json`. Do NOT auto-migrate — the files contain PII and the user must review.
+   c. For client projects: if `.simpleapps/site.json` does not exist, suggest creating it. Do NOT create it automatically — the user needs to provide the site data.
+8. Check if `.claude/settings.local.json` exists using Read. If missing or missing deny rules, create/update it with the standard deny list from the `project-defaults` skill.
+9. Check if cross-project directory access is configured. Read `~/.claude/settings.json` and check for `additionalDirectories`. If missing, suggest adding it so agents can read other project wikis and repos without permission prompts each session:
    ```json
    {
      "additionalDirectories": [
@@ -47,7 +51,7 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    }
    ```
    This is a global setting — ask the user before modifying `~/.claude/settings.json`. If already configured, report it as already set up.
-9. Check if the augur-skills bin directory is in the user's PATH:
+10. Check if the augur-skills bin directory is in the user's PATH:
    - The bin path is: `$HOME/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/bin`
    - Run `grep -q 'augur-skills/plugins/simpleapps/bin' ~/.zshrc` to check
    - If not found, append the export line to `~/.zshrc` using the Edit tool:
@@ -57,7 +61,15 @@ Run each command as a separate, simple call. MUST NOT combine commands.
      ```
    - Tell the user to run `source ~/.zshrc` or open a new terminal for the change to take effect
    - If already present, report it as already configured
-10. Final verification: `ls -la .claude/`
+11. Check if a status line is configured. Read `~/.claude/settings.json` and check for a `statusLine` field. If missing, suggest setting one up. Two options are available via the plugin bin scripts:
+   - `statusline-basic` — model, project name, version
+   - `statusline-full` — model, project name, git branch, version, context %
+   Ask the user which they prefer, then add to `~/.claude/settings.json`:
+   ```json
+   { "statusLine": { "type": "command", "command": "statusline-basic" } }
+   ```
+   If already configured, report it as already set up.
+12. Final verification: `ls -la .claude/`
 
 ## Output
 

@@ -16,12 +16,15 @@ All projects live under `~/projects/` in two groups:
 ~/projects/
 ├── simpleapps/          # Internal repos (augur-*, shared infra)
 │   └── <repo-name>/
-└── clients/             # Client site repos
-    └── <site-name>/
+├── clients/             # Client site repos
+│   └── <site-name>/
+└── workspaces/          # VSCode/Cursor workspace files
+    └── <project-name>.code-workspace
 ```
 
 - Internal repos go in `~/projects/simpleapps/`
 - Client site repos go in `~/projects/clients/`
+- Workspace files go in `~/projects/workspaces/` — one `.code-workspace` per project
 
 ## Project Directory Layout
 
@@ -36,7 +39,7 @@ Every project MUST use this layout:
 ├── wiki/               # Wiki repo (simpleapps-com/<name>.wiki.git)
 ├── wip/                # Work-in-progress files (not in git)
 ├── tmp/                # Temporary files (not in git)
-└── .simpleapps/        # Credentials (not in git)
+└── .simpleapps/        # Config, credentials, site profile (not in git)
 ```
 
 The parent `{project}/` is NOT a git repo — it keeps code and wiki side-by-side. The git repo is always at `repo/`. Use `git -C repo` for git operations from the project root.
@@ -49,16 +52,69 @@ The parent `{project}/` is NOT a git repo — it keeps code and wiki side-by-sid
 | Repo `.claude/CLAUDE.md` | `repo/` | Quick reference + wiki links |
 | Active task context | `wip/` | `{issue-number}-{short-desc}.md` files |
 | Temporary files | `tmp/` | Throwaway files, scratch space, build artifacts |
-| Project secrets | `{project}/.simpleapps/` | Site-specific credentials |
-| Global secrets | `~/.simpleapps/` | Shared credentials across all projects |
+| SimpleApps config | `.simpleapps/` | Settings, site profile, credentials (see below) |
 
 **WIP**: Research, plans, decisions, test results. MUST NOT contain secrets, final docs, or code.
-
-**Credentials**: Project-level (`.simpleapps/`) overrides user-level (`~/.simpleapps/`). MUST NOT be committed.
 
 ## Plugin Rules
 
 The plugin ships rule templates in `plugins/simpleapps/rules/` that MUST exist in every project's `repo/.claude/rules/`. Rules are always loaded into context — they enforce baseline guardrails (like git safety) without depending on a skill being invoked. The `/project-init` command copies missing rules from the plugin into the project.
+
+## .simpleapps/ Configuration
+
+Two scopes, project overrides user:
+
+```
+~/.simpleapps/                    # User global
+├── settings.json                 # Config (projectRoot, orgName)
+├── basecamp.json                 # Basecamp MCP credentials
+└── augur-api.json                # Augur API MCP credentials
+
+{project}/.simpleapps/            # Project (gitignored)
+├── settings.json                 # Project config overrides
+├── site.json                     # Site profile (defaults, PII, auth)
+├── basecamp.json                 # Project basecamp overrides (if needed)
+└── augur-api.json                # Project augur-api overrides (if needed)
+```
+
+### File types
+
+| File | Scope | Purpose | Read by |
+|------|-------|---------|---------|
+| `settings.json` | Global + project | Infrastructure config | All skills via project-defaults |
+| `site.json` | Project only | Site profile — defaults, search terms, PII, auth | Skills needing site context |
+| `basecamp.json` | Global + project | Basecamp MCP credentials | Basecamp MCP server |
+| `augur-api.json` | Global + project | Augur API MCP credentials | Augur API MCP server |
+
+### settings.json
+
+```json
+{
+  "projectRoot": "~/projects"
+}
+```
+
+Resolution: read `{project}/.simpleapps/settings.json` first, fall back to `~/.simpleapps/settings.json`, fall back to defaults. Field-level override — project wins for any field it defines.
+
+### site.json
+
+One per client project. Consistent structure across all sites — same fields, different values. Replaces the old `{siteId}.json` pattern.
+
+```json
+{
+  "siteId": "...",
+  "siteName": "...",
+  "auth": { },
+  "defaults": { }
+}
+```
+
+### Rules
+
+- MUST NOT commit `.simpleapps/` to git — contains PII and credentials
+- MUST NOT save site data to wiki or memory — PII
+- MUST NOT create `{siteId}.json` files — use `site.json` instead
+- If old `{siteId}.json` files exist, `/project-init` will flag them for migration to `site.json`
 
 ## Symlink Setup
 

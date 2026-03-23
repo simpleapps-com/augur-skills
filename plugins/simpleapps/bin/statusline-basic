@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# SimpleApps status line — model, project name, version
+# Usage: set in ~/.claude/settings.json:
+#   "statusLine": { "type": "command", "command": "statusline-basic" }
+input=$(cat)
+
+model=$(echo "$input" | jq -r '.model.display_name // empty')
+project_dir=$(echo "$input" | jq -r '.workspace.project_dir // empty')
+version=$(echo "$input" | jq -r '.version // empty')
+
+project_name="unknown"
+[ -n "$project_dir" ] && project_name=$(basename "$project_dir")
+
+parts=""
+[ -n "$model" ] && parts="[${model}]"
+parts="${parts} ${project_name}"
+[ -n "$version" ] && parts="${parts} | v${version}"
+
+echo "$parts"
