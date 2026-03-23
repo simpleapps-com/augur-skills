@@ -105,6 +105,23 @@ All projects follow the same directory layout (see `simpleapps:project-defaults`
 
 MUST NOT use `find`, `grep`, `cat`, `ls`, or any shell command to explore other projects. The paths are known — use the dedicated tools directly.
 
+### Search all wikis
+
+Every wiki on the machine is a local knowledge base. When looking for how something was solved, search across ALL wikis — not just the current project:
+
+1. Read `~/.simpleapps/settings.json` to get `projectRoot`
+2. Pull the latest for all wikis before searching:
+   - `git -C {projectRoot}/clients/*/wiki pull` (one call per wiki, not a glob)
+   - `git -C {projectRoot}/simpleapps/*/wiki pull`
+3. Search across all wikis with Grep:
+   - `Grep(pattern: "...", path: "{projectRoot}/clients", glob: "*/wiki/*.md")`
+   - `Grep(pattern: "...", path: "{projectRoot}/simpleapps", glob: "*/wiki/*.md")`
+4. Read the matching pages to get the full context
+
+Use Glob to discover which projects have wikis: `Glob(pattern: "{projectRoot}/clients/*/wiki")` and `Glob(pattern: "{projectRoot}/simpleapps/*/wiki")`.
+
+The wikis are kept fresh by `/curate-wiki` runs across projects. Searching locally is instant and requires no internet access — the knowledge is already on the machine.
+
 ## Keep It Lean
 
 - Document patterns and principles, not exhaustive lists
