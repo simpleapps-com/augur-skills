@@ -61,6 +61,12 @@ When a check fails, fix the underlying code. NEVER disable lint rules, skip test
 
 When reviewing code, scan for existing suppressions (`eslint-disable`, `@ts-ignore`, `.skip`, `noqa`, etc.) and flag them to the user. These are hidden technical debt that should be evaluated for resolution.
 
+## Browser Error Overlays
+
+When debugging in the browser (Chrome automation), Next.js and other frameworks show a **red error overlay** at the bottom of the page when there are runtime errors. This overlay contains the actual error message, stack trace, and usually the exact file and line number causing the problem.
+
+MUST click on the error overlay and read the full error before attempting any fix. 95% of the time the answer is right there. Do not ignore it, do not guess at the problem, do not look elsewhere first — read the error overlay. If using Chrome automation tools, click the overlay element to expand it and read the details.
+
 ## Running quality checks
 
 Use the `/quality` command to discover and run all configured checks. It handles the full cycle: discover, run, fix, repeat until clean.

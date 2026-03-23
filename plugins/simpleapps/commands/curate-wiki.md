@@ -107,24 +107,16 @@ If a change requires a new wiki page:
 
 Run `wc -w wiki/*.md` again. Compare against the starting count. If over 18K tokens, identify content to prune or tighten before finishing. The wiki MUST NOT exceed 20K tokens.
 
-## 8. Commit and report
+## 8. Report and stop
 
-Ask the user if they want to commit. MUST NOT use `cd`. Write commit message to tmp file, commit with `-F`, then clean up:
+Report what changed. MUST NOT commit, push, or offer to commit — this applies to the wiki repo equally. The wiki is a git repo and git-safety applies to ALL repos. Wait for the user to say "commit".
 
-```bash
-# Stage
-git -C wiki add -A
-
-# Write commit message using Write tool → tmp/commit-msg.txt
-# Then commit with -F
-git -C wiki commit -F tmp/commit-msg.txt
-
-# Clean up
-rm tmp/commit-msg.txt
-
-# Push
-git -C wiki push
-```
+When the user approves, use this process (MUST NOT use `cd`):
+1. Write commit message to `tmp/commit-msg.txt` using the Write tool
+2. `git -C wiki add -A`
+3. `git -C wiki commit -F ../tmp/commit-msg.txt`
+4. `rm tmp/commit-msg.txt`
+5. Only push if the user says "push"
 
 Report:
 - Changes applied (list each with page and action)

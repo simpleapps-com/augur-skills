@@ -79,6 +79,7 @@ When asked to save, document, or record knowledge — use the wiki, MUST NOT use
 
 | Knowledge type | Where it belongs |
 |---------------|-----------------|
+| Behavioral guardrails and corrections | **Skill** (update the relevant skill) |
 | Conventions, patterns, decisions | **Wiki** |
 | Learnings from a task or session | **Wiki** |
 | Architecture and process docs | **Wiki** |
@@ -86,7 +87,9 @@ When asked to save, document, or record knowledge — use the wiki, MUST NOT use
 | Personal preferences (writing style, response length) | Memory |
 | User role and background | Memory |
 
-If in doubt, it belongs in the wiki. The cost of putting shared knowledge in memory is that it dies with the session — no other agent, project, or computer will ever see it.
+If the user corrects your behavior, update the relevant **skill** — not memory. A correction saved to memory only helps one agent on one machine. A correction in a skill helps every agent on every project.
+
+If in doubt, it belongs in the wiki or a skill. The cost of putting shared knowledge in memory is that it dies with the session — no other agent, project, or computer will ever see it.
 
 ## Cross-Project Wiki Access
 

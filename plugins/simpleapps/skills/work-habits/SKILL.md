@@ -21,6 +21,10 @@ Reserve Bash for commands that have no dedicated tool equivalent.
 
 MUST NOT use `cd` in any Bash command — not even in compound commands like `cd /path && git log`. Use `git -C repo` for git, and path arguments for everything else. The `cd` deny rule does not suppress Claude Code's built-in security prompt for compound cd+git commands, so any `cd` usage will interrupt the user.
 
+## Read the error first
+
+When debugging in the browser, MUST check for error overlays (red error pill/badge at the bottom of the page) before guessing at the problem. Click it, read the full error, stack trace, and source location. The answer is almost always right there.
+
 ## Protect the context window
 
 - Prefer targeted searches over broad exploration
