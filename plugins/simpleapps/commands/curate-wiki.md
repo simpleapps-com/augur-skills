@@ -28,6 +28,7 @@ Evaluate each page against the wiki conventions (from the wiki skill) and the cu
 - Are statements accurate? Verify claims against the actual code using Grep, Glob, Read, or Agent with subagent_type=Explore.
 - Is anything missing that the current session revealed?
 - Are explanations clear for all three audiences?
+- Does `Testing.md` exist? If not, suggest creating one. If it does, update it with any testing knowledge from this session — new edge cases, failure patterns, test data, or verification steps discovered during implementation or debugging.
 
 ### Context
 - Does each page explain *why*, not just *what*?

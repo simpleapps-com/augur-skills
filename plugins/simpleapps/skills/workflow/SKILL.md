@@ -64,6 +64,29 @@ gh issue create --repo simpleapps-com/<repo> \
 - Include the Basecamp todo URL in the GitHub issue body (under a `## Basecamp` heading)
 - After creating the issue, provide the GitHub issue URL to the user so they can add it to the Basecamp todo comments
 
+## Development Lifecycle
+
+The full workflow from task to delivery, each step feeding the next:
+
+```
+/triage → /wip → /investigate → /discuss → /implement → /quality → /verify → /curate-wiki
+```
+
+| Phase | Command | What happens |
+|-------|---------|-------------|
+| Pick work | `/triage` | See open PRs and unlinked issues |
+| Scaffold | `/wip` | Create a WIP file from Basecamp or GitHub issue |
+| Research | `/investigate` | Explore codebase, update WIP with findings |
+| Align | `/discuss` | Conversational alignment before acting |
+| Build | `/implement` | Execute the plan — code changes only, no commits |
+| Code checks | `/quality` | Lint, typecheck, test, package freshness |
+| Browser checks | `/verify` | Walk through wiki's Testing.md checklist in Chrome |
+| Capture | `/curate-wiki` | Update wiki with session learnings, audit CLAUDE.md/rules |
+
+**Key principle:** each session generates knowledge. `/curate-wiki` captures it — including new testing patterns, edge cases, and failure modes discovered during `/implement` and `/verify`. This grows the wiki's Testing.md page over time, making future `/verify` runs more thorough. This is the learning organization in action.
+
+Commands like `/research` and `/discuss` can be used at any stage. `/quality`, `/verify`, `/curate-wiki`, and `/wiki-audit` can run independently.
+
 ## References
 
 - See `simpleapps:basecamp` skill for MCP tools, Chrome fallback, and Basecamp navigation
