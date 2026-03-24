@@ -2,7 +2,7 @@
 name: project-init
 description: Check and fix the project directory structure — create missing folders, set up symlinks, clone repos, verify layout
 argument-hint: "[repo-name]"
-allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(ln:*), Bash(readlink:*), Bash(gh repo clone:*), Bash(grep:*), Bash(cp:*), Bash(md5sum:*), Bash(md5:*), Read, Write, Edit, Skill(project-defaults), Skill(bash-simplicity), Skill(context-efficiency)
+allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(ln:*), Bash(readlink:*), Bash(gh repo clone:*), Bash(gh label:*), Bash(grep:*), Bash(cp:*), Bash(md5sum:*), Bash(md5:*), Read, Write, Edit, Skill(project-defaults), Skill(bash-simplicity), Skill(context-efficiency)
 ---
 
 First, use Skill("project-defaults") to load project conventions.
@@ -69,7 +69,29 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    { "statusLine": { "type": "command", "command": "statusline-basic" } }
    ```
    If already configured, report it as already set up.
-12. Final verification: `ls -la .claude/`
+12. Check GitHub labels. Determine the repo from `git -C repo remote -v`. List existing labels with `gh label list --repo <org>/<repo>`. Compare against the standard set:
+
+   **Type labels:**
+   | Label | Color | Purpose |
+   |-------|-------|---------|
+   | `bug` | `d73a4a` | Broken behavior users can see |
+   | `security` | `e11d48` | Exploitable vulnerability |
+   | `a11y` | `7c3aed` | Accessibility |
+   | `perf` | `7dd3fc` | Performance / Core Web Vitals |
+   | `SEO` | `14b8a6` | Search engine optimization |
+   | `enhancement` | `0075ca` | New feature |
+   | `refactor` | `a855f7` | Code quality, no user impact |
+
+   **Status labels:**
+   | Label | Color | Purpose |
+   |-------|-------|---------|
+   | `production-blocker` | `7f1d1d` | Must resolve before/to stay in production |
+   | `blocked` | `fbbf24` | Waiting on external dependency |
+
+   For each missing label, create it: `gh label create "<name>" --color "<color>" --description "<purpose>" --repo <org>/<repo>`
+
+   Report which labels were created and which already existed.
+13. Final verification: `ls -la .claude/`
 
 ## Output
 

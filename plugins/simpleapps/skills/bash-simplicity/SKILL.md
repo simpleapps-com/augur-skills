@@ -8,24 +8,38 @@ user-invocable: false
 
 ## Why This Matters
 
-Every permission prompt makes the user the bottleneck. If the user doesn't see the prompt for an hour, that hour is lost — the agent is blocked, the task stalls, and the system designed for autonomous work stops working. The entire plugin system exists to remove the user as the bottleneck. A permission prompt works directly against that goal. Use dedicated tools and simple commands to avoid ever triggering one.
+A complex command feels efficient — do more in one call. But the more complex the command, the higher the probability it triggers a permission prompt. A permission prompt blocks the agent until the user responds. If the user doesn't see it for an hour, that hour is lost.
 
-## One Command Per Call
+**Simple commands are faster than complex ones because they never wait for a human.** Ten simple commands that execute instantly are faster than one complex command that waits an hour for approval. The agent's goal is to complete work — a blocked prompt completes nothing.
 
-MUST run each Bash command as a separate, simple call. MUST NOT chain commands with `&&`, `||`, pipes, or sub-shells. Complex commands trigger permission prompts and break automation.
+The entire plugin system exists to remove the user as the bottleneck. Every permission prompt puts them back in the critical path.
 
-Wrong: `git -C repo status && pnpm typecheck && pnpm test`
-Right: Three separate Bash calls, one per command.
+**Three tiers of execution speed — always use the highest tier available:**
 
-Wrong: `pnpm --filter <site> run typecheck 2>&1; echo "EXIT: $?"`
-Right: `pnpm --filter <site> run typecheck` — the Bash tool already captures stderr and exit codes. Never add `2>&1`, `; echo $?`, or other shell plumbing — it triggers permission prompts for no benefit.
+| Tier | Method | Speed | Example |
+|------|--------|-------|---------|
+| 1 | Dedicated tools (Read, Grep, Glob, Edit) | **WILL** run immediately, zero permission chance | `Grep(pattern: "...", path: "repo")` |
+| 2 | Simple Bash (one command, no operators) | **MAY** run immediately if pre-approved | `pnpm typecheck` |
+| 3 | Complex Bash (operators, plumbing) | **WILL** trigger a permission prompt | `pnpm typecheck 2>&1; echo $?` |
 
-Wrong: `gh issue close 367 --repo org/repo --comment "$(< tmp/file.txt)" 2>&1`
-Right: Write the comment to a tmp file, then use two separate calls:
-1. `gh issue comment 367 --repo org/repo --body-file tmp/file.txt`
-2. `gh issue close 367 --repo org/repo`
+Prefer tier 1 over tier 2. Use tier 2 only when no dedicated tool exists. NEVER use tier 3.
 
-MUST NOT use `$()` command substitution in Bash commands — it triggers a permission prompt every time. Write content to a tmp file first, then pass it with a `-F`, `--body-file`, or similar flag.
+## The Bash Tool Is Not a Terminal
+
+The Bash tool is a managed environment, not a raw shell. It already captures stdout, stderr, and the exit code automatically. There is NEVER a reason to add shell plumbing — every shell operator triggers a permission prompt that blocks the user for zero benefit.
+
+**If the Bash tool already does it, do not do it yourself:**
+
+| You want to... | The tool already does it | Do NOT add |
+|----------------|------------------------|------------|
+| Get the exit code | Returned automatically | `; echo $?`, `; echo "Exit code: $?"` |
+| Capture stderr | Captured automatically | `2>&1`, `2>/dev/null` |
+| Limit output | Returned in full | `\| head`, `\| tail`, `\| grep` |
+| Run the next step | Make a separate tool call | `&&`, `;`, `\|\|` |
+| Pass output to another command | Write to a tmp file | `$(...)`, backticks |
+| Run inline code | Use Read/Grep/Edit tools | `node -e`, `python -c` |
+
+**One command per Bash call. No operators. No plumbing. If the command has a `;`, `&&`, `|`, `$()`, `2>&1`, or `2>/dev/null` in it — it is wrong.**
 
 ## Use Dedicated Tools
 

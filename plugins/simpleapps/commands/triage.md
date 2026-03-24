@@ -40,11 +40,17 @@ List every open PR. The "Linked Issues" column shows comma-separated `#<number>`
 
 ### Open Issues without PRs
 
-| Issue | Title | Category |
-|-------|-------|----------|
+| Issue | Title | Labels | Category |
+|-------|-------|--------|----------|
 
-List only issues that are NOT linked to any PR. Infer a category from the issue title and labels (e.g., accessibility, SEO, bug, security, feature, docs).
+List only issues that are NOT linked to any PR. Show existing labels. Infer a category from the issue title and labels (e.g., accessibility, SEO, bug, security, feature, docs).
+
+### Unlabeled Issues
+
+Flag any open issues that have NO labels. Standard labels are: `bug`, `security`, `a11y`, `perf`, `SEO`, `enhancement`, `refactor`, `production-blocker`, `blocked`. Suggest which label(s) each unlabeled issue should have based on its title and content.
+
+If many issues are unlabeled, suggest running `/project-init` to ensure the standard labels exist on the repo.
 
 ### Summary
 
-One line: `X PRs, Y unlinked issues`
+One line: `X PRs, Y unlinked issues, Z unlabeled`
