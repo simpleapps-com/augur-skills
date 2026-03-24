@@ -124,6 +124,10 @@ The wikis are kept fresh by `/curate-wiki` runs across projects. Searching local
 
 **What to search for:** testing patterns and checklists, architecture decisions, coding conventions, deployment procedures, and how specific features were implemented. Other sites have already solved many of the same problems — search before building from scratch.
 
+## Deployment Page
+
+Every project wiki SHOULD have a `Deployment.md` page with up to three sections: Submit, Deploy, and Publish. This page defines the project-specific steps that `/submit`, `/deploy`, and `/publish` commands execute. Run `/curate-wiki` to generate it from the codebase — the command scans CI workflows, package.json, deploy scripts, and asks the user about anything it cannot determine. See the `deployment` skill for the expected format.
+
 ## Testing Page
 
 Every project wiki SHOULD have a `Testing.md` page. This is the E2E verification checklist that `/verify` uses to walk through the site in Chrome. The page grows over time — `/curate-wiki` SHOULD add testing knowledge learned during the session (new edge cases, failure patterns, test data) to the Testing page.

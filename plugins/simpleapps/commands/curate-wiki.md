@@ -29,6 +29,7 @@ Evaluate each page against the wiki conventions (from the wiki skill) and the cu
 - Is anything missing that the current session revealed?
 - Are explanations clear for all three audiences?
 - Does `Testing.md` exist? If not, suggest creating one. If it does, update it with any testing knowledge from this session — new edge cases, failure patterns, test data, or verification steps discovered during implementation or debugging.
+- Does `Deployment.md` exist? If not, **generate it** (see Deployment Page Generation below). If it does, verify it still matches the codebase.
 
 ### Context
 - Does each page explain *why*, not just *what*?
@@ -61,6 +62,29 @@ Cross-linking is the most important structural feature — it turns a collection
 - Is there outdated content that no longer matches reality?
 - Is there filler or verbose text that can be tightened?
 - Can anything be removed to free token budget for higher-value content?
+
+### Deployment Page Generation
+
+If `wiki/Deployment.md` does not exist, generate it by scanning the codebase for deployment artifacts:
+
+1. **Scan** for deployment config — look for:
+   - CI workflows (`.github/workflows/`, Jenkinsfile, etc.)
+   - Package scripts (`package.json` scripts like `deploy`, `release`, `build`)
+   - Deploy configs (Vercel, Netlify, Docker, Makefile, deploy scripts)
+   - Version files (VERSION, package.json version, CalVer/SemVer patterns)
+   - Tag-based release workflows
+   - Branch protection or merge conventions
+
+2. **Draft** the Deployment page with three sections (Submit, Deploy, Publish) based on what was found. Use the format defined in the `deployment` skill. Not all projects need all three sections — only include sections where the codebase reveals a clear process.
+
+3. **Ask the user** about anything the codebase does not reveal:
+   - "I see a GitHub Actions workflow triggered by tags, but how does staging deploy? Is it automatic on merge?"
+   - "I found a Vercel config — does merging to main auto-deploy to staging?"
+   - "There is no version file — does this project use versioned releases or just deploy on merge?"
+
+4. **Incorporate answers** into the final Deployment page. The page MUST be grounded in both code and user knowledge — not guesses.
+
+If `wiki/Deployment.md` already exists, verify each section still matches the codebase. Flag any drift.
 
 ## 4. Audit always-loaded content
 

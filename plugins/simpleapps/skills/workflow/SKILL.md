@@ -69,7 +69,7 @@ gh issue create --repo simpleapps-com/<repo> \
 The full workflow from task to delivery, each step feeding the next:
 
 ```
-/triage → /wip → /investigate → /discuss → /implement → /quality → /verify → /curate-wiki
+/triage → /wip → /investigate → /discuss → /implement → /quality → /verify → /submit → /deploy → /publish
 ```
 
 | Phase | Command | What happens |
@@ -81,9 +81,13 @@ The full workflow from task to delivery, each step feeding the next:
 | Build | `/implement` | Execute the plan — code changes only, no commits |
 | Code checks | `/quality` | Lint, typecheck, test, package freshness |
 | Browser checks | `/verify` | Walk through wiki's Testing.md checklist in Chrome |
-| Capture | `/curate-wiki` | Update wiki with session learnings, audit CLAUDE.md/rules |
+| Submit | `/submit` | Commit and create a PR for review |
+| Stage | `/deploy` | Deploy to staging (merge PRs, trigger staging build) |
+| Release | `/publish` | Version bump, tag, release to production (with verification) |
 
-**Key principle:** each session generates knowledge. `/curate-wiki` captures it — including new testing patterns, edge cases, and failure modes discovered during `/implement` and `/verify`. This grows the wiki's Testing.md page over time, making future `/verify` runs more thorough. This is the learning organization in action.
+Not every task uses all steps. Most daily work ends at `/submit`. `/deploy` and `/publish` are used less frequently — `/publish` is intentionally rare and requires explicit verification of the exact version going to production.
+
+The three shipping commands (`/submit`, `/deploy`, `/publish`) read project-specific steps from `wiki/Deployment.md`. They refuse to operate if the Deployment page is missing — run `/curate-wiki` to generate it from the codebase.
 
 Commands like `/research` and `/discuss` can be used at any stage. `/quality`, `/verify`, `/curate-wiki`, and `/wiki-audit` can run independently.
 

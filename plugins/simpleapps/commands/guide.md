@@ -43,6 +43,9 @@ List each command with a one-line description and when to use it:
 | `/wip <url>` | Pick a task — scaffold a WIP file from a Basecamp URL or GitHub issue |
 | `/investigate` | Before coding — research the problem, update WIP with findings |
 | `/commit-message` | After coding — generate a conventional commit message |
+| `/submit` | After coding — commit and create a PR for review |
+| `/deploy` | After PR approved — deploy to staging (merge PRs, trigger build) |
+| `/publish` | Release to production — version bump, tag, release (with verification) |
 | `/wiki` | Need context — load the project wiki |
 | `/wiki-audit` | Maintenance — check wiki health |
 | `/project-init` | First time + periodically — set up directory structure and sync latest plugin rules |
@@ -58,7 +61,9 @@ Walk through a concrete example:
 /wip https://basecamp.com/...   → scaffold WIP from client request
 /investigate                     → explore codebase, update WIP with findings
                                  → review the analysis, start coding
-/commit-message                  → generate commit message when done
+/submit                          → commit and create a PR
+/deploy                          → merge PRs and deploy to staging
+/publish                         → version bump, tag, release to production
 ```
 
 ## 5. Available skills
@@ -78,6 +83,7 @@ Skills load reference material into context. They're loaded automatically by com
 | `claude-code-docs` | Claude Code feature reference |
 | `augur-api` | Augur API MCP tools and auth |
 | `augur-packages` | Shared npm packages and anti-patterns |
+| `deployment` | Wiki-driven deployment — reads Deployment.md for submit/deploy/publish steps |
 | `fyxer` | Meeting transcript extraction and Basecamp posting |
 
 ## 6. Plugin rules
