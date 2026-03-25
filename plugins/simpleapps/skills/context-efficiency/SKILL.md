@@ -51,6 +51,10 @@ Load Skill("git-safety") for full guardrails.
 
 The rule costs ~40 tokens per prompt. The skill costs nothing until invoked, then loads ~800 tokens of detailed guidance. This is 20x more efficient than putting the full content in the rule.
 
+### Wiki Links: Highest-ROI Pointer
+
+The cheapest pointer with the biggest payoff is a **wiki link in CLAUDE.md**. A link like `[Deployment](../../wiki/Deployment.md)` costs ~15 tokens but gives the agent instant access to a full page of detailed knowledge (~500-2000 tokens) on demand. CLAUDE.md SHOULD link to every wiki content page — it becomes the agent's table of contents. Missing a link means the agent must guess where to find information or ask the user.
+
 ## When to Use Each Layer
 
 | Question | Answer |

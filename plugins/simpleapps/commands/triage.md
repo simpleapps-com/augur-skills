@@ -27,6 +27,8 @@ MUST run each command as a separate, simple call. MUST NOT combine commands with
 
 For each PR, scan the title and body for issue references (`#<number>`, `fixes #<number>`, `closes #<number>`, `resolves #<number>`). Build a map of which issues are linked to PRs.
 
+Identify blocked issues: any issue with a `blocked` label or "Blocked by" text in its body is a cross-repo dependency. Extract the upstream reference (e.g., `simpleapps-com/augur-packages#42`).
+
 ## Output
 
 Display exactly two tables and a summary:
@@ -45,6 +47,15 @@ List every open PR. The "Linked Issues" column shows comma-separated `#<number>`
 
 List only issues that are NOT linked to any PR. Show existing labels. Infer a category from the issue title and labels (e.g., accessibility, SEO, bug, security, feature, docs).
 
+### Blocked Issues
+
+If any issues have the `blocked` label or "Blocked by" references, show them separately:
+
+| Issue | Title | Blocked By | Filed |
+|-------|-------|------------|-------|
+
+"Blocked By" shows the upstream issue reference (e.g., `simpleapps-com/augur-packages#42`). "Filed" shows when the blocking comment was added, if detectable. If no blocked issues exist, skip this section.
+
 ### Unlabeled Issues
 
 Flag any open issues that have NO labels. Standard labels are: `bug`, `security`, `a11y`, `perf`, `SEO`, `enhancement`, `refactor`, `production-blocker`, `blocked`. Suggest which label(s) each unlabeled issue should have based on its title and content.
@@ -53,4 +64,4 @@ If many issues are unlabeled, suggest running `/project-init` to ensure the stan
 
 ### Summary
 
-One line: `X PRs, Y unlinked issues, Z unlabeled`
+One line: `X PRs, Y unlinked issues, Z unlabeled, B blocked`

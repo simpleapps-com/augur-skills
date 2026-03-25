@@ -107,6 +107,8 @@ Before adding a comment to a closed issue, check its state first with `gh issue 
 
 ## Cross-Repo Issues
 
+Use `/file-issue` to automate this process — it creates the upstream issue, cross-links back to the local issue, and adds the `blocked` label. `/triage` surfaces blocked issues in its output.
+
 When a project hits a blocker that depends on another team's repo, create two issues and keep working:
 
 1. **Local issue** (in the site/project repo) — describe the impact and what's blocked

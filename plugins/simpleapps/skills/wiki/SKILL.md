@@ -22,7 +22,7 @@ Check size: `wc -w wiki/*.md` (multiply by ~1.3 for token estimate)
 
 ## Core Principle
 
-Repo files (`.claude/CLAUDE.md`, `.claude/rules/`, `README.md`) MUST be minimal — orient then point to wiki. AI agents read wiki pages as local files via `Read wiki/<page>.md`. No network requests needed.
+Repo files (`.claude/CLAUDE.md`, `.claude/rules/`, `README.md`) MUST be minimal — orient then point to wiki. CLAUDE.md MUST link to every wiki content page — these links cost ~15 tokens total but make every page one Read away from always-loaded context. AI agents read wiki pages as local files via `Read wiki/<page>.md`. No network requests needed.
 
 ```
 Wiki defines → Code implements → Learnings update wiki → Repeat

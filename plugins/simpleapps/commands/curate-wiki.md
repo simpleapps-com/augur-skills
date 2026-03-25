@@ -48,6 +48,7 @@ Cross-linking is the most important structural feature — it turns a collection
 - Are concepts that are explained elsewhere linked with `[[Page-Name#section]]`?
 - Are there pages with few or no outbound links? These are isolated nodes that need connecting.
 - Are there pages that should be linked TO but aren't referenced from related pages?
+- **Always-loaded → wiki bridge**: Does CLAUDE.md link to every wiki content page? Do rules with corresponding wiki topics link to the relevant section? These links cost ~15 tokens each but make the full wiki discoverable from always-loaded context — the highest-ROI pointer available.
 
 ### Usability
 - Can a reader quickly find what they need?
@@ -99,6 +100,7 @@ Read each file and check:
 - **Pointer pattern**: rules SHOULD be short triggers that invoke a skill for detail. Flag any rule that contains full behavioral guidance instead of invoking a skill.
 - **Staleness**: claims that no longer match reality (verify against the codebase)
 - **Duplication**: content that duplicates what's in the wiki or a skill
+- **Wiki index completeness**: CLAUDE.md SHOULD link to every `wiki/*.md` content page (excluding `_Sidebar.md` and `llms.txt`). Compare links in CLAUDE.md against actual wiki files. Flag missing links — each costs ~15 tokens but gives the agent direct access to detailed knowledge on demand.
 
 Include any issues found in the proposal alongside wiki changes.
 

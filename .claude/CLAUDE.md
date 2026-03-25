@@ -13,6 +13,7 @@ The wiki is cloned at `../../wiki/` relative to this file. Read it locally:
 - [Marketplace](../../wiki/Marketplace.md)
 - [Versioning](../../wiki/Versioning.md)
 - [Development](../../wiki/Development.md)
+- [Deployment](../../wiki/Deployment.md)
 
 ## Quick Reference
 
