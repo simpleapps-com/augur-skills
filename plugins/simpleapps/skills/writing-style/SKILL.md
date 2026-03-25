@@ -60,6 +60,14 @@ Every token costs time, money, and cognitive load. Be concise without losing cla
 
 Default to brief. Expand only when the reader cannot infer meaning from context. Two sentences that answer the question beat two pages that fill the context window.
 
+## Code Style
+
+Use descriptive variable and function names. Abbreviations save keystrokes but cost readability — the human reviewing your output MUST be able to understand the code without deciphering names.
+
+- MUST use full words: `$groupQuantity` not `$gq`, `cartItem` not `ci`
+- Loop counters (`i`, `j`, `k`) and well-known abbreviations (`id`, `url`, `db`) are fine
+- Function names SHOULD describe what they do: `calculateShippingCost` not `calcShip`
+
 ## Claude Code Keywords
 
 Thinking trigger words (`think`, `think hard`, `ultrathink`) are deprecated. Extended thinking is on by default. Use `/effort` (low/medium/high/max) for control.
