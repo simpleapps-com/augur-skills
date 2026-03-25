@@ -13,18 +13,18 @@ Shared npm packages for Next.js ecommerce sites and React Native apps. Published
 
 Before writing custom code, check whether a package export already solves the problem.
 
-## Ground Truth: Read the Code
+## Ground Truth: Read the Docs
 
 This skill is a **stub, not an archive**. New packages are created, existing packages gain features, APIs evolve. This skill MUST NOT be treated as the complete picture.
 
-**Always read the installed packages in your project's `node_modules/`:**
+**Always read the installed packages' documentation in `node_modules/`:**
 
 1. Use `Glob("repo/node_modules/@simpleapps-com/*")` to discover ALL available packages — there may be packages not listed here
-2. Read `repo/node_modules/@simpleapps-com/<package>/package.json` for the `exports` field to find available sub-paths
-3. Read files in `repo/node_modules/@simpleapps-com/<package>/dist/` to understand the current API surface
-4. Do NOT look at the source repo or other folders — only read what is installed in your project's `node_modules/`
+2. Read `repo/node_modules/@simpleapps-com/<package>/llms.txt` — machine-readable, lists every export with descriptions and usage examples. This is the fastest path to discovering what exists.
+3. Read `repo/node_modules/@simpleapps-com/<package>/README.md` for full API docs, code examples, and "Replaces" guidance
+4. MUST NOT read `dist/`, `.d.ts`, or compiled JS files to discover capabilities — they are minified, chunked, and incomplete. The README and llms.txt are the source of truth.
 
-When this skill and the installed code disagree, **the installed code wins**. This skill exists to point you in the right direction, not to replace reading the code.
+When this skill and the installed docs disagree, **the installed docs win**. This skill exists to point you in the right direction, not to replace reading the docs.
 
 ## Known Packages
 
@@ -40,13 +40,37 @@ These are starting hints — not a complete list. Always check `node_modules/@si
 
 ## How to Check for Package Solutions
 
-When considering custom code:
+MUST follow this procedure before writing custom code or filing a package issue:
 
-1. Use `Glob("repo/node_modules/@simpleapps-com/*")` to see what's installed
-2. Read the package's `package.json` `exports` and its `dist/` files for available functions, hooks, and components
-3. Look for the hook triple pattern in augur-hooks: `use<Name>`, `get<Name>Options`, `get<Name>Key`
-4. Check augur-web for UI components before building custom ones
-5. Only use what is in your `node_modules/` — do not reference the source repo
+### Step 1: Read llms.txt
+
+For each installed `@simpleapps-com/augur-*` package, read its `llms.txt`:
+```
+Read("repo/node_modules/@simpleapps-com/<package>/llms.txt")
+```
+This lists every export with descriptions and usage examples.
+
+### Step 2: Read README.md for details
+
+If llms.txt shows a relevant export, read the README for full API, code examples, and "Replaces" guidance showing what site code it eliminates.
+
+### Step 3: MUST NOT grep compiled output
+
+MUST NOT read or grep `dist/`, `.d.ts`, `.js`, or any compiled files to discover package capabilities. These are minified build artifacts — unreliable for discovery. The README and llms.txt are the ONLY source of truth.
+
+### Step 4: Before filing a package issue
+
+Before creating an issue on `simpleapps-com/augur-packages` requesting a new feature:
+1. Search ALL package llms.txt files for the function/hook name
+2. Search ALL package README.md files for the concept
+3. If found, the problem is site adoption — not a package gap. Use the existing export.
+
+### Step 5: Before writing custom code
+
+Before creating a custom hook, utility, or action in a site:
+1. Search ALL package llms.txt files for similar functionality
+2. Check the augur-hooks README "Examples" section for the pattern
+3. If a package export exists, use it. If it does not work as expected, file a bug on the package — not a reimplementation in the site.
 
 ## What Stays Site-Specific
 
