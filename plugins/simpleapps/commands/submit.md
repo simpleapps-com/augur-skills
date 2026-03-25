@@ -14,19 +14,21 @@ First, load these skills:
 
 Submit the current work for review by following the **Submit** section of the project's `wiki/Deployment.md` page.
 
-## Process
+## Hard Requirement: Deployment Page
 
-1. Read `wiki/Deployment.md` and find the **Submit** section
-2. If missing, stop and tell the user: "No Submit section found in wiki/Deployment.md. Run `/curate-wiki` to generate the Deployment page."
-3. Check the current branch — warn if on main/master
-4. Follow the steps defined in the Submit section
+Before doing ANYTHING else, read `wiki/Deployment.md` and find the **Submit** section.
+
+**If `wiki/Deployment.md` does not exist or has no Submit section, YOU MUST STOP IMMEDIATELY.** Do not guess, do not improvise, do not use defaults. Tell the user:
+
+> "Cannot run /submit — no Deployment page found at wiki/Deployment.md. Run /curate-wiki to generate it from the codebase."
+
+Then stop. Do nothing else. MUST NOT attempt to commit, create PRs, or figure out the steps on your own.
+
+## Process (only if Deployment page exists)
+
+1. Follow the steps defined in the **Submit** section of `wiki/Deployment.md`
+2. Check the current branch — warn if on main/master
+3. Use conventional-commits format for commit messages
+4. Use github skill conventions for PR title and body
 5. At each git write operation, report and wait for user approval (git-safety)
-
-## Defaults
-
-When the Submit section exists but is minimal, fill in with skill conventions:
-- Commit message: conventional-commits format
-- PR title: under 70 chars, conventional style
-- PR body: summary + test plan (github skill conventions)
-- Base branch: repo default branch
-- MUST NOT use `$()` in gh commands — use `--body-file` with a tmp file
+6. MUST NOT use `$()` in gh commands — use `--body-file` with a tmp file

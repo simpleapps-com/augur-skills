@@ -12,18 +12,18 @@ First, load these skills:
 
 Deploy to staging by following the **Deploy** section of the project's `wiki/Deployment.md` page.
 
-## Process
+## Hard Requirement: Deployment Page
 
-1. Read `wiki/Deployment.md` and find the **Deploy** section
-2. If missing, stop and tell the user: "No Deploy section found in wiki/Deployment.md. Run `/curate-wiki` to generate the Deployment page."
-3. Follow the steps defined in the Deploy section
-4. At each git write operation, report and wait for user approval (git-safety)
+Before doing ANYTHING else, read `wiki/Deployment.md` and find the **Deploy** section.
 
-## Common Patterns
+**If `wiki/Deployment.md` does not exist or has no Deploy section, YOU MUST STOP IMMEDIATELY.** Do not guess, do not improvise, do not infer steps from the codebase. Tell the user:
 
-The Deploy section may define different workflows per project:
-- **Client sites**: merge all open approved PRs, staging auto-deploys on merge
-- **Package repos**: merge PR to main, staging picks up changes
-- **Services**: merge PR, trigger staging deploy
+> "Cannot run /deploy — no Deployment page found at wiki/Deployment.md. Run /curate-wiki to generate it from the codebase."
 
-The command does NOT guess — it reads and executes what the wiki says. If the steps involve batch operations (e.g. merging multiple PRs), show the list and confirm with the user before proceeding.
+Then stop. Do nothing else. MUST NOT attempt to merge PRs, trigger builds, or figure out the steps on your own.
+
+## Process (only if Deployment page exists)
+
+1. Follow the steps defined in the **Deploy** section of `wiki/Deployment.md`
+2. At each git write operation, report and wait for user approval (git-safety)
+3. If the steps involve batch operations (e.g. merging multiple PRs), show the list and confirm with the user before proceeding

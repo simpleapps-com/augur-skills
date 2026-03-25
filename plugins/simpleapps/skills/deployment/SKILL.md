@@ -44,8 +44,9 @@ Not all projects need all three. Client sites may only have Submit and Deploy. P
 
 ## Guard Rails
 
+- **If `wiki/Deployment.md` does not exist, STOP IMMEDIATELY.** Do not guess, do not improvise, do not infer steps from the codebase. Tell the user to run `/curate-wiki` to generate it. Then do nothing else.
+- **If the relevant section (Submit, Deploy, or Publish) is missing from the page, STOP IMMEDIATELY.** Same rule — do not guess the steps.
 - MUST NOT guess deployment steps — only execute what the wiki defines
-- MUST NOT operate if the Deployment page is missing or the relevant section is absent
 - MUST load git-safety — every git write operation requires user approval
 - `/publish` MUST complete the verification gate before executing (see below)
 

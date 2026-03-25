@@ -12,10 +12,17 @@ First, load these skills:
 
 Publish a production release by following the **Publish** section of the project's `wiki/Deployment.md` page. This is the highest-stakes command — it puts code in front of real users.
 
-## Process
+## Hard Requirement: Deployment Page
 
-1. Read `wiki/Deployment.md` and find the **Publish** section
-2. If missing, stop and tell the user: "No Publish section found in wiki/Deployment.md. Run `/curate-wiki` to generate the Deployment page."
+Before doing ANYTHING else, read `wiki/Deployment.md` and find the **Publish** section.
+
+**If `wiki/Deployment.md` does not exist or has no Publish section, YOU MUST STOP IMMEDIATELY.** Do not guess, do not improvise, do not infer steps from the codebase or version files. Tell the user:
+
+> "Cannot run /publish — no Deployment page found at wiki/Deployment.md. Run /curate-wiki to generate it from the codebase."
+
+Then stop. Do nothing else. MUST NOT attempt to bump versions, tag, or push on your own.
+
+## Process (only if Deployment page exists)
 
 ### Verification Gate (MUST complete before any action)
 
