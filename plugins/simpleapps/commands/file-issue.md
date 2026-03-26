@@ -51,9 +51,7 @@ For **cross-repo** issues, also include:
 - Local issue reference: `simpleapps-com/<current-repo>#N` (if exists)
 - Impact: what is blocked without this change
 
-Show the draft to the user for approval before creating.
-
-Create the issue:
+Create the issue immediately — the user invoking this command is the approval:
 ```bash
 gh issue create --repo simpleapps-com/<target> --title "type: description" --body-file tmp/issue-body.txt
 ```

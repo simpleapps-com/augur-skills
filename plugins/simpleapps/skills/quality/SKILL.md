@@ -57,9 +57,19 @@ Do not install or configure tools without the user's approval. Flag what's missi
 
 ## Resolve, never hide
 
-When a check fails, fix the underlying code. NEVER disable lint rules, skip tests, suppress warnings, lower thresholds, or add ignore comments to make checks pass. The goal is to resolve issues, not hide them. If a rule seems wrong, investigate why it exists and ask the user before changing it.
+When a check fails, the solution is ALWAYS to fix the underlying code. NEVER:
 
-When reviewing code, scan for existing suppressions (`eslint-disable`, `@ts-ignore`, `.skip`, `noqa`, etc.) and flag them to the user. These are hidden technical debt that should be evaluated for resolution.
+- Disable or weaken a lint rule (`eslint-disable`, rule removal, config changes)
+- Skip or delete a failing test (`.skip`, `.only`, deleting the test)
+- Silence type errors (`@ts-ignore`, `@ts-expect-error`, `type: any`)
+- Suppress warnings, lower coverage thresholds, or modify quality configs
+- Add `--no-verify`, `--force`, or flags that bypass checks
+
+These actions hide problems — they do not fix them. A suppressed error is worse than a visible one because it will be forgotten and compound.
+
+If a rule or test seems wrong, investigate why it exists before concluding it should change. Rules exist for reasons. If after investigation it genuinely does not apply, explain the reasoning to the user and let them decide — do not unilaterally disable it.
+
+When reviewing code, scan for existing suppressions (`eslint-disable`, `@ts-ignore`, `.skip`, `noqa`, `phpcs:ignore`, etc.) and flag every instance to the user. These are hidden technical debt.
 
 ## Browser Error Overlays
 

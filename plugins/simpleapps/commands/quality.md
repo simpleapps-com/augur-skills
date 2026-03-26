@@ -6,7 +6,7 @@ allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(pyth
 
 First, use Skill("quality") to load quality tooling awareness, then Skill("wiki") to check for project-specific conventions, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions.
 
-Run all code quality checks, fix every issue found, and repeat until clean.
+Run all code quality checks on the FULL codebase, fix every issue found, and repeat until clean. Always run checks against the entire project — never scope to changed files only.
 
 ## 1. Discover quality tools
 
@@ -20,7 +20,31 @@ Do NOT silently skip missing tools. Flag them every time.
 
 When suggesting new tools, always suggest adding them as `package.json` scripts (e.g., `"knip": "knip"`, `"format": "prettier --write ."`). Scripts run via `pnpm` are pre-approved (`pnpm:*` is in the allow list) — no permission prompts. A tool that isn't in `package.json` will trigger a permission prompt every time it runs, defeating the purpose of autonomous quality checks.
 
-## 3. Run quality checks
+## 3. Update augur packages
+
+For Node projects with `@simpleapps-com/augur-*` packages installed — do this BEFORE running quality checks. Outdated or mismatched augur packages cause lefthook and other checks to fail.
+
+**If `augur-doctor` is available** (ships with `@simpleapps-com/augur-config`): run `pnpm augur-doctor .` from the site directory. This checks version alignment, latest versions, and platform standard conformance in one pre-approved command. No permission prompt.
+
+**If `augur-doctor` is NOT available**: use the Read tool to check each package's `package.json` for its version, and `npm view @simpleapps-com/<pkg> version` as separate Bash calls for latest versions. MUST NOT use `node -e` or `require()`.
+
+**augur-* packages (semver):** All `@simpleapps-com/augur-*` packages are published together from a monorepo and MUST be on the same version. If any are mismatched, flag it as an error — mixed versions cause subtle bugs. If any are outdated, all MUST be updated together.
+
+**augur-api (CalVer):** `@simpleapps-com/augur-api` is versioned independently using CalVer (YYYY.MM.seq). Check it separately.
+
+If any augur-* packages are outdated or mismatched, update them automatically. Client sites use pnpm workspaces — augur packages are installed at the site level, not the root. Use `--filter` to target the right workspace:
+
+```bash
+pnpm --filter <site-name> update @simpleapps-com/augur-config @simpleapps-com/augur-hooks @simpleapps-com/augur-server @simpleapps-com/augur-utils @simpleapps-com/augur-web @simpleapps-com/augur-tailwind
+```
+
+To find the site name, read `pnpm-workspace.yaml` and the site-level `package.json`. For non-workspace projects, run `pnpm update` without `--filter`.
+
+Update ALL augur-* packages together in a single command — never update one without the others.
+
+**augur-api** is independent (CalVer) — update it separately if outdated: `pnpm --filter <site-name> update @simpleapps-com/augur-api`.
+
+## 4. Run quality checks
 
 Run each discovered check as a separate command. Order matters — fix formatting first, then lint, then typecheck, then test:
 
@@ -31,7 +55,7 @@ Run each discovered check as a separate command. Order matters — fix formattin
 5. **Dead code** — `pnpm knip` (if configured). Report findings but do not auto-fix — unused exports may be intentional public API.
 6. **Other checks** — any additional scripts like `validate-skills`, `check`, etc.
 
-## 4. Fix all issues
+## 5. Fix all issues
 
 For each failing check:
 
@@ -64,20 +88,6 @@ If a rule or test seems wrong, investigate why it exists before concluding it sh
 
 Scan the codebase for existing disabled checks: `eslint-disable`, `@ts-ignore`, `@ts-expect-error`, `.skip` tests, `noqa`, `phpcs:ignore`, and similar suppression comments. Report every instance found to the user so they can decide whether each should be resolved. These are technical debt — make them visible.
 
-## 5. Check package freshness
-
-For Node projects with `@simpleapps-com/augur-*` packages installed:
-
-**If `augur-doctor` is available** (ships with `@simpleapps-com/augur-config`): run `pnpm augur-doctor .` from the site directory. This checks version alignment, latest versions, and platform standard conformance in one pre-approved command. No permission prompt.
-
-**If `augur-doctor` is NOT available**: use the Read tool to check each package's `package.json` for its version, and `npm view @simpleapps-com/<pkg> version` as separate Bash calls for latest versions. MUST NOT use `node -e` or `require()`.
-
-**augur-* packages (semver):** All `@simpleapps-com/augur-*` packages are published together from a monorepo and MUST be on the same version. If any are mismatched, flag it as an error — mixed versions cause subtle bugs. If any are outdated, all MUST be updated together.
-
-**augur-api (CalVer):** `@simpleapps-com/augur-api` is versioned independently using CalVer (YYYY.MM.seq). Check it separately.
-
-Report any outdated or mismatched packages to the user. Suggest updating but let the user decide — updates can require code changes.
-
 ## 6. Loop until clean
 
 After fixing all issues from one round:
@@ -85,7 +95,7 @@ After fixing all issues from one round:
 1. Re-run ALL checks from the beginning
 2. If new issues appear, fix them
 3. Repeat until all checks pass with zero issues
-4. MUST restart from step 3 after ANY code change — a fix in one area can break another
+4. MUST restart from step 4 after ANY code change — a fix in one area can break another
 
 ## 7. Report
 
