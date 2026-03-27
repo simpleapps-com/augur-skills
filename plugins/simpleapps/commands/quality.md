@@ -8,6 +8,8 @@ First, use Skill("quality") to load quality tooling awareness, then Skill("wiki"
 
 Run all code quality checks on the FULL codebase, fix every issue found, and repeat until clean. Always run checks against the entire project — never scope to changed files only.
 
+**CRITICAL: There is no such thing as a "pre-existing issue."** If a check fails, fix it. Do not skip it, do not label it as "not from our changes", do not say "that's pre-existing" and move on. Context compaction erases your memory of changes made earlier in the session — what looks pre-existing is often something you introduced. Even if you truly did not cause it, the goal is ZERO issues, not blame assignment. Fix every failure. No exceptions.
+
 ## 1. Discover quality tools
 
 Use the tool table and config files from the quality skill to check what's configured. Read `repo/package.json` (or equivalent for PHP/Python). The config files are the source of truth — only run what's defined.

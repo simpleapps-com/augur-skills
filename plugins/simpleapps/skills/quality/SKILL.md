@@ -55,6 +55,10 @@ Do not install or configure tools without the user's approval. Flag what's missi
 - **No tests for changed code** — suggest vitest
 - **No pre-commit hooks** — suggest lefthook
 
+## Every failure is your problem
+
+There is no such thing as a "pre-existing issue." If a check fails, fix it immediately. Do not skip it, do not classify it as "not from our changes", do not continue to the next check hoping someone else will fix it later. Context compaction erases your memory of earlier changes — what looks pre-existing may be something you introduced. Even if you truly did not cause it, fix it anyway. The goal is zero issues.
+
 ## Resolve, never hide
 
 When a check fails, the solution is ALWAYS to fix the underlying code. NEVER:

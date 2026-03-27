@@ -146,7 +146,9 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
       "Bash(which:*)",
       "Bash(basename:*)",
       "Bash(dirname:*)",
-      "Bash(pwd:*)"
+      "Bash(pwd:*)",
+      "Bash(lsof:*)",
+      "mcp__plugin_simpleapps_augur-api__*"
     ],
     "deny": [
       "Bash(cd:*)",

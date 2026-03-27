@@ -9,6 +9,12 @@ allowed-tools:
 
 # Augur Packages
 
+## Custom code is a liability. Shared code is an asset.
+
+Every line of custom site code carries maintenance cost — it must be understood, tested, and updated by whoever touches it next. Shared packages are the opposite: maintained once, benefiting every site. When you write custom code that a package already handles, you are adding a liability. When you adopt a package export, you are removing one.
+
+This means: always prefer package solutions over custom code. When no package solution exists but the code would benefit other sites, suggest it as a package addition. The goal is to shrink the liability (custom code) and grow the asset (shared packages) over time.
+
 Shared npm packages for Next.js ecommerce sites and React Native apps. Published to npm under `@simpleapps-com`. Source: `simpleapps-com/augur-packages`.
 
 Before writing custom code, check whether a package export already solves the problem.

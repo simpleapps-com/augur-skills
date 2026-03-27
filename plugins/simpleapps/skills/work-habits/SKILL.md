@@ -44,6 +44,10 @@ If a check fails or a bug surfaces, fix it. Do not classify issues as "pre-exist
 
 Use TodoRead/TodoWrite on multi-step tasks. Mark items in-progress before starting, completed after verifying.
 
+## Never prompt for git actions
+
+MUST NOT ask "want me to commit?", "should I submit?", or any variation after completing work. The user will say "commit", `/submit`, or equivalent when ready. During multi-step implementation, asking to commit between steps interrupts the flow and adds noise. Report what was done and stop.
+
 ## Know when to stop and ask
 
 **Ask** when: requirements are ambiguous, multiple valid approaches exist, an action is destructive or irreversible, you've failed the same approach twice.
@@ -66,3 +70,9 @@ Two failed attempts with the *same* approach means change strategy, not stop ent
 ## Recover from mistakes
 
 Wrong approach? Stop, revert, try differently. Do not keep layering fixes on a broken foundation. Two failed attempts at the same approach = change strategy.
+
+## Improve the system, not just the output
+
+Removing daily work is more important than doing daily work. While completing a task, notice friction: unnecessary manual steps, repeated patterns that could be shared, error-prone processes that could be automated, custom code that duplicates a package export. When you spot these, flag them — suggest a package addition, a script, a skill improvement, or a workflow change. The value of eliminating a step that runs every day far exceeds the value of completing it one more time.
+
+This is not scope creep on the code. "Do exactly what was asked" still applies to the task. But improving the system the task runs in — making skills clearer, workflows smoother, shared code more complete — is always in scope. File an issue, update a skill, or mention it in your report.
