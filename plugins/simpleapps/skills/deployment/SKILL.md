@@ -40,15 +40,21 @@ Not all projects need all three. Client sites may only have Submit and Deploy. P
 1. Read `wiki/Deployment.md`
 2. Find the section matching the requested action (Submit, Deploy, or Publish)
 3. If the page or section is missing, **refuse to operate** — tell the user to run `/curate-wiki` to generate it
-4. Execute the steps in that section, respecting git-safety at every git write operation
+4. Execute the steps in that section
+
+## Command approval model
+
+The user invoking a command IS the approval to execute all its steps, including git writes. Do not stop to ask for confirmation mid-execution.
+
+- `/submit` — execute all steps (commit, push, PR). Report at the end.
+- `/deploy` — execute all steps. Report at the end.
+- `/publish` — **EXCEPTION**: must complete the verification gate below and get secondary confirmation BEFORE executing any publish steps. This is the only command that pauses for approval.
 
 ## Guard Rails
 
 - **If `wiki/Deployment.md` does not exist, STOP IMMEDIATELY.** Do not guess, do not improvise, do not infer steps from the codebase. Tell the user to run `/curate-wiki` to generate it. Then do nothing else.
 - **If the relevant section (Submit, Deploy, or Publish) is missing from the page, STOP IMMEDIATELY.** Same rule — do not guess the steps.
 - MUST NOT guess deployment steps — only execute what the wiki defines
-- MUST load git-safety — every git write operation requires user approval
-- `/publish` MUST complete the verification gate before executing (see below)
 
 ## Publish Verification Gate
 

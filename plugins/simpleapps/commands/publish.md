@@ -38,10 +38,12 @@ Then stop. Do nothing else. MUST NOT attempt to bump versions, tag, or push on y
    ```
 8. **Stop and wait** for the user to explicitly confirm this specific version
 
-### Execute Publish Steps
+### Execute Publish Steps (only after user confirms)
+
+Once the user confirms, execute ALL remaining steps without pausing — the confirmation IS the approval for all git writes.
 
 9. Follow the steps defined in the Publish section (typically: bump version files, commit, tag, push)
-10. At each git write operation, report and wait for user approval
+10. Report what was done at the end
 
 ## MUST NOT
 

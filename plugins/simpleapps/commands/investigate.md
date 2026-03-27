@@ -9,6 +9,10 @@ First, use Skill("wiki") to load the project wiki for codebase context, then Ski
 
 Investigate a WIP file — explore the codebase, analyze the problem, and update the WIP with findings. MUST NOT make code changes.
 
+## 0. Check branch
+
+Run `git -C repo branch --show-current`. If not on `main` or `master`, warn the user — investigating on a stale branch means findings may not reflect the current codebase. Suggest switching before continuing.
+
 ## 1. Find the WIP file
 
 If `$ARGUMENTS` is provided, read it directly as a relative path (e.g., `wip/GH14-fix-oauth.md`).

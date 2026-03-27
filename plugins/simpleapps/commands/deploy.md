@@ -24,6 +24,8 @@ Then stop. Do nothing else. MUST NOT attempt to merge PRs, trigger builds, or fi
 
 ## Process (only if Deployment page exists)
 
+This command IS the user's approval to deploy. Execute all steps without stopping to ask for confirmation.
+
 1. Follow the steps defined in the **Deploy** section of `wiki/Deployment.md`
-2. At each git write operation, report and wait for user approval (git-safety)
-3. If the steps involve batch operations (e.g. merging multiple PRs), show the list and confirm with the user before proceeding
+2. Execute all git and deployment operations — do not pause between them
+3. Report what was done at the end

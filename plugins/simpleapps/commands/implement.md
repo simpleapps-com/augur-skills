@@ -11,6 +11,10 @@ Execute an implementation plan. Work autonomously — only stop for user input w
 
 **Scope: implementation means code changes only.** Write code, edit files, run build/test commands. Do NOT commit, create branches, or open PRs — those are separate actions the user will request when ready. When done, report what changed and stop.
 
+## 0. Check branch
+
+Run `git -C repo branch --show-current`. If not on `main` or `master`, warn the user — implementing on the wrong branch means the work may conflict or be based on stale code. Suggest switching before continuing.
+
 ## 1. Determine the plan
 
 ### With a WIP file
