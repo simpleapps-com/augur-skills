@@ -69,7 +69,7 @@ gh issue create --repo simpleapps-com/<repo> \
 The full workflow from task to delivery, each step feeding the next:
 
 ```
-/triage → /wip → /investigate → /discuss → /implement → /quality → /verify → /submit → /deploy → /publish
+/triage → /wip → /investigate → /discuss → /implement → /quality → /sanity-check → /verify → /submit → /deploy → /publish
 ```
 
 | Phase | Command | What happens |
@@ -80,6 +80,7 @@ The full workflow from task to delivery, each step feeding the next:
 | Align | `/discuss` | Conversational alignment before acting |
 | Build | `/implement` | Execute the plan — code changes only, no commits |
 | Code checks | `/quality` | Lint, typecheck, test, package freshness |
+| Solution audit | `/sanity-check` | Did we solve the right problem without commission/omission errors? |
 | Browser checks | `/verify` | Walk through wiki's Testing.md checklist in Chrome |
 | Submit | `/submit` | Commit and create a PR for review |
 | Stage | `/deploy` | Deploy to staging (merge PRs, trigger staging build) |
