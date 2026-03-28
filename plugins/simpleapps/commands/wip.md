@@ -2,7 +2,7 @@
 name: wip
 description: Fetch a Basecamp URL or GitHub issue with full comments and scaffold a WIP file
 argument-hint: "<basecamp-url or github-issue>"
-allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(basename:*), Skill(basecamp), Skill(workflow), Skill(github), Skill(bash-simplicity), mcp__plugin_simpleapps_basecamp__*, Read, Write, Edit, Glob
+allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(basename:*), Bash(gh label:*), Skill(basecamp), Skill(workflow), Skill(github), Skill(bash-simplicity), mcp__plugin_simpleapps_basecamp__*, Read, Write, Edit, Glob
 ---
 
 First, use Skill("basecamp") to load the Basecamp MCP reference, then Skill("workflow") for the Basecamp-to-GitHub flow, then Skill("github") for GH CLI conventions, then Skill("bash-simplicity") for Bash conventions.
@@ -60,7 +60,28 @@ Extract:
 - **Body**: issue body
 - **Comments**: all comments with author and date
 
-## 3. Detect cross-references
+## 3. Label unlabeled GitHub issues
+
+If the source is a GitHub issue and the fetched data shows an empty `labels` array, assign a label:
+
+1. Read the issue title and body
+2. Pick the best-fit label from the standard set: `bug`, `security`, `a11y`, `perf`, `SEO`, `enhancement`, `refactor`
+3. Apply it: `gh issue edit <N> --repo <org>/<repo> --add-label <label>`
+
+Use these heuristics:
+- Broken/wrong behavior, errors, crashes: `bug`
+- New feature or capability: `enhancement`
+- Accessibility (screen reader, contrast, focus): `a11y`
+- Performance, speed, Core Web Vitals: `perf`
+- SEO, meta tags, structured data: `SEO`
+- Code cleanup with no user-visible change: `refactor`
+- Security vulnerability: `security`
+
+If the issue could fit multiple labels, pick the single most relevant one. Do not add status labels (`blocked`, `production-blocker`) in this step — those are applied by other commands when the situation warrants it.
+
+Skip this step for Basecamp sources (labels are a GitHub concept).
+
+## 4. Detect cross-references
 
 Scan the body and all comments for links to the other system:
 - In BC content, look for GitHub URLs (`github.com/*/issues/N`) → note as `GH #N`
@@ -68,7 +89,7 @@ Scan the body and all comments for links to the other system:
 
 Record all cross-references for the Source section.
 
-## 4. Generate slug
+## 5. Generate slug
 
 From the title:
 1. Lowercase
@@ -77,11 +98,11 @@ From the title:
 4. Trim leading/trailing hyphens
 5. Truncate to 50 characters (trim at last full word)
 
-## 5. Check for existing WIP
+## 6. Check for existing WIP
 
 Use Glob to check `wip/` for a file starting with the same prefix (`BC{#}` or `GH{#}`). If one exists, read it and go to step 6a (update). Otherwise, go to step 6b (create).
 
-## 6a. Update existing WIP
+## 7a. Update existing WIP
 
 Read the existing WIP file. Compare against freshly fetched content:
 
@@ -94,7 +115,7 @@ Read the existing WIP file. Compare against freshly fetched content:
 
 Tell the user what was updated (e.g., "Added 2 new comments, status unchanged").
 
-## 6b. Create new WIP file
+## 7b. Create new WIP file
 
 Write to `wip/{prefix}{#}-{slug}.md` where prefix is `GH` or `BC`.
 
@@ -143,7 +164,7 @@ _Investigation notes go here._
 - {Any cross-references found}
 ```
 
-## 7. Report
+## 8. Report
 
 For new WIP files:
 - WIP file created at `wip/{filename}`
