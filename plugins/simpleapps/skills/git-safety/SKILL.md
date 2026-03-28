@@ -33,6 +33,8 @@ Each approval covers ONE specific operation. Examples:
 - The user runs `/submit` → you may execute the Submit steps (commit + push or PR). You may NOT also tag or publish.
 - The user runs `/publish` → you may execute the Publish steps (bump, commit, tag, push). This does NOT carry forward to future commits.
 
+Approval for one repo does NOT extend to another. Approval to commit/push the wiki does NOT grant approval to commit/push the main repo, and vice versa. Each repo requires its own explicit approval.
+
 Previous approvals do NOT grant future permissions. If the user approved a commit earlier in the session, that does not mean you can commit again later without asking.
 
 ### When /submit follows earlier work
