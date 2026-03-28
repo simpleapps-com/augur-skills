@@ -20,7 +20,11 @@ Read `wiki/Testing.md` and extract all checklist items (`- [ ]` lines). Group th
 
 Check if a dev server is already running. If not, ask the user if they want to start one. The dev server command varies by project — check `repo/package.json` for a `dev` script. Run it via `pnpm dev` or the appropriate filter command. Wait for it to be ready before proceeding.
 
-## 4. Walk through the checklist
+## 4. Connect to Chrome
+
+Call `tabs_context_mcp` to establish the browser connection. If it fails, wait 3 seconds and retry up to 3 times before giving up — the extension often needs a moment on the first call. Once connected, create a new tab for testing.
+
+## 5. Walk through the checklist
 
 For each checklist section, use Chrome automation to:
 
@@ -32,7 +36,7 @@ For each checklist section, use Chrome automation to:
 
 MUST run each Chrome action as a separate tool call. MUST NOT skip items or assume they pass without checking.
 
-## 5. Report
+## 6. Report
 
 ```
 ## Verification Report
