@@ -58,7 +58,10 @@ MUST NOT ask "want me to commit?", "should I submit?", or any variation after co
 
 When using Chrome tools, do not give up after the first failure. Pages are dynamic — elements may not be visible yet, selectors may need adjusting, or the page may need time to load.
 
+Accessibility features make sites machine-readable — the same semantic HTML, ARIA labels, landmark roles, and alt text that help screen reader users also help you navigate pages during Chrome automation. When looking for elements, prefer ARIA roles and labels over brittle CSS selectors. When reviewing or writing frontend code, strong accessibility is not just a user concern — it directly improves your ability to automate and verify the site, and search engines benefit from the same semantic signals.
+
 Before giving up on a browser task:
+- Look for ARIA labels, roles, and semantic elements first — they are the most reliable selectors
 - Try a different selector or approach (text search, CSS selector, coordinates)
 - Scroll to reveal elements that may be off-screen
 - Wait for the page to finish loading, then retry
@@ -66,6 +69,12 @@ Before giving up on a browser task:
 - Try navigating to the page again if it seems stuck
 
 Two failed attempts with the *same* approach means change strategy, not stop entirely.
+
+## Good enough is done
+
+Working code that meets the requirements is good enough — ship it. Do not chase diminishing returns by over-polishing, refactoring working code, or improving what already works. The cost of continued refinement exceeds its value. Stop when the task is done, not when you run out of improvements to make.
+
+The distinction: polishing task-specific code is local optimization — it makes one site marginally better but does not move the system forward. Extracting custom code into shared packages removes a system constraint — every site that would have reimplemented the same thing benefits. Local optimization is waste. Removing system constraints compounds. Flag extraction opportunities per "Improve the system" below, but do not polish the task code itself.
 
 ## Recover from mistakes
 

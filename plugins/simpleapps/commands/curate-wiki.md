@@ -6,9 +6,11 @@ allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Skill(wiki), Skill(git-sa
 
 First, use Skill("wiki") to load wiki conventions, Skill("git-safety") to load git guardrails, Skill("bash-simplicity") for Bash conventions, and Skill("context-efficiency") for always-loaded content guidelines.
 
-Curate the project wiki. This is an ongoing improvement process — each run makes the wiki clearer, more accurate, better organized, and more useful for its three audiences (junior devs, senior devs, AI agents). The wiki MUST stay within its 20K token budget so it can be loaded into context without consuming the working window.
+Curate the project wiki. Each run targets the highest-value gaps — not exhaustive improvement. The wiki MUST stay within its 20K token budget so it can be loaded into context without consuming the working window.
 
 The working code is the ground truth. The current session is the hint where to start — use what was learned, discussed, or changed this session to guide where the wiki most needs attention. Then verify against the actual codebase.
+
+**Prioritization**: Fix inaccuracies and critical gaps first (missing Deployment page, outdated instructions, wrong claims). Then improve clarity and organization. Do not polish pages that are already accurate and clear — an accurate wiki with rough prose is better than a polished wiki that delays shipping. Propose improvements in priority order so the user can draw the line.
 
 **MUST complete ALL steps below in sequence without stopping.** Do not pause between steps or wait for prompts — run through the entire process, stopping only at step 5 (approve changes) and step 8 (approve commit/push).
 
@@ -43,12 +45,12 @@ Evaluate each page against the wiki conventions (from the wiki skill) and the cu
 - Is the sidebar navigation logical and complete?
 
 ### Cross-linking
-Cross-linking is the most important structural feature — it turns a collection of files into a knowledge graph. Assess aggressively:
-- Does every page link to related sections on other pages?
+Cross-linking turns a collection of files into a knowledge graph. Focus on high-value connections:
 - Are concepts that are explained elsewhere linked with `[[Page-Name#section]]`?
-- Are there pages with few or no outbound links? These are isolated nodes that need connecting.
-- Are there pages that should be linked TO but aren't referenced from related pages?
-- **Always-loaded → wiki bridge**: Does CLAUDE.md link to every wiki content page? Do rules with corresponding wiki topics link to the relevant section? These links cost ~15 tokens each but make the full wiki discoverable from always-loaded context — the highest-ROI pointer available.
+- Are there isolated pages with no inbound or outbound links?
+- **Always-loaded → wiki bridge**: Does CLAUDE.md link to every wiki content page? These links cost ~15 tokens each but make the full wiki discoverable — the highest-ROI pointer available.
+
+Do not exhaustively cross-link every mention of every concept. Link where a reader would naturally need to navigate — not to maximize link density.
 
 ### Usability
 - Can a reader quickly find what they need?

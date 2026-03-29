@@ -57,10 +57,12 @@ Search for real-world experience with the approach:
 - Post-mortems and lessons learned
 
 ### Alternatives
-Search for alternative approaches. For each, evaluate:
+Search for up to 3 alternative approaches. For each, evaluate:
 - Long-term maintainability
 - Community adoption and support
 - Fit with the current project's stack and patterns
+
+Do not exhaustively evaluate every possible approach. 3 credible alternatives with 2-3 authoritative sources each is sufficient to make a decision. Stop researching when you can confidently recommend one approach — diminishing returns set in fast.
 
 ## 4. Evaluate findings
 

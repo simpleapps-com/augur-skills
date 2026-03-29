@@ -6,9 +6,9 @@ allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(pyth
 
 First, use Skill("quality") to load quality tooling awareness, then Skill("wiki") to check for project-specific conventions, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions.
 
-Run all code quality checks on the FULL codebase, fix every issue found, and repeat until clean. Always run checks against the entire project — never scope to changed files only.
+Run all code quality checks on the FULL codebase and fix issues found.
 
-**CRITICAL: There is no such thing as a "pre-existing issue."** If a check fails, fix it. Do not skip it, do not label it as "not from our changes", do not say "that's pre-existing" and move on. Context compaction erases your memory of changes made earlier in the session — what looks pre-existing is often something you introduced. Even if you truly did not cause it, the goal is ZERO issues, not blame assignment. Fix every failure. No exceptions.
+**Scope rule**: Fix every issue in files touched during this session — context compaction erases your memory of earlier changes, so what looks pre-existing may be something you introduced. For failures in files you did NOT touch, report them as separate issues to fix later rather than fixing them inline. The goal is zero issues in the work area, not unbounded cleanup of the entire codebase. Fixing unrelated files is local optimization that delays shipping the actual task.
 
 ## 1. Discover quality tools
 
@@ -57,22 +57,23 @@ Run each discovered check as a separate command. Order matters — fix formattin
 5. **Dead code** — `pnpm knip` (if configured). Report findings but do not auto-fix — unused exports may be intentional public API.
 6. **Other checks** — any additional scripts like `validate-skills`, `check`, etc.
 
-## 5. Fix all issues
+## 5. Fix issues in scope
 
 For each failing check:
 
 1. Read the error output carefully
-2. Fix the issue in the source code using Edit
-3. Re-run the check to verify the fix
-4. If a fix introduces new issues in other checks, fix those too
+2. If the failure is in a file touched during this session, fix it
+3. If the failure is in an unrelated file, add it to the report as a separate finding
+4. Re-run the check to verify the fix
+5. If a fix introduces new issues in other checks, fix those too
 
 ### Rules
 
-- Fix EVERY issue. No exceptions. No skipping.
-- "Pre-existing" is not an excuse. Context compaction erases your memory of introducing issues earlier in the session. If a check fails, you own it. Fix it.
-- If you did not introduce an issue, fix it anyway. The goal is zero issues, not blame assignment.
+- Fix every issue in files you touched. No exceptions. No skipping.
+- Context compaction erases your memory of earlier changes — if a check fails in a file you might have touched, fix it. Err on the side of owning it.
+- For failures in files you definitely did not touch, report them — do not fix them inline. They are separate work.
 - If a fix is unclear, explore the codebase to understand the intent before changing code
-- If a test fails because of a real bug, fix the bug
+- If a test fails because of a real bug in code you touched, fix the bug
 
 ### Resolve, never hide
 
