@@ -60,6 +60,18 @@ These commands are **denied** in project settings and will always be rejected �
 
 MUST NOT use `node -e` or `python -c` to run inline scripts — these trigger permission prompts. If you need to read a file, use the Read tool. If you need to process data, do it in your response, not in a shell script.
 
+## Background Tasks
+
+When you start a background task with `run_in_background`, you receive a task ID. That ID is how you manage the task later:
+
+- **Stop it**: use `TaskStop` with the task ID
+- **Check output**: use `TaskGet` or `Read` on the output file
+- **List running tasks**: use `TaskList`
+
+MUST NOT use `kill` or `pkill` to stop background tasks — these are denied and will fail. Use `TaskStop` instead — it cleanly shuts down the process and updates internal tracking.
+
+If a process was started **outside your session** (by the user in a terminal), you cannot stop it with `TaskStop`. Ask the user to restart or stop it themselves.
+
 ## Cross-Project Searching
 
 When looking at another project's code, use dedicated tools with the project path — MUST NOT use shell commands:
