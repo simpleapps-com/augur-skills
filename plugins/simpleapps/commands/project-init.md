@@ -45,8 +45,10 @@ Run each command as a separate, simple call. MUST NOT combine commands.
      "additionalDirectories": [
        "~/projects/clients/*/wiki",
        "~/projects/clients/*/repo",
+       "~/projects/clients/*/tmp",
        "~/projects/simpleapps/*/wiki",
-       "~/projects/simpleapps/*/repo"
+       "~/projects/simpleapps/*/repo",
+       "~/projects/simpleapps/*/tmp"
      ]
    }
    ```

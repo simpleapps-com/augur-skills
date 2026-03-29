@@ -21,6 +21,10 @@ Reserve Bash for commands that have no dedicated tool equivalent.
 
 MUST NOT use `cd` in any Bash command — not even in compound commands like `cd /path && git log`. Use `git -C repo` for git, and path arguments for everything else. The `cd` deny rule does not suppress Claude Code's built-in security prompt for compound cd+git commands, so any `cd` usage will interrupt the user.
 
+## Check site.json first
+
+Before asking the user for credentials, tokens, siteId, domain, or any site-specific configuration, read `.simpleapps/site.json`. It is the single source of truth for site-level data — credentials, auth tokens, defaults, and identifiers. If what you need is not there, ask the user to add it to `site.json` rather than providing it in chat (chat data is ephemeral; `site.json` persists across sessions).
+
 ## Read the error first
 
 When debugging in the browser, MUST check for error overlays (red error pill/badge at the bottom of the page) before guessing at the problem. Click it, read the full error, stack trace, and source location. The answer is almost always right there.

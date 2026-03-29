@@ -51,10 +51,12 @@ The parent `{project}/` is NOT a git repo — it keeps code and wiki side-by-sid
 | Repo `.claude/rules/` | `repo/` | Minimal summaries referencing wiki |
 | Repo `.claude/CLAUDE.md` | `repo/` | Quick reference + wiki links |
 | Active task context | `wip/` | `{issue-number}-{short-desc}.md` files |
-| Temporary files | `tmp/` | Throwaway files, scratch space, build artifacts |
+| Temporary files | `tmp/` | Scratch space — commit msgs, PR bodies, intermediate output. Full access. |
 | SimpleApps config | `.simpleapps/` | Settings, site profile, credentials (see below) |
 
 **WIP**: Research, plans, decisions, test results. MUST NOT contain secrets, final docs, or code.
+
+**tmp/**: Fully available for scratch work — commit messages, PR bodies, issue comments, intermediate output, and any throwaway files. Read, write, and delete freely without asking. Create the folder if missing. Clean up files after use.
 
 ## Plugin Rules
 
