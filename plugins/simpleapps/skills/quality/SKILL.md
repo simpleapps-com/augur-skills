@@ -77,6 +77,12 @@ If a rule or test seems wrong, investigate why it exists before concluding it sh
 
 When reviewing code, scan for existing suppressions (`eslint-disable`, `@ts-ignore`, `.skip`, `noqa`, `phpcs:ignore`, etc.) and flag every instance to the user. These are hidden technical debt.
 
+## pnpm lockfile sync
+
+In pnpm workspace projects, the root `pnpm-lock.yaml` and site-level lockfiles MUST stay in sync. CI uses `--frozen-lockfile` and will reject mismatched lockfiles — this is the most common cause of deploy failures.
+
+After ANY `pnpm install`, `pnpm update`, or `pnpm add` in a workspace, run `pnpm install` at the repo root to regenerate the root lockfile. Commit both lockfiles together. If you forget, the next deploy will fail.
+
 ## Browser Error Overlays
 
 When debugging in the browser (Chrome automation), Next.js and other frameworks show a **red error overlay** at the bottom of the page when there are runtime errors. This overlay contains the actual error message, stack trace, and usually the exact file and line number causing the problem.

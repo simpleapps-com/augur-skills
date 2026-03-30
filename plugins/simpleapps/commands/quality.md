@@ -46,7 +46,15 @@ Update ALL augur-* packages together in a single command — never update one wi
 
 **augur-api** is independent (CalVer) — update it separately if outdated: `pnpm --filter <site-name> update @simpleapps-com/augur-api`.
 
-## 4. Run quality checks
+## 4. Verify pnpm lockfile sync
+
+For pnpm workspace projects (check for `pnpm-workspace.yaml`), the root `pnpm-lock.yaml` and any site-level lockfiles MUST be in sync. CI uses `--frozen-lockfile` and will fail if they diverge. This is the most common cause of deploy failures.
+
+Check: `pnpm install --frozen-lockfile` from the repo root. If it fails, the lockfiles are out of sync. Fix: run `pnpm install` from the repo root to regenerate, then stage and commit the updated lockfile alongside your other changes.
+
+This check MUST run after any package updates (step 3) and before quality checks (step 5). If you updated packages in step 3, the lockfile is almost certainly out of sync — always run `pnpm install` at the root after updating.
+
+## 5. Run quality checks
 
 Run each discovered check as a separate command. Order matters — fix formatting first, then lint, then typecheck, then test:
 
@@ -57,7 +65,7 @@ Run each discovered check as a separate command. Order matters — fix formattin
 5. **Dead code** — `pnpm knip` (if configured). Report findings but do not auto-fix — unused exports may be intentional public API.
 6. **Other checks** — any additional scripts like `validate-skills`, `check`, etc.
 
-## 5. Fix issues in scope
+## 6. Fix issues in scope
 
 For each failing check:
 
@@ -91,7 +99,7 @@ If a rule or test seems wrong, investigate why it exists before concluding it sh
 
 Scan the codebase for existing disabled checks: `eslint-disable`, `@ts-ignore`, `@ts-expect-error`, `.skip` tests, `noqa`, `phpcs:ignore`, and similar suppression comments. Report every instance found to the user so they can decide whether each should be resolved. These are technical debt — make them visible.
 
-## 6. Loop until clean
+## 7. Loop until clean
 
 After fixing all issues from one round:
 
@@ -100,7 +108,7 @@ After fixing all issues from one round:
 3. Repeat until all checks pass with zero issues
 4. MUST restart from step 4 after ANY code change — a fix in one area can break another
 
-## 7. Report
+## 8. Report
 
 ```
 ## Quality Report

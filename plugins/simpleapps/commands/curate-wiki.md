@@ -77,6 +77,7 @@ Do not exhaustively cross-link every mention of every concept. Link where a read
    - Version files (VERSION, package.json version, CalVer/SemVer patterns)
    - Tag-based release workflows
    - Branch protection or merge conventions
+   - `pnpm-workspace.yaml` — if present, the Submit section MUST include a lockfile sync step: run `pnpm install` at the repo root after any package changes, and commit the updated `pnpm-lock.yaml` before pushing. CI uses `--frozen-lockfile` and will reject mismatched lockfiles. This is the most common cause of deploy failures.
 
 2. **Draft** the Deployment page with three sections (Submit, Deploy, Publish) based on what was found. Use the format defined in the `deployment` skill. Not all projects need all three sections — only include sections where the codebase reveals a clear process.
 
