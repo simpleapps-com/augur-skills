@@ -137,6 +137,10 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
 
 ```json
 {
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
+  },
   "permissions": {
     "allow": [
       "Bash(pnpm:*)",
