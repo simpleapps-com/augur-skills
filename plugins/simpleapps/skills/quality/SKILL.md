@@ -55,11 +55,9 @@ Do not install or configure tools without the user's approval. Flag what's missi
 - **No tests for changed code** — suggest vitest
 - **No pre-commit hooks** — suggest lefthook
 
-## Own your scope
+## Own every issue
 
-Fix every issue in files you touched during this session. Context compaction erases your memory of earlier changes — what looks pre-existing may be something you introduced. Err on the side of owning it.
-
-For failures in files you did not touch, report them as separate findings rather than fixing them inline. Fixing unrelated code is local optimization that delays shipping the actual task. The goal is zero issues in the work area, not unbounded cleanup of the entire codebase.
+Fix every issue the checks find, regardless of which file it is in or who introduced it. There is no such thing as a "pre-existing issue" — context compaction erases your memory of earlier changes, so what looks pre-existing may be something you introduced. Even if you truly did not cause it, the goal is zero issues, not blame assignment. Fix it anyway.
 
 ## Resolve, never hide
 

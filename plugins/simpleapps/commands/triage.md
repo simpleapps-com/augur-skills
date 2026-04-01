@@ -1,7 +1,7 @@
 ---
 name: triage
 description: Show triage status for the current site repo — open PRs, linked issues, and unlinked issues
-allowed-tools: Bash(gh pr list:*), Bash(gh issue list:*), Bash(gh pr view:*), Bash(git remote:*), Bash(git -C:*), Bash(basename:*), Bash(pwd:*), Skill(project-defaults), Skill(github), Skill(bash-simplicity)
+allowed-tools: Bash(gh pr list:*), Bash(gh issue list:*), Bash(gh pr view:*), Bash(git remote:*), Bash(git -C:*), Bash(git stash:*), Bash(basename:*), Bash(pwd:*), Skill(project-defaults), Skill(github), Skill(bash-simplicity)
 ---
 
 First, use Skill("project-defaults") to load the project layout, Skill("github") to load GitHub conventions, and Skill("bash-simplicity") to load Bash conventions.
@@ -22,6 +22,7 @@ MUST run each command as a separate, simple call. MUST NOT combine commands with
 
 1. List all open PRs: `gh pr list --repo <org>/<repo> --state open --json number,title,body --limit 100`
 2. List all open issues: `gh issue list --repo <org>/<repo> --state open --json number,title,labels --limit 100`
+3. List stashes: `git -C repo stash list`
 
 ## Cross-reference
 
@@ -62,6 +63,15 @@ Flag any open issues that have NO labels. Standard labels are: `bug`, `security`
 
 If many issues are unlabeled, suggest running `/project-init` to ensure the standard labels exist on the repo.
 
+### Stashes
+
+If `git stash list` returned any entries, show them:
+
+| Stash | Branch | Description |
+|-------|--------|-------------|
+
+Stashes are orphaned work — they should be popped, dropped, or turned into commits. Flag each one. If no stashes exist, skip this section.
+
 ### Summary
 
-One line: `X PRs, Y unlinked issues, Z unlabeled, B blocked`
+One line: `X PRs, Y unlinked issues, Z unlabeled, B blocked, S stashes`

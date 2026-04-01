@@ -43,6 +43,12 @@ If you made changes and the user then runs `/submit`, the command starts fresh �
 
 Do NOT ask for redundant confirmation inside `/submit` if the user just invoked it. The invocation is the approval. But each discrete git operation within the flow (commit, then push) should still be reported before execution.
 
+## Stash hygiene
+
+MUST NOT leave stashes behind. If you stash changes (e.g., to switch branches), you MUST pop or drop the stash before the operation is complete. Orphaned stashes accumulate silently and confuse future work.
+
+Better yet, avoid stashing entirely. If you need to create a branch from a different base, commit or stage work first, or create the branch before making changes. Stash is a last resort, not a workflow step.
+
 ## The Pattern
 
 **Do the work → report results → wait.**

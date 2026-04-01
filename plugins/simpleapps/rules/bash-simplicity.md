@@ -8,4 +8,6 @@ MUST use dedicated tools instead of shell commands — including when searching 
 - Read files → Read tool (not `cat`, `head`, `tail`)
 - Edit files → Edit tool (not `sed`, `awk`)
 
+MUST NOT use `kill`, `pkill`, or `lsof` to stop processes. Use TaskStop with the task ID instead. TaskStop cleanly shuts down background tasks (dev servers, watchers) and updates internal tracking. If the process was started outside your session, ask the user to stop it.
+
 Load Skill("bash-simplicity") for full conventions before running Bash commands.
