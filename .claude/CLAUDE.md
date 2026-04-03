@@ -7,6 +7,7 @@ Monorepo: Claude Code plugin marketplace + npm CLI (`augur-skills`).
 The wiki is cloned at `../../wiki/` relative to this file. Read it locally:
 
 - [Home](../../wiki/Home.md)
+- [Getting Started](../../wiki/Getting-Started.md)
 - [Architecture](../../wiki/Architecture.md)
 - [Plugin Structure](../../wiki/Plugin-Structure.md)
 - [Skill Format](../../wiki/Skill-Format.md)

@@ -60,6 +60,12 @@ Every token costs time, money, and cognitive load. Be concise without losing cla
 
 Default to brief. Expand only when the reader cannot infer meaning from context. Two sentences that answer the question beat two pages that fill the context window.
 
+## List Ordering
+
+Lists with no inherent order (deny rules, config arrays, feature lists, bullet-point explanations) MUST be sorted alphabetically. Alphabetical order makes items easier to find and minimizes git diffs — new entries slot into a predictable position instead of appending at the end.
+
+Applies to JSON arrays, markdown bullet lists, table rows, and any unordered collection.
+
 ## Code Style
 
 Use descriptive variable and function names. Abbreviations save keystrokes but cost readability — the human reviewing your output MUST be able to understand the code without deciphering names.

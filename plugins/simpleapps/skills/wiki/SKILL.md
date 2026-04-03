@@ -126,11 +126,11 @@ The wikis are kept fresh by `/curate-wiki` runs across projects. Searching local
 
 ## Deployment Page
 
-Every project wiki SHOULD have a `Deployment.md` page with up to three sections: Submit, Deploy, and Publish. This page defines the project-specific steps that `/submit`, `/deploy`, and `/publish` commands execute. Run `/curate-wiki` to generate it from the codebase — the command scans CI workflows, package.json, deploy scripts, and asks the user about anything it cannot determine. See the `deployment` skill for the expected format.
+Every project wiki MUST have a `Deployment.md` page with up to three sections: Submit, Deploy, and Publish. This page defines the project-specific steps that `/submit`, `/deploy`, and `/publish` commands execute. Run `/curate-wiki` to generate it from the codebase — the command scans CI workflows, package.json, deploy scripts, and asks the user about anything it cannot determine. See the `deployment` skill for the expected format.
 
 ## Testing Page
 
-Every project wiki SHOULD have a `Testing.md` page. This is the E2E verification checklist that `/verify` uses to walk through the site in Chrome. The page grows over time — `/curate-wiki` SHOULD add testing knowledge learned during the session (new edge cases, failure patterns, test data) to the Testing page.
+Every project wiki MUST have a `Testing.md` page. This is the E2E verification checklist that `/verify` uses to walk through the site in Chrome. The page grows over time — `/curate-wiki` MUST add testing knowledge learned during the session (new edge cases, failure patterns, test data) to the Testing page.
 
 A good Testing page covers: test tiers (automated vs manual), test data (items, accounts, cards), and an E2E checklist organized by page area (homepage, listing, detail, cart, checkout, etc.). Each checklist item is a concrete, verifiable condition — not vague ("works") but specific ("price shows $9.26").
 

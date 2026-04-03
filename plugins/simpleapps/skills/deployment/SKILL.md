@@ -20,7 +20,7 @@ This skill reads the project's `wiki/Deployment.md` and executes the steps defin
 
 ## Deployment Page Format
 
-Every project wiki SHOULD have a `Deployment.md` page with up to three sections:
+Every project wiki MUST have a `Deployment.md` page with up to three sections:
 
 ```
 ## Submit

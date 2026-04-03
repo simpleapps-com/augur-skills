@@ -158,18 +158,19 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
       "mcp__plugin_simpleapps_augur-api__*"
     ],
     "deny": [
-      "Bash(cd:*)",
+      "Bash(awk:*)",
       "Bash(cat:*)",
-      "Bash(sed:*)",
+      "Bash(cd:*)",
+      "Bash(find:*)",
+      "Bash(for:*)",
       "Bash(grep:*)",
-      "Bash(sleep:*)",
+      "Bash(head:*)",
       "Bash(kill:*)",
       "Bash(pkill:*)",
-      "Bash(find:*)",
-      "Bash(head:*)",
-      "Bash(tail:*)",
-      "Bash(awk:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(sed:*)",
+      "Bash(sleep:*)",
+      "Bash(tail:*)"
     ]
   }
 }
@@ -177,16 +178,17 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
 
 Why each is denied:
 
-- **`cd`** — MUST NOT use in any Bash command, including compound commands (`cd /path && git`). Use `git -C repo` for git, path arguments for everything else. Compound cd+git commands trigger an unblockable Claude Code security prompt that interrupts the user even when `cd` is denied.
-- **`cat`** — Use the Read tool instead.
-- **`sed`** — Use the Edit tool instead.
-- **`grep`** — Use the Grep tool instead.
-- **`sleep`** — Unnecessary; use proper sequencing or background tasks.
-- **`find`** — Use the Glob tool instead.
-- **`head`/`tail`** — Use the Read tool with `offset` and `limit` parameters instead.
 - **`awk`** — Use the Edit tool instead.
+- **`cat`** — Use the Read tool instead.
+- **`cd`** — MUST NOT use in any Bash command, including compound commands (`cd /path && git`). Use `git -C repo` for git, path arguments for everything else. Compound cd+git commands trigger an unblockable Claude Code security prompt that interrupts the user even when `cd` is denied.
+- **`find`** — Use the Glob tool instead.
+- **`for`** — Shell loops are unnecessary; use dedicated tools or make multiple tool calls instead.
+- **`grep`** — Use the Grep tool instead.
+- **`head`/`tail`** — Use the Read tool with `offset` and `limit` parameters instead.
+- **`kill`/`pkill`** — Use `TaskStop` to manage background processes. `TaskStop` cleanly shuts down the task and updates Claude Code's internal tracking.
 - **`rg`** — Use the Grep tool instead (it uses ripgrep internally).
-- **`kill`/`pkill`** — Use `TaskStop` to manage background processes. For internal tasks running in the background (dev servers, watchers, etc.), always use `TaskStop` instead of shell kill commands. `TaskStop` cleanly shuts down the task and updates Claude Code's internal tracking.
+- **`sed`** — Use the Edit tool instead.
+- **`sleep`** — Unnecessary; use proper sequencing or background tasks.
 
 ## Bin Scripts (PATH)
 

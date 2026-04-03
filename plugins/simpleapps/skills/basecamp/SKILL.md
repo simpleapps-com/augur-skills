@@ -13,7 +13,7 @@ allowed-tools:
 
 IMPORTANT: MUST NOT create, edit, or delete anything in Basecamp without user permission.
 
-**Content format**: All write tools SHOULD use plain text with line breaks, NOT HTML. Basecamp returns HTML in responses but prefers plain text for creation.
+**Content format**: All write tools MUST use plain text with line breaks, NOT HTML. Basecamp returns HTML in responses but prefers plain text for creation.
 
 ## Setup
 
