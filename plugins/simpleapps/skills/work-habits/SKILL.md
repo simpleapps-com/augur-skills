@@ -38,7 +38,13 @@ When debugging in the browser, MUST check for error overlays (red error pill/bad
 
 ## Verify your own work
 
-Run tests, check output, compare results. YOU MUST NOT mark work complete without verification. If you can't verify, say so.
+Code that compiles is not code that works. After making changes, verify they actually work:
+
+1. Run tests (`pnpm test` or equivalent)
+2. If the project has a Testing page in the wiki, suggest `/verify` to walk through the E2E checklist in the browser
+3. If you changed UI, check it visually — load the page in Chrome and confirm it looks right
+
+YOU MUST NOT mark work complete without verification. Suggesting `/submit` or `/quality` before verifying the code works is backwards — broken code that passes lint is still broken code. Verify first, then let the user decide next steps.
 
 ## Own every issue you find
 
@@ -50,7 +56,9 @@ Use TodoRead/TodoWrite on multi-step tasks. Mark items in-progress before starti
 
 ## Never prompt for git actions
 
-MUST NOT ask "want me to commit?", "should I submit?", or any variation after completing work. The user will say "commit", `/submit`, or equivalent when ready. During multi-step implementation, asking to commit between steps interrupts the flow and adds noise. Report what was done and stop.
+MUST NOT ask "want me to commit?", "should I submit?", "ready for a PR?", "want me to push?", or ANY variation after completing work. Do not hint at it either — "if you're happy with this, you can run /submit" is the same thing with extra words. The user knows their own workflow. They will say "commit", `/submit`, or equivalent when they are ready.
+
+After completing work: report what changed, suggest `/verify` if untested, then stop. That is the entire post-work protocol. No git prompts. No shipping suggestions.
 
 ## Know when to stop and ask
 
