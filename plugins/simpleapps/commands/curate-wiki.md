@@ -48,7 +48,6 @@ Evaluate each page against the wiki conventions (from the wiki skill) and the cu
 Cross-linking turns a collection of files into a knowledge graph. Focus on high-value connections:
 - Are concepts that are explained elsewhere linked with `[[Page-Name#section]]`?
 - Are there isolated pages with no inbound or outbound links?
-- **Always-loaded → wiki bridge**: Does CLAUDE.md link to every wiki content page? These links cost ~15 tokens each but make the full wiki discoverable — the highest-ROI pointer available.
 
 Do not exhaustively cross-link every mention of every concept. Link where a reader would naturally need to navigate — not to maximize link density.
 
@@ -93,7 +92,7 @@ Do not exhaustively cross-link every mention of every concept. Link where a read
 
 If `wiki/Deployment.md` already exists, verify each section still matches the codebase. Flag any drift.
 
-## 4. Audit always-loaded content
+## 4. Audit always-loaded content (report only)
 
 Check `repo/.claude/CLAUDE.md` and `repo/.claude/rules/*.md` against the context-efficiency skill. These files load on every prompt — they MUST be lean, evergreen, and follow the pointer pattern.
 
@@ -103,9 +102,8 @@ Read each file and check:
 - **Pointer pattern**: rules SHOULD be short triggers that invoke a skill for detail. Flag any rule that contains full behavioral guidance instead of invoking a skill.
 - **Staleness**: claims that no longer match reality (verify against the codebase)
 - **Duplication**: content that duplicates what's in the wiki or a skill
-- **Wiki index completeness**: CLAUDE.md SHOULD link to every `wiki/*.md` content page (excluding `_Sidebar.md` and `llms.txt`). Compare links in CLAUDE.md against actual wiki files. Flag missing links — each costs ~15 tokens but gives the agent direct access to detailed knowledge on demand.
 
-Include any issues found in the proposal alongside wiki changes.
+CLAUDE.md MUST only contain **pointers** (wiki links, one-line references). If informational content (explanations, instructions, conventions) exists in CLAUDE.md, move it to the appropriate wiki page and replace it with a link. Do not add substantive content to CLAUDE.md — put it in the wiki and point to it. Keep CLAUDE.md edits minimal to avoid unnecessary permission prompts.
 
 ## 5. Propose changes
 
