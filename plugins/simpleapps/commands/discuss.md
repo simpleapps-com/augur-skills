@@ -1,10 +1,10 @@
 ---
 name: discuss
 description: Understand the current work better — conversational alignment through questions, wiki context, and session awareness. Use instead of plan mode.
-allowed-tools: Bash(git -C:*), Skill(wiki), Skill(git-safety), Skill(bash-simplicity), Read, Glob, Grep, Agent
+allowed-tools: Bash(git -C:*), Skill(wiki), Read, Glob, Grep, Agent
 ---
 
-First, use Skill("wiki") to load wiki conventions and context.
+First, use Skill("wiki") to load wiki conventions.
 
 Understand the current work better through conversation. This replaces plan mode — alignment happens through discussion, not formal plans.
 

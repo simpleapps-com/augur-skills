@@ -2,10 +2,10 @@
 name: research
 description: Deep web research on best practices — verify assumptions, find long-term solutions, document findings with sources. Use anytime the agent is guessing instead of knowing.
 argument-hint: "[topic or question]"
-allowed-tools: Bash(git -C:*), Skill(wiki), Skill(project-defaults), Skill(augur-packages), Skill(git-safety), Skill(bash-simplicity), Read, Write, Glob, Grep, Edit, Agent, WebSearch, WebFetch
+allowed-tools: Bash(git -C:*), Skill(wiki), Skill(project-defaults), Skill(augur-packages), Read, Write, Glob, Grep, Edit, Agent, WebSearch, WebFetch
 ---
 
-First, use Skill("wiki") to load project context — the wiki may already document relevant patterns or decisions.
+First, use Skill("wiki") to load project context, then Skill("project-defaults") for directory layout.
 
 Research the current problem deeply using web sources. This is not about quick answers — it's about finding the best long-term solution backed by verified best practices, official documentation, and community patterns.
 

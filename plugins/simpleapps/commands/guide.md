@@ -35,22 +35,15 @@ Explain the tool boundaries: Basecamp = client-facing, GitHub = developer-facing
 
 ## 3. Available commands
 
-List each command with a one-line description and when to use it:
+Use Glob to find all `*.md` files in `repo/plugins/simpleapps/commands/`. Read the frontmatter of each to get the name and description. Present them in lifecycle order first, then supporting commands:
 
-| Command | When to use |
-|---------|-------------|
-| `/triage` | Start of session — see what needs doing |
-| `/wip <url>` | Pick a task — scaffold a WIP file from a Basecamp URL or GitHub issue |
-| `/investigate` | Before coding — research the problem, update WIP with findings |
-| `/commit-message` | After coding — generate a conventional commit message |
-| `/submit` | After coding — commit and create a PR for review |
-| `/deploy` | After PR approved — deploy to staging (merge PRs, trigger build) |
-| `/publish` | Release to production — version bump, tag, release (with verification) |
-| `/wiki` | Need context — load the project wiki |
-| `/wiki-audit` | Maintenance — check wiki health |
-| `/project-init` | First time + periodically — set up directory structure and sync latest plugin rules |
-| `/audit-augur-packages` | Migration — find custom code to replace with shared packages |
-| `/guide` | Right now — you're reading it |
+**Lifecycle** (in pipeline order):
+`/triage` -> `/wip` -> `/investigate` -> `/discuss` -> `/implement` -> `/quality` -> `/sanity-check` -> `/verify` -> `/submit` -> `/deploy` -> `/publish`
+
+**Supporting** (alphabetical):
+`/audit-augur-packages`, `/commit-message`, `/curate-wiki`, `/file-issue`, `/guide`, `/project-init`, `/research`, `/wiki`, `/wiki-audit`
+
+For each command, show the name and its frontmatter description in a table.
 
 ## 4. Typical session
 
@@ -68,23 +61,9 @@ Walk through a concrete example:
 
 ## 5. Available skills
 
-Skills load reference material into context. They're loaded automatically by commands, but can also be loaded manually with `Skill("name")`:
+Skills load reference material into context. They're loaded automatically by commands, but can also be loaded manually with `Skill("name")`.
 
-| Skill | What it provides |
-|-------|------------------|
-| `basecamp` | Basecamp MCP tools, URL parsing, Chrome fallback |
-| `workflow` | Basecamp-to-GitHub flow, cross-linking, issue templates |
-| `github` | GH org conventions, `gh` CLI usage, git safety |
-| `project-defaults` | Directory layout, symlinks, permission defaults |
-| `wiki` | Wiki conventions, token budget, maintenance |
-| `writing-style` | RFC 2119, token efficiency, audience-specific writing |
-| `work-habits` | Autonomous work, context protection, error recovery |
-| `conventional-commits` | Commit message format |
-| `claude-code-docs` | Claude Code feature reference |
-| `augur-api` | Augur API MCP tools and auth |
-| `augur-packages` | Shared npm packages and anti-patterns |
-| `deployment` | Wiki-driven deployment — reads Deployment.md for submit/deploy/publish steps |
-| `fyxer` | Meeting transcript extraction and Basecamp posting |
+Use Glob to find all `SKILL.md` files under `repo/plugins/simpleapps/skills/`. Read the frontmatter of each to get the name and description. Present them in a table, sorted alphabetically by name.
 
 ## 6. Plugin rules
 

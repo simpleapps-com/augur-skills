@@ -75,3 +75,5 @@ Stashes are orphaned work — they should be popped, dropped, or turned into com
 ### Summary
 
 One line: `X PRs, Y unlinked issues, Z unlabeled, B blocked, S stashes`
+
+Suggest next step: `/wip <url>` to pick a task and scaffold a WIP file.

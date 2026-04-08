@@ -89,7 +89,7 @@ Tell the user:
 - Files changed (count and list)
 - Any assumptions or deviations from the plan
 - Any open questions
-- Suggest `/verify` to confirm the changes work in the browser (if the project has a Testing page)
+- Suggest next step: `/quality` to run checks, then `/verify` to confirm in the browser
 - Remind that the WIP has full implementation details for review
 
 **Then stop.** Do not commit, push, create PRs, or suggest doing so. The user decides when and how to package the changes.

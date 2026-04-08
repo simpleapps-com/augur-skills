@@ -1,14 +1,16 @@
 ---
 name: quality
 description: Discover and run all code quality checks, fix every issue, and flag missing quality tooling. No pre-existing excuses.
-allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Skill(quality), Skill(wiki), Skill(project-defaults), Skill(git-safety), Skill(bash-simplicity), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Skill(quality), Skill(work-habits), Skill(wiki), Skill(project-defaults), Skill(git-safety), Skill(bash-simplicity), Read, Write, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("quality") to load quality tooling awareness, then Skill("wiki") to check for project-specific conventions, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions.
+First, use Skill("quality") to load quality tooling awareness, then Skill("work-habits") for "leave it better" and "resolve, never hide" principles, then Skill("wiki") to check for project-specific conventions, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions.
 
 Run all code quality checks on the FULL codebase and fix issues found.
 
-**Scope rule**: Fix every issue the checks find. There is no such thing as a "pre-existing issue" — context compaction erases your memory of earlier changes, so what looks pre-existing may be something you introduced. Even if you truly did not cause it, the goal is zero issues, not blame assignment. Fix it anyway.
+**Scope rule**: Fix every issue the checks find — see work-habits: "Leave it better than you found it."
+
+**Bias warning**: You may be checking code you wrote earlier in this session. Approach with skepticism — adopt the stance of a reviewer who did not write the code. A clean pass should be earned, not assumed.
 
 ## 1. Discover quality tools
 
@@ -76,26 +78,10 @@ For each failing check:
 
 ### Rules
 
-- Fix every issue the checks find. No exceptions. No skipping. No "pre-existing" excuses.
-- Context compaction erases your memory of earlier changes — what looks pre-existing may be something you introduced. Fix it anyway.
+- Work-habits "Leave it better" and "Resolve, never hide" apply — fix every issue, never suppress checks
 - If a fix is unclear, explore the codebase to understand the intent before changing code
 - If a test fails because of a real bug, fix the bug
-
-### Resolve, never hide
-
-The solution to a failing check is ALWAYS to fix the underlying code. NEVER:
-
-- Disable or weaken a lint rule (no `eslint-disable`, no rule removal)
-- Skip, delete, or `.skip` a failing test
-- Add `@ts-ignore`, `// @ts-expect-error`, or `type: any` to silence type errors
-- Suppress warnings, lower coverage thresholds, or modify quality configs
-- Add `--no-verify`, `--force`, or flags that bypass checks
-
-If a rule or test seems wrong, investigate why it exists before concluding it should change. Rules exist for reasons. If after investigation a rule genuinely does not apply, explain the reasoning to the user and let them decide — do not unilaterally disable it.
-
-### Detect existing suppressions
-
-Scan the codebase for existing disabled checks: `eslint-disable`, `@ts-ignore`, `@ts-expect-error`, `.skip` tests, `noqa`, `phpcs:ignore`, and similar suppression comments. Report every instance found to the user so they can decide whether each should be resolved. These are technical debt — make them visible.
+- Scan for existing suppressions (`eslint-disable`, `@ts-ignore`, `.skip`, `noqa`, etc.) and flag them to the user as hidden technical debt
 
 ## 7. Loop until clean
 
@@ -124,3 +110,5 @@ After fixing all issues from one round:
 - path/to/file.ts — fixed lint issues
 - path/to/other.ts — fixed type error
 ```
+
+Suggest next step: `/verify` to check in the browser, or `/sanity-check` to audit the solution.

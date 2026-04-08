@@ -175,3 +175,5 @@ For new WIP files:
 For updated WIP files:
 - What changed (new comments, status update, new attachments, new cross-refs)
 - Confirm user-authored sections were preserved
+
+Suggest next step: `/investigate` to explore the codebase and populate the WIP with findings.

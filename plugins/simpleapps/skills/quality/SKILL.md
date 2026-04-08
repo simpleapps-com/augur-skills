@@ -55,23 +55,9 @@ Do not install or configure tools without the user's approval. Flag what's missi
 - **No tests for changed code** — suggest vitest
 - **No pre-commit hooks** — suggest lefthook
 
-## Own every issue
+## Fix everything, hide nothing
 
-Fix every issue the checks find, regardless of which file it is in or who introduced it. There is no such thing as a "pre-existing issue" — context compaction erases your memory of earlier changes, so what looks pre-existing may be something you introduced. Even if you truly did not cause it, the goal is zero issues, not blame assignment. Fix it anyway.
-
-## Resolve, never hide
-
-When a check fails, the solution is ALWAYS to fix the underlying code. NEVER:
-
-- Disable or weaken a lint rule (`eslint-disable`, rule removal, config changes)
-- Skip or delete a failing test (`.skip`, `.only`, deleting the test)
-- Silence type errors (`@ts-ignore`, `@ts-expect-error`, `type: any`)
-- Suppress warnings, lower coverage thresholds, or modify quality configs
-- Add `--no-verify`, `--force`, or flags that bypass checks
-
-These actions hide problems — they do not fix them. A suppressed error is worse than a visible one because it will be forgotten and compound.
-
-If a rule or test seems wrong, investigate why it exists before concluding it should change. Rules exist for reasons. If after investigation it genuinely does not apply, explain the reasoning to the user and let them decide — do not unilaterally disable it.
+See work-habits: "Leave it better than you found it" and "Resolve, never hide." Both apply fully to quality checks. Fix every issue regardless of who introduced it. NEVER suppress checks — fix the code.
 
 When reviewing code, scan for existing suppressions (`eslint-disable`, `@ts-ignore`, `.skip`, `noqa`, `phpcs:ignore`, etc.) and flag every instance to the user. These are hidden technical debt.
 
@@ -80,12 +66,6 @@ When reviewing code, scan for existing suppressions (`eslint-disable`, `@ts-igno
 In pnpm workspace projects, the root `pnpm-lock.yaml` and site-level lockfiles MUST stay in sync. CI uses `--frozen-lockfile` and will reject mismatched lockfiles — this is the most common cause of deploy failures.
 
 After ANY `pnpm install`, `pnpm update`, or `pnpm add` in a workspace, run `pnpm install` at the repo root to regenerate the root lockfile. Commit both lockfiles together. If you forget, the next deploy will fail.
-
-## Browser Error Overlays
-
-When debugging in the browser (Chrome automation), Next.js and other frameworks show a **red error overlay** at the bottom of the page when there are runtime errors. This overlay contains the actual error message, stack trace, and usually the exact file and line number causing the problem.
-
-MUST click on the error overlay and read the full error before attempting any fix. 95% of the time the answer is right there. Do not ignore it, do not guess at the problem, do not look elsewhere first — read the error overlay. If using Chrome automation tools, click the overlay element to expand it and read the details.
 
 ## Running quality checks
 

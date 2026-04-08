@@ -1,7 +1,7 @@
 ---
 name: verify
 description: Run the E2E verification checklist from the wiki's Testing page using Chrome automation
-allowed-tools: Skill(wiki), Skill(work-habits), Skill(bash-simplicity), Skill(git-safety), Read, Glob, Grep, mcp__claude-in-chrome__*, Bash(pnpm:*)
+allowed-tools: Skill(wiki), Skill(work-habits), Skill(bash-simplicity), Skill(git-safety), Read, Write, Edit, Glob, Grep, mcp__claude-in-chrome__*, Bash(pnpm:*)
 ---
 
 First, use Skill("wiki") to load wiki conventions and Skill("work-habits") for error overlay guidance.
@@ -29,12 +29,14 @@ Call `tabs_context_mcp` to establish the browser connection. If it fails, wait 3
 For each checklist section, use Chrome automation to:
 
 1. Navigate to the page
-2. For each checklist item, verify the condition described
-3. **If something looks wrong, check for the red error overlay first** — click it and read the full error before investigating further
+2. **Check for the red error overlay (pill/badge) on every page** — if present, click it and read the full error, stack trace, and source location before doing anything else
+3. For each checklist item, verify the condition described
 4. Record pass or fail for each item
 5. If a check fails, capture what was expected vs what was observed
 
 MUST run each Chrome action as a separate tool call. MUST NOT skip items or assume they pass without checking.
+
+**Bias warning**: You may be testing code you wrote earlier in this session. Approach with skepticism — adopt the stance of a tester who did not write the code. A clean pass should be earned, not assumed.
 
 ## 6. Report
 
@@ -57,4 +59,12 @@ MUST run each Chrome action as a separate tool call. MUST NOT skip items or assu
 - (any errors captured from the red error overlay)
 ```
 
-**Then stop.** Do not fix issues — report them. The user decides what to do next.
+## 7. Fix issues
+
+If any checks failed or error overlays were found, fix them immediately. Work-habits "Leave it better" applies — no pre-existing excuses, no arguing, no asking for permission to fix. Fix it.
+
+After fixing, re-run the failed checks to confirm they pass. Repeat until all checks are green.
+
+## 8. Final report
+
+Report what was verified, what failed, and what was fixed. Suggest next step: `/sanity-check` to audit the solution, or `/submit` if ready. Then stop.

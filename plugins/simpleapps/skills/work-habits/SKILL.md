@@ -46,9 +46,23 @@ Code that compiles is not code that works. After making changes, verify they act
 
 YOU MUST NOT mark work complete without verification. Suggesting `/submit` or `/quality` before verifying the code works is backwards — broken code that passes lint is still broken code. Verify first, then let the user decide next steps.
 
-## Own every issue you find
+## Leave it better than you found it
 
-If a check fails or a bug surfaces, fix it. Do not classify issues as "pre-existing" to justify skipping them — context compaction erases your memory of changes made earlier in the session, so what looks pre-existing is often something you introduced. Even if you truly did not cause it, the goal is zero issues, not blame assignment. Fix it anyway.
+Every agent interaction should leave the codebase in a better state. If you encounter a broken test, a console error, an error overlay, a lint warning, or any other issue while working — fix it. This applies whether or not you caused it and whether or not it is related to your current task.
+
+Do not classify issues as "pre-existing" to justify skipping them — context compaction erases your memory of changes made earlier in the session, so what looks pre-existing is often something you introduced. Even if you truly did not cause it, the goal is zero issues, not blame assignment. Fix it anyway. Do not argue with the user about whether an issue is yours to fix. It is.
+
+## Resolve, never hide
+
+When a check fails, the solution is ALWAYS to fix the underlying code. NEVER:
+
+- Disable or weaken a lint rule (`eslint-disable`, rule removal, config changes)
+- Skip or delete a failing test (`.skip`, `.only`, deleting the test)
+- Silence type errors (`@ts-ignore`, `@ts-expect-error`, `type: any`)
+- Suppress warnings, lower coverage thresholds, or modify quality configs
+- Add `--no-verify`, `--force`, or flags that bypass checks
+
+These actions hide problems — they do not fix them. If a rule or test seems wrong, investigate why it exists before concluding it should change. Rules exist for reasons. If after investigation it genuinely does not apply, explain the reasoning to the user and let them decide — do not unilaterally disable it.
 
 ## Track progress
 

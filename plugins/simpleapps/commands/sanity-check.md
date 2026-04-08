@@ -2,10 +2,10 @@
 name: sanity-check
 description: Check that we solved the right problem without errors of commission or omission — Goldratt's two types of mistakes
 argument-hint: "[wip-file]"
-allowed-tools: Bash(git -C:*), Bash(gh issue:*), Bash(git remote:*), Skill(wiki), Skill(basecamp), Skill(bash-simplicity), mcp__plugin_simpleapps_basecamp__*, Read, Glob, Grep
+allowed-tools: Bash(git -C:*), Bash(gh issue:*), Bash(git remote:*), Skill(wiki), Skill(basecamp), mcp__plugin_simpleapps_basecamp__*, Read, Glob, Grep
 ---
 
-First, use Skill("wiki") for project conventions, Skill("basecamp") for MCP tools, then Skill("bash-simplicity") for Bash conventions.
+First, use Skill("wiki") for project conventions, then Skill("basecamp") for MCP tools.
 
 ## Why this exists
 
@@ -128,4 +128,4 @@ Step back from the details. This is strategic, not tactical — do not repeat fi
 
 Severity levels: `critical` (wrong problem, missed acceptance criteria), `warning` (scope creep, missing edge case), `note` (wiki update, minor omission).
 
-**Then stop.** Do not fix issues — report them. The user decides what to do next.
+**Then stop.** This command audits whether we solved the right problem — fixing belongs in `/quality` and `/verify`. Report findings and let the user decide which to action.
