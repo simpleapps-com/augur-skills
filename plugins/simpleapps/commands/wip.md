@@ -1,6 +1,6 @@
 ---
 name: wip
-description: Fetch a Basecamp URL or GitHub issue with full comments and scaffold a WIP file
+description: Fetch a Basecamp URL or GitHub issue with full comments, scaffold a WIP file, and load the wiki
 argument-hint: "<basecamp-url or github-issue>"
 allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(basename:*), Bash(gh label:*), Skill(basecamp), Skill(workflow), Skill(github), Skill(bash-simplicity), mcp__plugin_simpleapps_basecamp__*, Read, Write, Edit, Glob
 ---
@@ -164,7 +164,17 @@ _Investigation notes go here._
 - {Any cross-references found}
 ```
 
-## 8. Report
+## 8. Load the wiki
+
+Load the project wiki into context so the user can chat about the scaffolded WIP before moving on to `/investigate`:
+
+1. Read `wiki/Home.md` first to orient on the project
+2. Read `wiki/llms.txt` if it exists to get the wiki index
+3. Use Glob to find all `*.md` files in `wiki/`
+4. Read every `.md` file with the Read tool — do NOT use a subagent, the content MUST be in your own context
+5. If `wiki/` does not exist, skip this step and note it in the report
+
+## 9. Report
 
 For new WIP files:
 - WIP file created at `wip/{filename}`
@@ -176,4 +186,6 @@ For updated WIP files:
 - What changed (new comments, status update, new attachments, new cross-refs)
 - Confirm user-authored sections were preserved
 
-Suggest next step: `/investigate` to explore the codebase and populate the WIP with findings.
+Confirm the wiki was loaded (which pages) so the user knows full project context is available for discussion.
+
+Suggest next step: chat about the scaffolded WIP, then run `/investigate` to explore the codebase and populate the WIP with findings.

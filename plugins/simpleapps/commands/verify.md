@@ -18,7 +18,14 @@ Read `wiki/Testing.md` and extract all checklist items (`- [ ]` lines). Group th
 
 ## 3. Start the dev server
 
-Check if a dev server is already running. If not, ask the user if they want to start one. The dev server command varies by project — check `repo/package.json` for a `dev` script. Run it via `pnpm dev` or the appropriate filter command. Wait for it to be ready before proceeding.
+The dev server is a prerequisite for verification — start it without asking.
+
+1. Check if one is already running on the expected port (per `wiki/Testing.md` or `repo/package.json`)
+2. If not running, check `repo/package.json` for the `dev` script and run it in the background via `pnpm dev` or the appropriate filter command (e.g. `pnpm --filter <site> run dev`)
+3. Wait for it to be ready (watch for the "ready" / "compiled" line in the background task output) before proceeding to step 4
+4. MUST NOT stop to ask permission — the user invoked `/verify`, which IS the approval to run the dev server
+
+If the dev server fails to start, stop and report the error — that's a real blocker, not a permission question.
 
 ## 4. Connect to Chrome
 

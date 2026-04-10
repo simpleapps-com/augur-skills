@@ -68,10 +68,11 @@ Applies to JSON arrays, markdown bullet lists, table rows, and any unordered col
 
 ## Code Style
 
-Use descriptive variable and function names. Abbreviations save keystrokes but cost readability — the human reviewing your output MUST be able to understand the code without deciphering names.
+Use descriptive variable and function names. Abbreviations save keystrokes but cost readability — the human reviewing your output MUST be able to understand the code without deciphering names. Short names also collide with terminology in the surrounding conversation and confuse the reader (e.g. using `p` as a path variable while the discussion is about a payment path — the reader will read `p` as "payment", not "path").
 
-- MUST use full words: `$groupQuantity` not `$gq`, `cartItem` not `ci`
-- Loop counters (`i`, `j`, `k`) and well-known abbreviations (`id`, `url`, `db`) are fine
+- MUST use full words: `$groupQuantity` not `$gq`, `cartItem` not `ci`, `filePath` not `p`, `response` not `r`
+- MUST NOT use single-letter variable names except loop counters (`i`, `j`, `k`)
+- Well-known abbreviations (`id`, `url`, `db`) are fine
 - Function names SHOULD describe what they do: `calculateShippingCost` not `calcShip`
 
 ## Claude Code Keywords
