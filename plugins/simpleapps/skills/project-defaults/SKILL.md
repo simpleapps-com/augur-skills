@@ -26,6 +26,8 @@ All projects live under `~/projects/` in two groups:
 - Client site repos go in `~/projects/clients/`
 - Workspace files go in `~/projects/workspaces/` — one `.code-workspace` per project
 
+macOS APFS is case-insensitive by default. `~/Projects/` and `~/projects/` resolve to the same directory. Do NOT flag path casing differences as errors — only flag paths that genuinely do not resolve.
+
 ## Project Directory Layout
 
 Every project MUST use this layout:
