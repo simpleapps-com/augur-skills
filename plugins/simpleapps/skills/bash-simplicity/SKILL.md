@@ -72,6 +72,16 @@ MUST NOT use `kill` or `pkill` to stop background tasks — these are denied and
 
 If a process was started **outside your session** (by the user in a terminal), you cannot stop it with `TaskStop`. Ask the user to restart or stop it themselves.
 
+### Port conflicts (EADDRINUSE)
+
+When a dev server fails with EADDRINUSE, a process from a previous session is occupying the port. Follow this sequence:
+
+1. Check `TaskList` — if the task is listed, use `TaskStop`
+2. If `TaskList` is empty, the process is from outside your session — ask the user: "Port N is in use by a process from a previous session. Can you stop it?"
+3. MUST NOT attempt `kill`, `pkill`, or ask for permission to kill — these are denied and waste turns
+
+Do not retry the server start until the user confirms the port is free.
+
 ## Cross-Project Searching
 
 When looking at another project's code, use dedicated tools with the project path — MUST NOT use shell commands:

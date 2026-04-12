@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# SimpleApps status line — model, project name, version
+# SimpleApps status line (basic) — user:repo | version | model
 # Usage: set in ~/.claude/settings.json:
 #   "statusLine": { "type": "command", "command": "statusline-basic" }
 input=$(cat)
 
+user=$(whoami)
 model=$(echo "$input" | jq -r '.model.display_name // empty')
 project_dir=$(echo "$input" | jq -r '.workspace.project_dir // empty')
 version=$(echo "$input" | jq -r '.version // empty')
@@ -11,9 +12,15 @@ version=$(echo "$input" | jq -r '.version // empty')
 project_name="unknown"
 [ -n "$project_dir" ] && project_name=$(basename "$project_dir")
 
-parts=""
-[ -n "$model" ] && parts="[${model}]"
-parts="${parts} ${project_name}"
-[ -n "$version" ] && parts="${parts} | v${version}"
+# ANSI colors
+green='\033[32m'
+blue='\033[34m'
+cyan='\033[36m'
+yellow='\033[33m'
+dim='\033[2m'
+reset='\033[0m'
 
-echo "$parts"
+printf "${green}%s${dim}:${blue}%s${reset}" "$user" "$project_name"
+[ -n "$version" ] && printf " ${dim}|${reset} ${cyan}v%s${reset}" "$version"
+[ -n "$model" ] && printf " ${dim}|${reset} ${yellow}%s${reset}" "$model"
+printf '\n'

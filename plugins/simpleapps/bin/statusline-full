@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# SimpleApps status line — model, project name, version, git branch, context %
+# SimpleApps status line (full) — user:repo (branch) | version | model | context %
 # Usage: set in ~/.claude/settings.json:
 #   "statusLine": { "type": "command", "command": "statusline-full" }
 input=$(cat)
 
+user=$(whoami)
 model=$(echo "$input" | jq -r '.model.display_name // empty')
 project_dir=$(echo "$input" | jq -r '.workspace.project_dir // empty')
 version=$(echo "$input" | jq -r '.version // empty')
@@ -16,11 +17,18 @@ branch=""
 repo_dir="${project_dir}/repo"
 [ -d "$repo_dir/.git" ] && branch=$(git -C "$repo_dir" branch --show-current 2>/dev/null)
 
-parts=""
-[ -n "$model" ] && parts="[${model}]"
-parts="${parts} ${project_name}"
-[ -n "$branch" ] && parts="${parts} (${branch})"
-[ -n "$version" ] && parts="${parts} | v${version}"
-[ -n "$context_pct" ] && parts="${parts} | ctx:${context_pct}%"
+# ANSI colors
+green='\033[32m'
+blue='\033[34m'
+cyan='\033[36m'
+yellow='\033[33m'
+magenta='\033[35m'
+dim='\033[2m'
+reset='\033[0m'
 
-echo "$parts"
+printf "${green}%s${dim}:${blue}%s${reset}" "$user" "$project_name"
+[ -n "$branch" ] && printf " ${dim}(%s)${reset}" "$branch"
+[ -n "$version" ] && printf " ${dim}|${reset} ${cyan}v%s${reset}" "$version"
+[ -n "$model" ] && printf " ${dim}|${reset} ${yellow}%s${reset}" "$model"
+[ -n "$context_pct" ] && printf " ${dim}|${reset} ${magenta}ctx:%s%%${reset}" "$context_pct"
+printf '\n'
