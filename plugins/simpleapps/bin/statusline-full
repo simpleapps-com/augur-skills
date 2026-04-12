@@ -4,7 +4,14 @@
 #   "statusLine": { "type": "command", "command": "statusline-full" }
 input=$(cat)
 
-user=$(whoami)
+cache_file="${HOME}/.cache/augur-skills/gh-user"
+if [ -f "$cache_file" ] && [ -z "$(find "$cache_file" -mmin +120 2>/dev/null)" ]; then
+  user=$(cat "$cache_file")
+else
+  user=$(gh api user --jq .login 2>/dev/null || whoami)
+  mkdir -p "$(dirname "$cache_file")"
+  echo "$user" > "$cache_file"
+fi
 model=$(echo "$input" | jq -r '.model.display_name // empty')
 project_dir=$(echo "$input" | jq -r '.workspace.project_dir // empty')
 version=$(echo "$input" | jq -r '.version // empty')
