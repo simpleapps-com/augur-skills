@@ -21,8 +21,11 @@ project_name="unknown"
 [ -n "$project_dir" ] && project_name=$(basename "$project_dir")
 
 branch=""
-repo_dir="${project_dir}/repo"
-[ -d "$repo_dir/.git" ] && branch=$(git -C "$repo_dir" branch --show-current 2>/dev/null)
+if [ -d "${project_dir}/repo/.git" ]; then
+  branch=$(git -C "${project_dir}/repo" branch --show-current 2>/dev/null)
+elif [ -d "${project_dir}/.git" ]; then
+  branch=$(git -C "$project_dir" branch --show-current 2>/dev/null)
+fi
 
 # ANSI colors
 green='\033[32m'
