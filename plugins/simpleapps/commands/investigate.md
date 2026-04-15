@@ -7,11 +7,11 @@ allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(git lo
 
 First, use Skill("wiki") to load the project wiki for codebase context, then Skill("project-defaults") for directory layout, then Skill("github") for GH conventions, then Skill("writing-style") for naming and documentation standards, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
 
-Investigate a WIP file — explore the codebase, analyze the problem, and update the WIP with findings. MUST NOT make code changes.
+Investigate a WIP file. Explore the codebase, analyze the problem, and update the WIP with findings. MUST NOT make code changes.
 
 ## 0. Check branch
 
-Run `git -C repo branch --show-current`. If not on `main` or `master`, warn the user — investigating on a stale branch means findings may not reflect the current codebase. Suggest switching before continuing.
+Run `git -C repo branch --show-current`. If not on `main` or `master`, warn the user. Investigating on a stale branch means findings may not reflect the current codebase. Suggest switching before continuing.
 
 ## 1. Find the WIP file
 
@@ -31,15 +31,15 @@ Read the WIP file. Extract:
 
 Based on the problem statement, systematically investigate:
 
-1. **Check augur-\* packages first** — if this is a NextJS site using `@simpleapps-com/augur-*` packages, use Skill("augur-packages") to check if any package already provides the needed functionality. Sites MUST use augur package features before building custom solutions.
-2. **Search for relevant code** — use Grep and Glob to find files related to the problem. Use Agent with subagent_type=Explore for broader searches.
-3. **Read key files** — understand the current implementation
-4. **Trace the flow** — follow the code path affected by the problem
-5. **Check for existing packages** — search `repo/package.json` for dependencies that may already solve the problem. Check if the project is duplicating functionality that a dependency provides.
-6. **Check git history** — `git -C repo log --oneline -10 -- <file>` for recent changes to relevant files
-7. **Download and review attachments** — if the WIP lists BC attachments, use Basecamp MCP tools to download and read them
+1. **Check augur-\* packages first**: if this is a NextJS site using `@simpleapps-com/augur-*` packages, use Skill("augur-packages") to check if any package already provides the needed functionality. Sites MUST use augur package features before building custom solutions.
+2. **Search for relevant code**: use Grep and Glob to find files related to the problem. Use Agent with subagent_type=Explore for broader searches.
+3. **Read key files**: understand the current implementation
+4. **Trace the flow**: follow the code path affected by the problem
+5. **Check for existing packages**: search `repo/package.json` for dependencies that may already solve the problem. Check if the project is duplicating functionality that a dependency provides.
+6. **Check git history**: `git -C repo log --oneline -10 -- <file>` for recent changes to relevant files
+7. **Download and review attachments**: if the WIP lists BC attachments, use Basecamp MCP tools to download and read them
 
-**Stopping condition**: Stop when you can describe the root cause, identify the files to modify, and propose an approach. You do not need to understand the entire system — just enough to act. Investigate until you can inform implementation decisions, then write up findings and stop. Prefer using existing package functionality over custom code.
+**Stopping condition**: Stop when you can describe the root cause, identify the files to modify, and propose an approach. You do not need to understand the entire system, just enough to act. Investigate until you can inform implementation decisions, then write up findings and stop. Prefer using existing package functionality over custom code.
 
 ## 4. Update the WIP
 

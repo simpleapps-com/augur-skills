@@ -1,6 +1,6 @@
 ---
 name: triage
-description: Show triage status for the current site repo — open PRs, linked issues, and unlinked issues
+description: Show triage status for the current site repo. Open PRs, linked issues, and unlinked issues.
 allowed-tools: Bash(gh pr list:*), Bash(gh issue list:*), Bash(gh pr view:*), Bash(git remote:*), Bash(git -C:*), Bash(git stash:*), Bash(basename:*), Bash(pwd:*), Skill(project-defaults), Skill(github), Skill(bash-simplicity)
 ---
 
@@ -18,7 +18,7 @@ Per the github skill's project layout, the git repo is at `repo/`.
 
 ## Gather data
 
-MUST run each command as a separate, simple call. MUST NOT combine commands with `&&`, pipes, or sub-shells — complex commands trigger permission prompts and break automation.
+MUST run each command as a separate, simple call. MUST NOT combine commands with `&&`, pipes, or sub-shells. Complex commands trigger permission prompts and break automation.
 
 1. List all open PRs: `gh pr list --repo <org>/<repo> --state open --json number,title,body --limit 100`
 2. List all open issues: `gh issue list --repo <org>/<repo> --state open --json number,title,labels --limit 100`
@@ -70,7 +70,7 @@ If `git stash list` returned any entries, show them:
 | Stash | Branch | Description |
 |-------|--------|-------------|
 
-Stashes are orphaned work — they should be popped, dropped, or turned into commits. Flag each one. If no stashes exist, skip this section.
+Stashes are orphaned work. They should be popped, dropped, or turned into commits. Flag each one. If no stashes exist, skip this section.
 
 ### Summary
 

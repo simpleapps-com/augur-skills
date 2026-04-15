@@ -59,7 +59,7 @@ This avoids shell quoting issues with HEREDOCs and `cd` permission blocks. The W
 
 ## Issues
 
-MUST use `--repo simpleapps-com/<repo>` on every `gh` call. MUST ask the user which repo — never assume.
+MUST use `--repo simpleapps-com/<repo>` on every `gh` call. MUST ask the user which repo. Never assume.
 
 **MUST NOT use `$()` or inline content in `gh` commands.** Any `gh` command that needs a body, comment, or multi-line text MUST use the file-based flag (`--body-file`, `--comment-file`, etc.). Write the content to `tmp/` using the Write tool first, then pass the file path. This avoids `$()` command substitution which triggers a permission prompt every time. Delete the tmp file after the command succeeds.
 
@@ -103,18 +103,18 @@ Include `Closes #N` in commit body to auto-close issues.
 
 ### Commenting on existing issues
 
-Before adding a comment to a closed issue, check its state first with `gh issue view`. If the issue is closed but the problem still exists, reopen it with `gh issue reopen` before commenting — a comment on a closed issue is easily missed.
+Before adding a comment to a closed issue, check its state first with `gh issue view`. If the issue is closed but the problem still exists, reopen it with `gh issue reopen` before commenting. A comment on a closed issue is easily missed.
 
 ## Cross-Repo Issues
 
-Use `/file-issue` to automate this process — it creates the upstream issue, cross-links back to the local issue, and adds the `blocked` label. `/triage` surfaces blocked issues in its output.
+Use `/file-issue` to automate this process. It creates the upstream issue, cross-links back to the local issue, and adds the `blocked` label. `/triage` surfaces blocked issues in its output.
 
 When a project hits a blocker that depends on another team's repo, create two issues and keep working:
 
-1. **Local issue** (in the site/project repo) — describe the impact and what's blocked
-2. **Upstream issue** (in the dependency repo) — describe the ask, include reproduction steps or specifics
-3. **Cross-link** — reference the other issue using `simpleapps-com/repo#N` syntax in both issue bodies
-4. **Don't block** — continue with other tasks while waiting for the upstream fix
+1. **Local issue** (in the site/project repo): describe the impact and what's blocked
+2. **Upstream issue** (in the dependency repo): describe the ask, include reproduction steps or specifics
+3. **Cross-link**: reference the other issue using `simpleapps-com/repo#N` syntax in both issue bodies
+4. **Don't block**: continue with other tasks while waiting for the upstream fix
 
 Target repos:
 
@@ -135,7 +135,7 @@ gh pr view <number> --repo simpleapps-com/<repo>
 gh pr merge <number> --repo simpleapps-com/<repo>
 ```
 
-Write PR body to `tmp/pr-body.txt` using the Write tool first — MUST NOT use `--body "$(cat ...)"` or any `$()` substitution.
+Write PR body to `tmp/pr-body.txt` using the Write tool first. MUST NOT use `--body "$(cat ...)"` or any `$()` substitution.
 
 ## Cross-Linking with Basecamp
 

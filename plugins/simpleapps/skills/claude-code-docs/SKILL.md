@@ -10,7 +10,7 @@ allowed-tools:
 
 ## Entry Points
 
-- **Doc index**: https://code.claude.com/docs/llms.txt — fetch first, find relevant page URL, then fetch that page
-- **Full content**: https://code.claude.com/docs/llms-full.txt — large, use when broad context is needed
+- **Doc index**: https://code.claude.com/docs/llms.txt. Fetch first, find relevant page URL, then fetch that page.
+- **Full content**: https://code.claude.com/docs/llms-full.txt. Large, use when broad context is needed.
 
-IMPORTANT: YOU MUST start from `llms.txt` for current URLs. Doc pages are renamed and reorganized with each release — never rely on memorized URLs.
+IMPORTANT: YOU MUST start from `llms.txt` for current URLs. Doc pages are renamed and reorganized with each release. Never rely on memorized URLs.

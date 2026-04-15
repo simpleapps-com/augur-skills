@@ -9,15 +9,15 @@ First, use Skill("basecamp") to load the Basecamp MCP reference, then Skill("wor
 
 Fetch a Basecamp URL or GitHub issue and scaffold a WIP file.
 
-Input: `$ARGUMENTS` — a Basecamp URL or GitHub issue reference.
+Input: `$ARGUMENTS` is a Basecamp URL or GitHub issue reference.
 
 ## 1. Detect source type
 
-**Basecamp URL** — matches `basecamp.com/<account>/projects/<project_id>/<type>/<id>`:
+**Basecamp URL**: matches `basecamp.com/<account>/projects/<project_id>/<type>/<id>`:
 - Extract `project_id` and item `id` from the URL path
 - Determine item type from the URL: `todos`, `messages`, `uploads`, `forwards`
 
-**GitHub issue** — matches any of:
+**GitHub issue**: matches any of:
 - `#N` (use repo from `git -C repo remote -v`)
 - `org/repo#N`
 - Full GitHub URL containing `/issues/N`
@@ -77,7 +77,7 @@ Use these heuristics:
 - Code cleanup with no user-visible change: `refactor`
 - Security vulnerability: `security`
 
-If the issue could fit multiple labels, pick the single most relevant one. Do not add status labels (`blocked`, `production-blocker`) in this step — those are applied by other commands when the situation warrants it.
+If the issue could fit multiple labels, pick the single most relevant one. Do not add status labels (`blocked`, `production-blocker`) in this step. Those are applied by other commands when the situation warrants it.
 
 Skip this step for Basecamp sources (labels are a GitHub concept).
 
@@ -100,18 +100,18 @@ From the title:
 
 ## 6. Check for existing WIP
 
-Use Glob to check `wip/` for a file starting with the same prefix (`BC{#}` or `GH{#}`). If one exists, read it and go to step 6a (update). Otherwise, go to step 6b (create).
+Use Glob to check `wip/` for a file starting with the same prefix (`BC{#}` or `GH{#}`). If one exists, read it and go to step 7a (update). Otherwise, go to step 7b (create).
 
 ## 7a. Update existing WIP
 
 Read the existing WIP file. Compare against freshly fetched content:
 
-1. **Status** — if the GH issue state changed (e.g., closed), update the Status line
-2. **Problem** — update if the issue body was edited
-3. **Attachments** — add any new attachments not already listed
-4. **Comments** — compare comment lists by author + date. Append any new comments after the existing ones. MUST NOT duplicate or remove existing comments.
-5. **Cross-refs** — add any newly detected cross-references
-6. **Preserve user work** — MUST NOT modify Research, Analysis, Files to modify, or any other sections the user has edited
+1. **Status**: if the GH issue state changed (e.g., closed), update the Status line
+2. **Problem**: update if the issue body was edited
+3. **Attachments**: add any new attachments not already listed
+4. **Comments**: compare comment lists by author + date. Append any new comments after the existing ones. MUST NOT duplicate or remove existing comments.
+5. **Cross-refs**: add any newly detected cross-references
+6. **Preserve user work**: MUST NOT modify Research, Analysis, Files to modify, or any other sections the user has edited
 
 Tell the user what was updated (e.g., "Added 2 new comments, status unchanged").
 
@@ -133,7 +133,7 @@ Template:
 
 ## Problem
 
-{Body content — the full description from the issue or Basecamp item}
+{Body content. The full description from the issue or Basecamp item.}
 
 ## Attachments
 
@@ -143,7 +143,7 @@ Template:
 
 {Each comment, formatted as:}
 
-### {Author} — {Date}
+### {Author} ({Date})
 
 {Comment body}
 
@@ -171,10 +171,16 @@ Load the project wiki into context so the user can chat about the scaffolded WIP
 1. Read `wiki/Home.md` first to orient on the project
 2. Read `wiki/llms.txt` if it exists to get the wiki index
 3. Use Glob to find all `*.md` files in `wiki/`
-4. Read every `.md` file with the Read tool — do NOT use a subagent, the content MUST be in your own context
+4. Read every `.md` file with the Read tool. Do NOT use a subagent; the content MUST be in your own context.
 5. If `wiki/` does not exist, skip this step and note it in the report
 
-## 9. Report
+## 9. Suggest cleanup of stale WIPs
+
+Use Glob to list `wip/*.md`. For each file with a `## Status: Implemented`, `## Status: Shipped`, or `## Status: Closed` heading whose corresponding GitHub issue or PR is closed, suggest the user delete it. Do NOT delete automatically. WIP files contain decisions and research the user may still want.
+
+If `wip/` has more than ~10 files, mention the pile-up. Stale WIPs add noise to `/triage` and `/sanity-check` lookups.
+
+## 10. Report
 
 For new WIP files:
 - WIP file created at `wip/{filename}`

@@ -14,15 +14,27 @@ allowed-tools:
 
 The wiki is the **single source of truth** for how a project works. The wiki is the spec; the repo is the implementation.
 
+## Why This Design
+
+The wiki is a **git-backed markdown folder** (`wiki/`) living next to the code repo (`repo/`), read by agents as local files via `Read wiki/*.md`. Every design choice answers a specific failure mode:
+
+- **Markdown in git**: the docs live where the work lives and version alongside the code. Diffs show what changed and why. No login, no API, no stale snapshot.
+- **Separate `wiki/` repo, not embedded in the code repo**: the wiki ships independently of code releases. Doc fixes do not wait on code review cycles, and code commits stay clean of doc noise.
+- **Local file reads, not network fetches**: the agent loads the full wiki at session start with zero latency. No rate limits, no auth, works offline.
+- **20K token budget**: small enough to fit the whole wiki in context while leaving 90% for working memory. Forces ruthless editing; a 200K-token wiki that cannot be loaded helps no one.
+- **Process and principles, not code snippets**: code in the wiki rots the day it is pasted. Link to the source file instead, so the wiki stays true as the code evolves.
+
+The payoff: **the agent and the user share the same model of the project.** Less re-explaining, fewer guesses, fewer "I assumed..." mistakes. Work goes faster because the agent already knows the conventions, and safer because the agent is not improvising decisions the wiki already settled.
+
 ## Token Budget
 
-A wiki MUST NOT exceed **20K tokens** (~15K words, ~60KB). This is 10% of the AI agent's 200K context window — enough for the agent to load the entire wiki at session start while leaving 90% for working context.
+A wiki MUST NOT exceed **20K tokens** (~15K words, ~60KB). This is 10% of the AI agent's 200K context window, enough for the agent to load the entire wiki at session start while leaving 90% for working context.
 
 Check size: `wc -w wiki/*.md` (multiply by ~1.3 for token estimate)
 
 ## Core Principle
 
-Repo files (`.claude/CLAUDE.md`, `.claude/rules/`, `README.md`) MUST be minimal — orient then point to wiki. CLAUDE.md MUST link to every wiki content page — these links cost ~15 tokens total but make every page one Read away from always-loaded context. AI agents read wiki pages as local files via `Read wiki/<page>.md`. No network requests needed.
+Repo files (`.claude/CLAUDE.md`, `.claude/rules/`, `README.md`) MUST be minimal: orient then point to wiki. CLAUDE.md MUST link to every wiki content page. These links cost ~15 tokens total but make every page one Read away from always-loaded context. AI agents read wiki pages as local files via `Read wiki/<page>.md`. No network requests needed.
 
 ```
 Wiki defines → Code implements → Learnings update wiki → Repeat
@@ -34,7 +46,7 @@ When code reveals the wiki is wrong or incomplete, update immediately. The wiki 
 
 Wikis are not just for the current project. They build institutional knowledge across the organization:
 
-- **Site → Site**: Other projects using the same tools learn from this wiki. Document what worked, what didn't, and why — future sites benefit from your experience.
+- **Site → Site**: Other projects using the same tools learn from this wiki. Document what worked, what didn't, and why. Future sites benefit from your experience.
 - **Site → Packages**: The packages team reads site wikis to understand real usage patterns, pain points, and gaps. Your wiki helps them build better shared tools.
 - **Packages → Site**: Package docs and conventions flow back into site wikis as shared patterns.
 
@@ -44,15 +56,15 @@ Write as if someone on a different project will read this wiki to understand how
 
 Every page serves junior devs (explanations, examples), senior devs (quick reference, decisions), and AI agents (unambiguous specs, MUST/SHOULD/MAY). Write for all three:
 
-- Lead with a summary — seniors and agents get it fast, juniors get orientation
+- Lead with a summary so seniors and agents get it fast and juniors get orientation
 - Explain *why* before *how*
 - Use tables for reference, code blocks for copy-paste, RFC 2119 keywords for requirements
 - Each page SHOULD be self-contained
-- Follow `simpleapps:writing-style` — token-efficient, action verbs first, no filler
+- Follow `simpleapps:writing-style` for token-efficient prose, action verbs first, no filler
 
 ## Content Rules
 
-- The wiki documents **process and principles**, not code. Minimize code examples — describe the pattern, then link to a real file in the repo that demonstrates it. A link to working code is always better than a pasted snippet that can go stale.
+- The wiki documents **process and principles**, not code. Minimize code examples. Describe the pattern, then link to a real file in the repo that demonstrates it. A link to working code is always better than a pasted snippet that can go stale.
 - If a code block is necessary (e.g., a command to run), keep it to 1-3 lines max.
 - The wiki documents *what* and *why*. The repo is the source of truth for *how*.
 
@@ -63,19 +75,53 @@ Every page serves junior devs (explanations, examples), senior devs (quick refer
 - Links: `[[Page-Name]]` or `[[Display Text|Page-Name]]`
 - Anchor links MUST target specific sections (`[[Versioning#version-bump-procedure]]`), not just pages
 - Repo references: use relative paths (`../../../wiki/Versioning.md`)
-- Default branch: `master` (not `main`)
+- Wiki repo default branch: `master` (GitHub's `.wiki.git` convention; applies to the `wiki/` repo only, not the code repo). Code repos may use `main` or `master`. Check with `git -C repo branch --show-current`.
 
 ## Cross-Linking
 
-Cross-linking is the most important structural feature of a wiki. Without it, a wiki is just a collection of files. With it, a wiki becomes a **knowledge graph** — each link is an attention signal that tells readers (human and AI) "this concept connects to that one."
+Cross-linking is the most important structural feature of a wiki. Without it, a wiki is just a collection of files. With it, a wiki becomes a **knowledge graph** where each link is an attention signal that tells readers (human and AI) "this concept connects to that one."
 
-Pages MUST link to related sections on other pages using `[[Page-Name#section]]`. Link to specific sections, not just pages. Every concept that is explained in more detail elsewhere MUST have a cross-link. When writing or reviewing a page, actively look for opportunities to connect it to related pages — the denser the link graph, the faster a reader builds understanding.
+Pages MUST link to related sections on other pages using `[[Page-Name#section]]`. Link to specific sections, not just pages. Every concept that is explained in more detail elsewhere MUST have a cross-link.
 
-Cross-linking also eliminates duplication. If two pages explain the same concept, one MUST become the source of truth and the other MUST link to it. Never duplicate content across pages — link instead. This keeps the wiki lean and ensures updates happen in one place.
+Cross-linking also eliminates duplication. If two pages explain the same concept, one MUST become the source of truth and the other MUST link to it. Never duplicate content across pages; link instead. This keeps the wiki lean and ensures updates happen in one place.
+
+### Link strategy: contextual, not link-farm
+
+A link is only as useful as the words around it. The same rule serves both audiences:
+
+- **Humans** scan anchor text and surrounding prose to decide whether to click. This is basic SEO; descriptive anchors win.
+- **LLMs** weight links via the attention mechanism, which uses the surrounding tokens to decide what the link is about. A bare title in a "Related" list has no context to anchor against.
+
+A link farm starves both readers. Humans see undifferentiated blue text; the LLM sees a list of titles with no relevance signal.
+
+**MUST: place links inline, in the prose, at the moment the concept is mentioned.** That sentence is the link's context for both readers.
+
+```
+✅ Versioning follows [[Versioning#calver|CalVer (YYYY.MM.seq)]]. See the
+   procedure for [[Versioning#version-bump-procedure|bumping all version files together]].
+
+❌ ## Related
+   - [[Versioning]]
+   - [[Deployment]]
+   - [[Architecture]]
+```
+
+**MUST: anchor text describes what the link is about**, not "click here" or "see also" or the bare page title with no context. The reader (human or AI) should understand the destination from the anchor text alone.
+
+```
+✅ [[Skill-Format#required-frontmatter|the required SKILL.md frontmatter fields]]
+❌ [[Skill-Format|click here]]
+❌ [[Skill-Format]]   ← acceptable if the surrounding sentence supplies the context;
+                       avoid as the only signal.
+```
+
+**SHOULD NOT: create "Related", "See also", or "Further reading" sections as link dumps.** If a connection matters, work it into the prose where it matters. The exception is genuine navigation pages (`Home.md`, `_Sidebar.md`, `llms.txt`); those exist to be link indexes.
+
+When auditing a page, count the trailing-list links vs. inline links. If trailing-list links outnumber inline links, the page is a directory entry, not a knowledge page. Rewrite to put the connections where the reader needs them.
 
 ## Wiki Over Memory
 
-When asked to save, document, or record knowledge — use the wiki, MUST NOT use memory. The wiki is shared across all agents, all projects, and all computers. Memory is personal to one user on one machine — invisible to everyone else.
+When asked to save, document, or record knowledge, use the wiki. MUST NOT use memory. The wiki is shared across all agents, all projects, and all computers. Memory is personal to one user on one machine and invisible to everyone else.
 
 | Knowledge type | Where it belongs |
 |---------------|-----------------|
@@ -87,9 +133,27 @@ When asked to save, document, or record knowledge — use the wiki, MUST NOT use
 | Personal preferences (writing style, response length) | Memory |
 | User role and background | Memory |
 
-If the user corrects your behavior, update the relevant **skill** — not memory. A correction saved to memory only helps one agent on one machine. A correction in a skill helps every agent on every project.
+If the user corrects your behavior, update the relevant **skill**, not memory. A correction saved to memory only helps one agent on one machine. A correction in a skill helps every agent on every project.
 
-If in doubt, it belongs in the wiki or a skill. The cost of putting shared knowledge in memory is that it dies with the session — no other agent, project, or computer will ever see it.
+If in doubt, it belongs in the wiki or a skill. The cost of putting shared knowledge in memory is that it dies with the session; no other agent, project, or computer will ever see it.
+
+### Versioned sources win over memory
+
+When a recalled memory conflicts with the wiki, a rule, CLAUDE.md, or a skill, you MUST follow the versioned source and ignore the memory. Memory is:
+
+- **Personal**: lives on one machine, invisible to other agents and teammates
+- **Unauditable**: the user cannot easily review or version-control what an agent has saved
+- **Often wrong**: agents save memories from misunderstandings, outdated context, or half-formed rules
+
+Anything checked into git (wiki pages, `.claude/rules/*.md`, `CLAUDE.md`, skills) is the contract. Memory is at most a personal hint. YOU MUST NOT use memory to downgrade, override, or work around a MUST from a versioned source. If memory says X but the wiki says MUST NOT X, the wiki wins, every time.
+
+When you detect a conflict:
+
+1. Follow the versioned source
+2. Remove or rewrite the offending memory file (update `MEMORY.md` index too)
+3. Report the conflict to the user so they know memory was incorrect
+
+"The memory told me otherwise" is never a valid reason to deviate from the wiki, a rule, or a skill. If you catch yourself reaching for that reasoning, stop. The memory is the problem, not the directive.
 
 ## Cross-Project Wiki Access
 
@@ -98,16 +162,16 @@ All projects follow the same directory layout (see `simpleapps:project-defaults`
 **Before reading another project's wiki, pull the latest:**
 `git -C {path-to-project}/wiki pull`
 
-**MUST use dedicated tools for cross-project access — MUST NOT use shell commands:**
+**MUST use dedicated tools for cross-project access. MUST NOT use shell commands:**
 - Read files: `Read("{path-to-project}/wiki/Page.md")`
 - Search code: `Grep(pattern: "...", path: "{path-to-project}/repo")`
 - Find files: `Glob(pattern: "{path-to-project}/repo/**/*.ts")`
 
-MUST NOT use `find`, `grep`, `cat`, `ls`, or any shell command to explore other projects. The paths are known — use the dedicated tools directly.
+MUST NOT use `find`, `grep`, `cat`, `ls`, or any shell command to explore other projects. The paths are known; use the dedicated tools directly.
 
 ### Search all wikis
 
-Every wiki on the machine is a local knowledge base. When looking for how something was solved, search across ALL wikis — not just the current project:
+Every wiki on the machine is a local knowledge base. When looking for how something was solved, search across ALL wikis, not just the current project:
 
 1. Read `~/.simpleapps/settings.json` to get `projectRoot`
 2. Pull the latest for all wikis before searching:
@@ -120,19 +184,19 @@ Every wiki on the machine is a local knowledge base. When looking for how someth
 
 Use Glob to discover which projects have wikis: `Glob(pattern: "{projectRoot}/clients/*/wiki")` and `Glob(pattern: "{projectRoot}/simpleapps/*/wiki")`.
 
-The wikis are kept fresh by `/curate-wiki` runs across projects. Searching locally is instant and requires no internet access — the knowledge is already on the machine.
+The wikis are kept fresh by `/curate-wiki` runs across projects. Searching locally is instant and requires no internet access; the knowledge is already on the machine.
 
-**What to search for:** testing patterns and checklists, architecture decisions, coding conventions, deployment procedures, and how specific features were implemented. Other sites have already solved many of the same problems — search before building from scratch.
+**What to search for:** testing patterns and checklists, architecture decisions, coding conventions, deployment procedures, and how specific features were implemented. Other sites have already solved many of the same problems; search before building from scratch.
 
 ## Deployment Page
 
-Every project wiki MUST have a `Deployment.md` page with up to three sections: Submit, Deploy, and Publish. This page defines the project-specific steps that `/submit`, `/deploy`, and `/publish` commands execute. Run `/curate-wiki` to generate it from the codebase — the command scans CI workflows, package.json, deploy scripts, and asks the user about anything it cannot determine. See the `deployment` skill for the expected format.
+Every project wiki MUST have a `Deployment.md` page with up to three sections: Submit, Deploy, and Publish. This page defines the project-specific steps that `/submit`, `/deploy`, and `/publish` commands execute. Run `/curate-wiki` to generate it from the codebase. The command scans CI workflows, package.json, deploy scripts, and asks the user about anything it cannot determine. See the `deployment` skill for the expected format.
 
 ## Testing Page
 
-Every project wiki MUST have a `Testing.md` page. This is the E2E verification checklist that `/verify` uses to walk through the site in Chrome. The page grows over time — `/curate-wiki` MUST add testing knowledge learned during the session (new edge cases, failure patterns, test data) to the Testing page.
+Every project wiki MUST have a `Testing.md` page. This is the E2E verification checklist that `/verify` uses to walk through the site in Chrome. The page grows over time. `/curate-wiki` MUST add testing knowledge learned during the session (new edge cases, failure patterns, test data) to the Testing page.
 
-A good Testing page covers: test tiers (automated vs manual), test data (items, accounts, cards), and an E2E checklist organized by page area (homepage, listing, detail, cart, checkout, etc.). Each checklist item is a concrete, verifiable condition — not vague ("works") but specific ("price shows $9.26").
+A good Testing page covers: test tiers (automated vs manual), test data (items, accounts, cards), and an E2E checklist organized by page area (homepage, listing, detail, cart, checkout, etc.). Each checklist item is a concrete, verifiable condition, not vague ("works") but specific ("price shows $9.26").
 
 ## Keep It Lean
 
@@ -143,7 +207,7 @@ A good Testing page covers: test tiers (automated vs manual), test data (items, 
 
 ## Maintenance
 
-Cross-check wiki against code before updating. Staleness-prone: versions, file counts, CI workflows, TODO markers, API surfaces. **Never echo what the wiki says — read the code, then write.**
+Cross-check wiki against code before updating. Staleness-prone: versions, file counts, CI workflows, TODO markers, API surfaces. **Never echo what the wiki says. Read the code, then write.**
 
 When adding/removing pages, MUST update: `Home.md`, `_Sidebar.md`, `llms.txt` (if present).
 

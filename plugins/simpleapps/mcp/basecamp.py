@@ -4,7 +4,7 @@
 # dependencies = ["mcp[cli]"]
 # ///
 """
-Basecamp 2 MCP Server — read access to Basecamp 2 (BCX API)
+Basecamp 2 MCP Server: read access to Basecamp 2 (BCX API)
 with write operations: reassigning todos, creating comments.
 
 API reference: https://github.com/basecamp/bcx-api
@@ -233,7 +233,7 @@ def _format_attachment(a: dict, include_id: bool = False) -> str:
     url = a.get("url", a.get("link_url", ""))
     id_str = f" (id: {a['id']})" if include_id and "id" in a else ""
     linked = " [linked]" if a.get("link_url") and not a.get("url") else ""
-    return f"- **{name}**{id_str} ({_format_bytes(size)}, {content_type}){linked} — {url}"
+    return f"- **{name}**{id_str} ({_format_bytes(size)}, {content_type}){linked}: {url}"
 
 
 class _NoRedirectHandler(urllib.request.HTTPRedirectHandler):
@@ -295,7 +295,7 @@ def list_projects(status: str = "active") -> str:
         projects = api_get("/projects.json")
     lines = []
     for p in projects:
-        lines.append(f"- **{p['name']}** (id: {p['id']}) — {p.get('description', '')}")
+        lines.append(f"- **{p['name']}** (id: {p['id']}): {p.get('description', '')}")
     return "\n".join(lines) if lines else f"No {status} projects found."
 
 
@@ -351,7 +351,7 @@ def list_people() -> str:
     lines = []
     for p in people:
         email = p.get("email_address", "")
-        lines.append(f"- **{p['name']}** (id: {p['id']}) — {email}")
+        lines.append(f"- **{p['name']}** (id: {p['id']}): {email}")
     return "\n".join(lines) if lines else "No people found."
 
 
@@ -448,7 +448,7 @@ def list_todos(project_id: int, status: str = "remaining") -> str:
         assignee = t.get("assignee", {}).get("name", "Unassigned")
         due = f" (due: {t['due_on']})" if t.get("due_on") else ""
         check = "[x]" if t.get("completed") else "[ ]"
-        lines.append(f"- {check} {t['content']} — {assignee}{due} (id: {t['id']})")
+        lines.append(f"- {check} {t['content']}: {assignee}{due} (id: {t['id']})")
     return "\n".join(lines) if lines else f"No {status} todos found."
 
 
@@ -461,7 +461,7 @@ def list_todos_due_since(project_id: int, due_since: str) -> str:
         assignee = t.get("assignee", {}).get("name", "Unassigned")
         due = f" (due: {t['due_on']})" if t.get("due_on") else ""
         check = "[x]" if t.get("completed") else "[ ]"
-        lines.append(f"- {check} {t['content']} — {assignee}{due} (id: {t['id']})")
+        lines.append(f"- {check} {t['content']}: {assignee}{due} (id: {t['id']})")
     return "\n".join(lines) if lines else "No todos found."
 
 
@@ -520,7 +520,7 @@ def create_todo(
     )
     todo_id = result.get("id", "")
     assignee = result.get("assignee", {}).get("name", "Unassigned")
-    return f"Todo created: **{content}** (id: {todo_id}) — assigned to {assignee}"
+    return f"Todo created: **{content}** (id: {todo_id}):assigned to {assignee}"
 
 
 @mcp.tool()
@@ -591,7 +591,7 @@ def list_my_todos() -> str:
             continue
         project_name = group.get("bucket", {}).get("name", "Unknown Project")
         todolist_name = group.get("name", "")
-        lines.append(f"\n### {project_name} — {todolist_name}")
+        lines.append(f"\n### {project_name}: {todolist_name}")
         for todo in open_todos:
             due = f" (due: {todo['due_on']})" if todo.get("due_on") else ""
             comments = f" [{todo['comments_count']} comments]" if todo.get("comments_count") else ""
@@ -622,7 +622,7 @@ def list_assigned_todos(person_id: int, due_since: str = "") -> str:
             continue
         project_name = group.get("bucket", {}).get("name", "Unknown Project")
         todolist_name = group.get("name", "")
-        lines.append(f"\n### {project_name} — {todolist_name}")
+        lines.append(f"\n### {project_name}: {todolist_name}")
         for todo in open_todos:
             due = f" (due: {todo['due_on']})" if todo.get("due_on") else ""
             lines.append(f"- [ ] {todo['content']}{due} (id: {todo['id']})")
@@ -643,7 +643,7 @@ def list_todolists(project_id: int) -> str:
     for tl in todolists:
         remaining = tl.get("remaining_count", 0)
         completed = tl.get("completed_count", 0)
-        lines.append(f"- **{tl['name']}** (id: {tl['id']}) — {remaining} remaining, {completed} completed")
+        lines.append(f"- **{tl['name']}** (id: {tl['id']}): {remaining} remaining, {completed} completed")
     return "\n".join(lines) if lines else "No todo lists found."
 
 
@@ -660,7 +660,7 @@ def list_all_todolists(status: str = "active") -> str:
     for tl in todolists:
         bucket = tl.get("bucket", {}).get("name", "Unknown Project")
         remaining = tl.get("remaining_count", 0)
-        lines.append(f"- **{tl['name']}** ({bucket}) (id: {tl['id']}) — {remaining} remaining")
+        lines.append(f"- **{tl['name']}** ({bucket}) (id: {tl['id']}): {remaining} remaining")
     return "\n".join(lines) if lines else f"No {status} todo lists found."
 
 
@@ -677,7 +677,7 @@ def get_todolist(project_id: int, todolist_id: int) -> str:
         for todo in remaining:
             assignee = todo.get("assignee", {}).get("name", "Unassigned")
             due = f" (due: {todo['due_on']})" if todo.get("due_on") else ""
-            lines.append(f"- [ ] {todo['content']} — {assignee}{due} (id: {todo['id']})")
+            lines.append(f"- [ ] {todo['content']}: {assignee}{due} (id: {todo['id']})")
 
     completed = tl.get("todos", {}).get("completed", [])
     if completed:
@@ -737,7 +737,7 @@ def list_messages(project_id: int) -> str:
             continue
         author = t.get("creator", {}).get("name", "Unknown")
         lines.append(
-            f"- **{t['title']}** (id: {topicable.get('id', '')}) — by {author}, {t.get('created_at', '')[:10]}"
+            f"- **{t['title']}** (id: {topicable.get('id', '')}):by {author}, {t.get('created_at', '')[:10]}"
         )
     return "\n".join(lines) if lines else "No messages found."
 
@@ -819,7 +819,7 @@ def list_documents(project_id: int = 0) -> str:
         docs = api_get("/documents.json")
     lines = []
     for d in docs:
-        lines.append(f"- **{d['title']}** (id: {d['id']}) — updated {d['updated_at'][:10]}")
+        lines.append(f"- **{d['title']}** (id: {d['id']}):updated {d['updated_at'][:10]}")
     return "\n".join(lines) if lines else "No documents found."
 
 
@@ -899,7 +899,7 @@ def list_calendar_events(project_id: int = 0, start_date: str = "", end_date: st
     lines = []
     for e in events:
         starts = e.get("starts_at", "")[:10]
-        lines.append(f"- **{e['summary']}** (id: {e['id']}) — {starts}")
+        lines.append(f"- **{e['summary']}** (id: {e['id']}): {starts}")
     return "\n".join(lines) if lines else "No calendar events found."
 
 
@@ -989,7 +989,7 @@ def list_topics(project_id: int = 0, archived: bool = False) -> str:
     lines = []
     for t in topics:
         title = t.get("title", t.get("excerpt", "Untitled"))
-        lines.append(f"- **{title}** ({t.get('topicable', {}).get('type', '')}) — updated {t.get('updated_at', '')[:10]}")
+        lines.append(f"- **{title}** ({t.get('topicable', {}).get('type', '')}):updated {t.get('updated_at', '')[:10]}")
     return "\n".join(lines) if lines else "No topics found."
 
 
@@ -1100,7 +1100,7 @@ def download_attachment(
             except urllib.error.HTTPError:
                 return "Token refresh failed. Run 'basecamp-auth' to re-authenticate."
         else:
-            return f"Download failed: HTTP {e.code} — {e.reason}"
+            return f"Download failed: HTTP {e.code}: {e.reason}"
 
     return (
         f"Downloaded **{a.get('name', save_name)}** to `{dest_path}`\n"
@@ -1187,7 +1187,7 @@ def list_accesses(project_id: int) -> str:
     lines = []
     for p in people:
         email = p.get("email_address", "")
-        lines.append(f"- **{p['name']}** (id: {p['id']}) — {email}")
+        lines.append(f"- **{p['name']}** (id: {p['id']}): {email}")
     return "\n".join(lines) if lines else "No accesses found."
 
 
@@ -1240,7 +1240,7 @@ def list_stars() -> str:
     stars = api_get("/stars.json")
     lines = []
     for s in stars:
-        lines.append(f"- Project id: {s.get('id', '')} — starred {s.get('created_at', '')[:10]}")
+        lines.append(f"- Project id: {s.get('id', '')}:starred {s.get('created_at', '')[:10]}")
     return "\n".join(lines) if lines else "No starred projects."
 
 
@@ -1272,7 +1272,7 @@ def list_forwards(project_id: int = 0) -> str:
     lines = []
     for f in forwards:
         subject = f.get("subject", "No subject")
-        lines.append(f"- **{subject}** (id: {f['id']}) — from {f.get('from', '')}, {f.get('created_at', '')[:10]}")
+        lines.append(f"- **{subject}** (id: {f['id']}):from {f.get('from', '')}, {f.get('created_at', '')[:10]}")
     return "\n".join(lines) if lines else "No forwards found."
 
 

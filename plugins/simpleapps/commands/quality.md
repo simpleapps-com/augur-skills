@@ -8,13 +8,13 @@ First, use Skill("quality") to load quality tooling awareness, then Skill("work-
 
 Run all code quality checks on the FULL codebase and fix issues found.
 
-**Scope rule**: Fix every issue the checks find — see work-habits: "Leave it better than you found it."
+**Scope rule**: Fix every issue the checks find. See work-habits: "Leave it better than you found it."
 
-**Bias warning**: You may be checking code you wrote earlier in this session. Approach with skepticism — adopt the stance of a reviewer who did not write the code. A clean pass should be earned, not assumed.
+**Bias warning**: You may be checking code you wrote earlier in this session. Approach with skepticism. Adopt the stance of a reviewer who did not write the code. A clean pass should be earned, not assumed.
 
 ## 1. Discover quality tools
 
-Use the tool table and config files from the quality skill to check what's configured. Read `repo/package.json` (or equivalent for PHP/Python). The config files are the source of truth — only run what's defined.
+Use the tool table and config files from the quality skill to check what's configured. Read `repo/package.json` (or equivalent for PHP/Python). The config files are the source of truth. Only run what's defined.
 
 ## 2. Flag missing tooling
 
@@ -22,21 +22,21 @@ Use the minimum expected tooling checklist from the quality skill. Report what's
 
 Do NOT silently skip missing tools. Flag them every time.
 
-When suggesting new tools, always suggest adding them as `package.json` scripts (e.g., `"knip": "knip"`, `"format": "prettier --write ."`). Scripts run via `pnpm` are pre-approved (`pnpm:*` is in the allow list) — no permission prompts. A tool that isn't in `package.json` will trigger a permission prompt every time it runs, defeating the purpose of autonomous quality checks.
+When suggesting new tools, always suggest adding them as `package.json` scripts (e.g., `"knip": "knip"`, `"format": "prettier --write ."`). Scripts run via `pnpm` are pre-approved (`pnpm:*` is in the allow list), so no permission prompts. A tool that isn't in `package.json` will trigger a permission prompt every time it runs, defeating the purpose of autonomous quality checks.
 
 ## 3. Update augur packages
 
-For Node projects with `@simpleapps-com/augur-*` packages installed — do this BEFORE running quality checks. Outdated or mismatched augur packages cause lefthook and other checks to fail.
+For Node projects with `@simpleapps-com/augur-*` packages installed, do this BEFORE running quality checks. Outdated or mismatched augur packages cause lefthook and other checks to fail.
 
 **If `augur-doctor` is available** (ships with `@simpleapps-com/augur-config`): run `pnpm augur-doctor .` from the site directory. This checks version alignment, latest versions, and platform standard conformance in one pre-approved command. No permission prompt.
 
 **If `augur-doctor` is NOT available**: use the Read tool to check each package's `package.json` for its version, and `npm view @simpleapps-com/<pkg> version` as separate Bash calls for latest versions. MUST NOT use `node -e` or `require()`.
 
-**augur-* packages (semver):** All `@simpleapps-com/augur-*` packages are published together from a monorepo and MUST be on the same version. If any are mismatched, flag it as an error — mixed versions cause subtle bugs. If any are outdated, all MUST be updated together.
+**augur-* packages (semver):** All `@simpleapps-com/augur-*` packages are published together from a monorepo and MUST be on the same version. If any are mismatched, flag it as an error. Mixed versions cause subtle bugs. If any are outdated, all MUST be updated together.
 
 **augur-api (CalVer):** `@simpleapps-com/augur-api` is versioned independently using CalVer (YYYY.MM.seq). Check it separately.
 
-If any augur-* packages are outdated or mismatched, update them automatically. Client sites use pnpm workspaces — augur packages are installed at the site level, not the root. Use `--filter` to target the right workspace:
+If any augur-* packages are outdated or mismatched, update them automatically. Client sites use pnpm workspaces. Augur packages are installed at the site level, not the root. Use `--filter` to target the right workspace:
 
 ```bash
 pnpm --filter <site-name> update @simpleapps-com/augur-config @simpleapps-com/augur-hooks @simpleapps-com/augur-server @simpleapps-com/augur-utils @simpleapps-com/augur-web @simpleapps-com/augur-tailwind
@@ -44,9 +44,9 @@ pnpm --filter <site-name> update @simpleapps-com/augur-config @simpleapps-com/au
 
 To find the site name, read `pnpm-workspace.yaml` and the site-level `package.json`. For non-workspace projects, run `pnpm update` without `--filter`.
 
-Update ALL augur-* packages together in a single command — never update one without the others.
+Update ALL augur-* packages together in a single command. Never update one without the others.
 
-**augur-api** is independent (CalVer) — update it separately if outdated: `pnpm --filter <site-name> update @simpleapps-com/augur-api`.
+**augur-api** is independent (CalVer). Update it separately if outdated: `pnpm --filter <site-name> update @simpleapps-com/augur-api`.
 
 ## 4. Verify pnpm lockfile sync
 
@@ -54,18 +54,18 @@ For pnpm workspace projects (check for `pnpm-workspace.yaml`), the root `pnpm-lo
 
 Check: `pnpm install --frozen-lockfile` from the repo root. If it fails, the lockfiles are out of sync. Fix: run `pnpm install` from the repo root to regenerate, then stage and commit the updated lockfile alongside your other changes.
 
-This check MUST run after any package updates (step 3) and before quality checks (step 5). If you updated packages in step 3, the lockfile is almost certainly out of sync — always run `pnpm install` at the root after updating.
+This check MUST run after any package updates (step 3) and before quality checks (step 5). If you updated packages in step 3, the lockfile is almost certainly out of sync. Always run `pnpm install` at the root after updating.
 
 ## 5. Run quality checks
 
-Run each discovered check as a separate command. Order matters — fix formatting first, then lint, then typecheck, then test:
+Run each discovered check as a separate command. Order matters: fix formatting first, then lint, then typecheck, then test.
 
-1. **Format** — `pnpm format` (or equivalent). Formatters auto-fix.
-2. **Lint** — `pnpm lint` (or equivalent). If a `lint:fix` script exists, use it.
-3. **Typecheck** — `pnpm typecheck` (or equivalent).
-4. **Test** — `pnpm test` (or equivalent).
-5. **Dead code** — `pnpm knip` (if configured). Report findings but do not auto-fix — unused exports may be intentional public API.
-6. **Other checks** — any additional scripts like `validate-skills`, `check`, etc.
+1. **Format**: `pnpm format` (or equivalent). Formatters auto-fix.
+2. **Lint**: `pnpm lint` (or equivalent). If a `lint:fix` script exists, use it.
+3. **Typecheck**: `pnpm typecheck` (or equivalent).
+4. **Test**: `pnpm test` (or equivalent).
+5. **Dead code**: `pnpm knip` (if configured). Report findings but do not auto-fix. Unused exports may be intentional public API.
+6. **Other checks**: any additional scripts like `validate-skills`, `check`, etc.
 
 ## 6. Fix issues in scope
 
@@ -78,7 +78,7 @@ For each failing check:
 
 ### Rules
 
-- Work-habits "Leave it better" and "Resolve, never hide" apply — fix every issue, never suppress checks
+- Work-habits "Leave it better" and "Resolve, never hide" apply: fix every issue, never suppress checks
 - If a fix is unclear, explore the codebase to understand the intent before changing code
 - If a test fails because of a real bug, fix the bug
 - Scan for existing suppressions (`eslint-disable`, `@ts-ignore`, `.skip`, `noqa`, etc.) and flag them to the user as hidden technical debt
@@ -90,7 +90,7 @@ After fixing all issues from one round:
 1. Re-run ALL checks from the beginning
 2. If new issues appear, fix them
 3. Repeat until all checks pass with zero issues
-4. MUST restart from step 4 after ANY code change — a fix in one area can break another
+4. MUST restart from step 4 after ANY code change. A fix in one area can break another.
 
 ## 8. Report
 
@@ -107,8 +107,8 @@ After fixing all issues from one round:
 - Test: ✅ 12/12 passing
 
 ### Files modified
-- path/to/file.ts — fixed lint issues
-- path/to/other.ts — fixed type error
+- path/to/file.ts: fixed lint issues
+- path/to/other.ts: fixed type error
 ```
 
 Suggest next step: `/verify` to check in the browser, or `/sanity-check` to audit the solution.

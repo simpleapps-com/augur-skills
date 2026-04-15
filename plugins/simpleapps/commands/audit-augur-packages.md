@@ -30,30 +30,30 @@ For each match, check whether the file also imports from `@simpleapps-com/augur-
 ### Grep patterns by package
 
 **augur-utils:**
-- `from ["']@/lib/utils["']` — custom cn()
-- `function formatPrice|const formatPrice|from ["']@/.*format.*price` — custom price formatting
-- `from ["']@/types/T` — local type files
-- `staleTime.*\d+.*gcTime|const.*CACHE_CONFIG` — custom cache config
+- `from ["']@/lib/utils["']`: custom cn()
+- `function formatPrice|const formatPrice|from ["']@/.*format.*price`: custom price formatting
+- `from ["']@/types/T`: local type files
+- `staleTime.*\d+.*gcTime|const.*CACHE_CONFIG`: custom cache config
 
 **augur-web:**
-- `from ["']@/components/ui/` — local UI component imports
+- `from ["']@/components/ui/`: local UI component imports
 
 **augur-hooks:**
-- `function useDebounce|from ["']@/.*useDebounce` — custom debounce
-- `function useIsMobile|from ["']@/.*useIsMobile|from ["']@/.*useMobile` — custom mobile detection
-- `function useIsHydrated|from ["']@/.*useIsHydrated` — custom hydration check
-- `function useItemPrice|function useFormatPrice` — custom price hooks
-- `useCartStore|CartStore` in store files — custom cart store
+- `function useDebounce|from ["']@/.*useDebounce`: custom debounce
+- `function useIsMobile|from ["']@/.*useIsMobile|from ["']@/.*useMobile`: custom mobile detection
+- `function useIsHydrated|from ["']@/.*useIsHydrated`: custom hydration check
+- `function useItemPrice|function useFormatPrice`: custom price hooks
+- `useCartStore|CartStore` in store files: custom cart store
 
 **augur-server:**
-- `function cachedSdkCall|function sdkCall` — custom SDK cache
-- `function getServerQueryClient` — custom query client
-- `function isDev|NODE_ENV.*===.*development` in utility files — custom env detection
-- `CredentialsProvider|providers:.*Credentials` without createAuthConfig — manual auth
+- `function cachedSdkCall|function sdkCall`: custom SDK cache
+- `function getServerQueryClient`: custom query client
+- `function isDev|NODE_ENV.*===.*development` in utility files: custom env detection
+- `CredentialsProvider|providers:.*Credentials` without createAuthConfig: manual auth
 
 **Icons/Tailwind:**
-- `from ["']lucide-react["']|from ["']@heroicons/react` — wrong icon library
-- Glob for `tailwind.config.ts` or `tailwind.config.js` in repo root — v3 config
+- `from ["']lucide-react["']|from ["']@heroicons/react`: wrong icon library
+- Glob for `tailwind.config.ts` or `tailwind.config.js` in repo root: v3 config
 
 ## 4. Output
 

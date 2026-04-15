@@ -25,9 +25,9 @@ All 5 data tools (`augur_list`, `augur_get`, `augur_create`, `augur_update`, `au
 
 Always start with discovery:
 
-1. `augur_sites()` — see which sites are configured and which is default
-2. `augur_discover()` — lists all available services
-3. `augur_discover(service="<name>")` — lists endpoints for a specific service
+1. `augur_sites()`: see which sites are configured and which is default
+2. `augur_discover()`: lists all available services
+3. `augur_discover(service="<name>")`: lists endpoints for a specific service
 4. Use data tools for CRUD, passing `site` when targeting a non-default site
 
 Do NOT hardcode service names or endpoints. Use `augur_discover` to find them at runtime.
@@ -38,10 +38,10 @@ Credentials resolve automatically from `.simpleapps/` directories.
 
 Resolution order (first match wins):
 
-1. **Env vars** — `AUGUR_TOKEN` + `AUGUR_SITE_ID`
-2. **Explicit file** — `AUGUR_CREDS_FILE` env var pointing to a JSON file
-3. **Project file** — `<cwd>/.simpleapps/augur-api.json`
-4. **Global file** — `~/.simpleapps/augur-api.json`
+1. **Env vars**: `AUGUR_TOKEN` + `AUGUR_SITE_ID`
+2. **Explicit file**: `AUGUR_CREDS_FILE` env var pointing to a JSON file
+3. **Project file**: `<cwd>/.simpleapps/augur-api.json`
+4. **Global file**: `~/.simpleapps/augur-api.json`
 
 Project and global files are merged (project takes precedence).
 
@@ -67,9 +67,9 @@ Project and global files are merged (project takes precedence).
 
 Documentation hub: https://augur-api.info/
 
-- **Service directory** — https://items.augur-api.com/llms.txt lists all available services
-- **Per-service docs** — `https://{service}.augur-api.com/llms.txt` (LLM-friendly), `/openapi.json`, `/postman.json`, `/endpoints.jsonl`
-- **FAQ for agents** — https://augur-api.info/faq.md (auth, pagination, rate limits)
+- **Service directory**: https://items.augur-api.com/llms.txt lists all available services
+- **Per-service docs**: `https://{service}.augur-api.com/llms.txt` (LLM-friendly), `/openapi.json`, `/postman.json`, `/endpoints.jsonl`
+- **FAQ for agents**: https://augur-api.info/faq.md (auth, pagination, rate limits)
 
 Services include items, pricing, commerce, orders, customers, payments, shipping, open-search, and more. Use `augur_discover` at runtime rather than hardcoding service names.
 
@@ -79,3 +79,13 @@ If tools return authentication errors:
 - Check for `.simpleapps/augur-api.json` in the project directory or home directory
 - Verify the file contains valid credentials (single-site or multi-site format)
 - Fallback: set `AUGUR_TOKEN` and `AUGUR_SITE_ID` env vars
+
+## When the MCP Server Is Unavailable
+
+If `augur_*` tools are not present in the toolset (server not configured) or every call returns connection errors:
+
+1. Stop trying. Repeated calls will keep failing.
+2. Tell the user the Augur API MCP is unavailable and ask whether to (a) fix it, (b) skip the data check, or (c) use a different approach (e.g., reading data directly from the codebase, asking the user for the value)
+3. MUST NOT fabricate API responses or guess at data the API would have returned
+
+There is no documented HTTP fallback. The MCP server holds the credential and routing logic. If the MCP is down, that path is closed for this session.

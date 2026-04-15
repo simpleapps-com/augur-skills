@@ -1,6 +1,6 @@
 ---
 name: context
-description: Report current context window usage — rules, skills loaded, wiki pages, and working context
+description: Report current context window usage. Rules, skills loaded, wiki pages, and working context.
 allowed-tools: Bash(wc:*), Bash(ls:*), Read, Glob, Grep
 ---
 

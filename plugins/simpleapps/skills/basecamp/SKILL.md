@@ -29,7 +29,7 @@ This opens the browser for OAuth, user clicks "Allow", credentials are saved aut
 
 The `basecamp` MCP server is bundled with this plugin and starts automatically. API reference: https://github.com/basecamp/bcx-api
 
-All tools are available as `mcp__plugin_simpleapps_basecamp__*`. The tool names and parameters are self-documenting via the MCP schema — do not hardcode tool signatures. Key tool groups: projects, people, todos, comments, todo lists, messages, documents, calendar events, topics, attachments/uploads, activity, access management, stars, forwards.
+All tools are available as `mcp__plugin_simpleapps_basecamp__*`. The tool names and parameters are self-documenting via the MCP schema. Do not hardcode tool signatures. Key tool groups: projects, people, todos, comments, todo lists, messages, documents, calendar events, topics, attachments/uploads, activity, access management, stars, forwards.
 
 **Note**: The BCX API does not have a search endpoint. To find content, use `list_topics(project_id)` to browse, or `list_messages(project_id)` for messages. For cross-project browsing, use `list_topics()` (no project_id) to get recent topics across all projects.
 
@@ -43,9 +43,9 @@ A URL like `https://basecamp.com/2805226/projects/18932786/todos/514631271` give
 
 Attachments can be on todos, comments, messages, or uploads. To retrieve them:
 
-1. **Discover**: Call `get_todo` or `get_message` — attachments appear with IDs in both the top-level section and within individual comments
+1. **Discover**: Call `get_todo` or `get_message`. Attachments appear with IDs in both the top-level section and within individual comments.
 2. **Inspect** (optional): Call `get_attachment(project_id, attachment_id)` to see metadata, size, content type, and download URL
-3. **Download**: Call `download_attachment(project_id, attachment_id)` — saves to `~/.simpleapps/downloads/{project_id}/`
+3. **Download**: Call `download_attachment(project_id, attachment_id)`. Saves to `~/.simpleapps/downloads/{project_id}/`.
 4. **Read**: Use the `Read` tool on the local file path to view content (works for images, PDFs, Excel, text)
 
 To browse all attachments in a project, use `list_attachments(project_id)`.
@@ -74,9 +74,9 @@ If the MCP server is unavailable (credentials expired, server not running), use 
 | Todo lists | `/projects/<project_id>/todolists` |
 | Documents | `/projects/<project_id>/documents` |
 
-**Me** page (`/people/<person_id>`) — open to-dos (~45+ shows a "See all X open to-dos" link, YOU MUST click it). The full list is at `/people/<person_id>/outstanding_todos`.
+**Me** page (`/people/<person_id>`): open to-dos (~45+ shows a "See all X open to-dos" link, YOU MUST click it). The full list is at `/people/<person_id>/outstanding_todos`.
 
-**JSON API via Chrome**: Navigate to `/api/v1/projects/<project_id>/todos/<todo_id>.json` then use `get_page_text`. WebFetch will NOT work — Chrome carries session cookies.
+**JSON API via Chrome**: Navigate to `/api/v1/projects/<project_id>/todos/<todo_id>.json` then use `get_page_text`. WebFetch will NOT work; Chrome carries session cookies.
 
 ## Tips
 

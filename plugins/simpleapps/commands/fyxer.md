@@ -1,6 +1,6 @@
 ---
 name: fyxer
-description: Process a Fyxer meeting recording — extract, cache locally, and post to Basecamp
+description: Process a Fyxer meeting recording. Extract, cache locally, and post to Basecamp.
 argument-hint: "<fyxer-url> <basecamp-project-id>"
 allowed-tools: Bash(pbpaste:*), Bash(wc:*), Bash(rm:*), Bash(mv:*), Bash(cp:*), Bash(ls:*), Bash(mkdir:*), Skill(fyxer), Skill(basecamp), Skill(bash-simplicity), Read, Write, Glob, mcp__plugin_simpleapps_basecamp__*, mcp__claude-in-chrome__*
 ---
@@ -22,7 +22,7 @@ Extract the **meeting UUID** (before the colon). Use only the UUID for cache fol
 If a Basecamp project ID was provided:
 1. Find the **Fyxer Index** document: `list_documents(project_id)` then scan for title `Fyxer Index`
 2. If found, `get_document(project_id, document_id)` and search content for the meeting UUID
-3. If found, the meeting has already been posted — inform the user and stop
+3. If found, the meeting has already been posted. Inform the user and stop.
 
 If no Fyxer Index document exists, there are no tracked meetings. Proceed.
 
@@ -38,9 +38,9 @@ If both `summary.txt` and `transcript.txt` exist, skip to step 5. Otherwise, ext
 
 Click the **Transcript** tab. Methods (in order of preference):
 
-1. **"Download transcript" button** (BEST) — Downloads a `.txt` file to `~/Downloads/`. Complete content, no truncation. Copy to cache dir, then delete the download.
-2. **"Copy transcript" button** + `pbpaste` — Write to disk. Reliable but requires clipboard access.
-3. **`get_page_text`** — UNRELIABLE. Only captures visible/partial content. DO NOT USE for transcripts.
+1. **"Download transcript" button** (BEST): Downloads a `.txt` file to `~/Downloads/`. Complete content, no truncation. Copy to cache dir, then delete the download.
+2. **"Copy transcript" button** + `pbpaste`: Write to disk. Reliable but requires clipboard access.
+3. **`get_page_text`**: UNRELIABLE. Only captures visible/partial content. DO NOT USE for transcripts.
 
 Save to `~/.simpleapps/fyxer/<meeting-uuid>/transcript.txt`.
 
@@ -48,8 +48,8 @@ Save to `~/.simpleapps/fyxer/<meeting-uuid>/transcript.txt`.
 
 The Summary tab is the default view. Methods:
 
-1. **"Copy summary" button** + `pbpaste` (BEST) — Summaries are short (~1,700 chars).
-2. **`get_page_text`** — Works for short summaries but mixes in page chrome. Not recommended.
+1. **"Copy summary" button** + `pbpaste` (BEST): Summaries are short (~1,700 chars).
+2. **`get_page_text`**: Works for short summaries but mixes in page chrome. Not recommended.
 
 Save to `~/.simpleapps/fyxer/<meeting-uuid>/summary.txt`.
 
@@ -73,7 +73,7 @@ Click the **participant count dropdown** in the page header to reveal attendee n
 
 Then write and verify: `pbpaste > target.txt`
 
-**Note**: Do NOT try to read full clipboard content via JS — Chrome MCP truncates JS output at ~1,000 characters. Always use `pbpaste` to write to disk.
+**Note**: Do NOT try to read full clipboard content via JS. Chrome MCP truncates JS output at ~1,000 characters. Always use `pbpaste` to write to disk.
 
 MUST clean up `~/Downloads/` after copying downloaded files to the cache directory.
 

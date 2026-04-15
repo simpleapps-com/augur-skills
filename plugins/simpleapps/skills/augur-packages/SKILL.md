@@ -1,6 +1,6 @@
 ---
 name: augur-packages
-description: Shared npm packages under @simpleapps-com/augur-*. Directs agents to check installed packages before writing custom code. This skill is a starting point — always read the actual package code for current API surface.
+description: Shared npm packages under @simpleapps-com/augur-*. Directs agents to check installed packages before writing custom code. This skill is a starting point; always read the actual package code for current API surface.
 allowed-tools:
   - Read
   - Glob
@@ -11,7 +11,7 @@ allowed-tools:
 
 ## Custom code is a liability. Shared code is an asset.
 
-Every line of custom site code carries maintenance cost — it must be understood, tested, and updated by whoever touches it next. Shared packages are the opposite: maintained once, benefiting every site. When you write custom code that a package already handles, you are adding a liability. When you adopt a package export, you are removing one.
+Every line of custom site code carries maintenance cost: it must be understood, tested, and updated by whoever touches it next. Shared packages are the opposite: maintained once, benefiting every site. When you write custom code that a package already handles, you are adding a liability. When you adopt a package export, you are removing one.
 
 This means: always prefer package solutions over custom code. When no package solution exists but the code would benefit other sites, suggest it as a package addition. The goal is to shrink the liability (custom code) and grow the asset (shared packages) over time.
 
@@ -25,23 +25,23 @@ This skill is a **stub, not an archive**. New packages are created, existing pac
 
 **Always read the installed packages' documentation in `node_modules/`:**
 
-1. Use `Glob("repo/node_modules/@simpleapps-com/*")` to discover ALL available packages — there may be packages not listed here
-2. Read `repo/node_modules/@simpleapps-com/<package>/llms.txt` — machine-readable, lists every export with descriptions and usage examples. This is the fastest path to discovering what exists.
+1. Use `Glob("repo/node_modules/@simpleapps-com/*")` to discover ALL available packages. There may be packages not listed here.
+2. Read `repo/node_modules/@simpleapps-com/<package>/llms.txt`, which is machine-readable and lists every export with descriptions and usage examples. This is the fastest path to discovering what exists.
 3. Read `repo/node_modules/@simpleapps-com/<package>/README.md` for full API docs, code examples, and "Replaces" guidance
-4. MUST NOT read `dist/`, `.d.ts`, or compiled JS files to discover capabilities — they are minified, chunked, and incomplete. The README and llms.txt are the source of truth.
+4. MUST NOT read `dist/`, `.d.ts`, or compiled JS files to discover capabilities. They are minified, chunked, and incomplete. The README and llms.txt are the source of truth.
 
 When this skill and the installed docs disagree, **the installed docs win**. This skill exists to point you in the right direction, not to replace reading the docs.
 
 ## Known Packages
 
-These are starting hints — not a complete list. Always check `node_modules/@simpleapps-com/` for the full set.
+These are starting hints, not a complete list. Always check `node_modules/@simpleapps-com/` for the full set.
 
 | Package | Purpose |
 |---------|---------|
 | `augur-utils` | Types, formatters, cache config, Valibot schemas. Zero framework dependencies. |
 | `augur-web` | shadcn/Radix UI components. Per-component entry points. |
 | `augur-hooks` | React Query hooks and Zustand stores. Cross-platform. |
-| `augur-server` | Server-side utilities for Next.js — Redis caching, auth factory, query client. |
+| `augur-server` | Server-side utilities for Next.js: Redis caching, auth factory, query client. |
 | `augur-tailwind` | Tailwind v4 CSS theme. No config file needed. |
 
 ## How to Check for Package Solutions
@@ -62,33 +62,33 @@ If llms.txt shows a relevant export, read the README for full API, code examples
 
 ### Step 3: MUST NOT grep compiled output
 
-MUST NOT read or grep `dist/`, `.d.ts`, `.js`, or any compiled files to discover package capabilities. These are minified build artifacts — unreliable for discovery. The README and llms.txt are the ONLY source of truth.
+MUST NOT read or grep `dist/`, `.d.ts`, `.js`, or any compiled files to discover package capabilities. These are minified build artifacts, unreliable for discovery. The README and llms.txt are the ONLY source of truth.
 
 ### Step 4: Before filing a package issue
 
 Before creating an issue on `simpleapps-com/augur-packages` requesting a new feature:
 1. Search ALL package llms.txt files for the function/hook name
 2. Search ALL package README.md files for the concept
-3. If found, the problem is site adoption — not a package gap. Use the existing export.
+3. If found, the problem is site adoption, not a package gap. Use the existing export.
 
 ### Step 5: Before writing custom code
 
 Before creating a custom hook, utility, or action in a site:
 1. Search ALL package llms.txt files for similar functionality
 2. Check the augur-hooks README "Examples" section for the pattern
-3. If a package export exists, use it. If it does not work as expected, file a bug on the package — not a reimplementation in the site.
+3. If a package export exists, use it. If it does not work as expected, file a bug on the package, not a reimplementation in the site.
 
 ## What Stays Site-Specific
 
 MUST NOT be replaced by packages:
-- **Server actions** (`"use server"`) — site-specific business logic
-- **Layout components** (Header, Footer, MainMenu) — brand-specific
-- **Domain components** (ProductItem, CartTable, CategoryCard) — compose UI primitives
-- **Auth callbacks** — injected into package auth factory
-- **Cart mutation callbacks** — depend on site-specific server actions
-- **CSS variable overrides** — brand colors, fonts, radius
-- **next.config** — image domains, redirects, security headers
-- **Site integrations** — GA4, Maps, reCAPTCHA
+- **Server actions** (`"use server"`): site-specific business logic
+- **Layout components** (Header, Footer, MainMenu): brand-specific
+- **Domain components** (ProductItem, CartTable, CategoryCard): compose UI primitives
+- **Auth callbacks**: injected into package auth factory
+- **Cart mutation callbacks**: depend on site-specific server actions
+- **CSS variable overrides**: brand colors, fonts, radius
+- **next.config**: image domains, redirects, security headers
+- **Site integrations**: GA4, Maps, reCAPTCHA
 
 ## Suggest Package Improvements
 
@@ -102,7 +102,7 @@ The goal is to grow the packages over time so sites write less custom code.
 
 ## augur-doctor
 
-`augur-doctor` ships with `@simpleapps-com/augur-config`. It checks version alignment, latest versions, and platform standard conformance. Run via `pnpm augur-doctor .` from the site directory — pre-approved, no permission prompt. For full documentation, see the augur-packages wiki page `guide-site-assessment.md` (use the cross-project wiki path from `simpleapps:wiki`).
+`augur-doctor` ships with `@simpleapps-com/augur-config`. It checks version alignment, latest versions, and platform standard conformance. Run via `pnpm augur-doctor .` from the site directory (pre-approved, no permission prompt). For full documentation, see the augur-packages wiki page `guide-site-assessment.md` (use the cross-project wiki path from `simpleapps:wiki`).
 
 ## Platform Standards
 

@@ -1,6 +1,6 @@
 ---
 name: wiki-audit
-description: Check wiki health — token budget, cross-links, llms.txt sync, and orphan pages
+description: Check wiki health. Token budget, cross-links, llms.txt sync, and orphan pages.
 allowed-tools: Bash(wc:*), Glob, Grep, Read, Skill(wiki), Skill(bash-simplicity)
 ---
 
@@ -32,11 +32,11 @@ If `wiki/llms.txt` exists, Read it and compare against the actual `.md` files fo
 
 ### 4. Cross-link density
 
-Count the number of `[[...]]` outbound links on each page. Cross-linking is the most important structural feature of a wiki — it turns files into a knowledge graph. Pages with fewer than 2 outbound links are poorly connected and SHOULD be flagged. Report a table of pages sorted by link count (lowest first) so the user can see which pages are isolated.
+Count the number of `[[...]]` outbound links on each page. Cross-linking is the most important structural feature of a wiki. It turns files into a knowledge graph. Pages with fewer than 2 outbound links are poorly connected and SHOULD be flagged. Report a table of pages sorted by link count (lowest first) so the user can see which pages are isolated.
 
 ### 5. Orphan detection
 
-Build a list of all pages referenced from any other page (via `[[links]]` or markdown links). Report pages not referenced from any other page. Exclude `Home.md`, `_Sidebar.md`, and `llms.txt` — these are entry points, not orphans.
+Build a list of all pages referenced from any other page (via `[[links]]` or markdown links). Report pages not referenced from any other page. Exclude `Home.md`, `_Sidebar.md`, and `llms.txt`. These are entry points, not orphans.
 
 ## Output
 

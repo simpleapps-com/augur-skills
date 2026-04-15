@@ -19,8 +19,8 @@ Spec: https://www.conventionalcommits.org/en/v1.0.0/
 
 ## Types
 
-- `feat` — new feature (SemVer MINOR)
-- `fix` — bug fix (SemVer PATCH)
+- `feat`: new feature (SemVer MINOR)
+- `fix`: bug fix (SemVer PATCH)
 - Also permitted: `build`, `chore`, `ci`, `docs`, `style`, `refactor`, `perf`, `test`
 
 ## Rules

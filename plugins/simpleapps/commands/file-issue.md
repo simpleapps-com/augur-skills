@@ -1,6 +1,6 @@
 ---
 name: file-issue
-description: File an issue — locally or on another repo — and cross-link it to the current work. Use to capture something worth tracking without losing your flow.
+description: File an issue, locally or on another repo, and cross-link it to the current work. Use to capture something worth tracking without losing your flow.
 allowed-tools:
   - Bash(gh issue:*)
   - Bash(gh pr:*)
@@ -18,8 +18,8 @@ First, use Skill("github") to load GitHub conventions, Skill("bash-simplicity") 
 
 File an issue and cross-link it to the current work. Two modes:
 
-- **Local** — file on the current repo to track something discovered during this session
-- **Cross-repo** — file on another team's repo when the current work depends on a change there
+- **Local**: file on the current repo to track something discovered during this session
+- **Cross-repo**: file on another team's repo when the current work depends on a change there
 
 ## 1. Determine context
 
@@ -27,7 +27,7 @@ File an issue and cross-link it to the current work. Two modes:
 2. Find the local issue for the current work (check in order):
    - Branch name for issue references (e.g., `fix/42-description`)
    - Recent commit messages for `#N` references
-   - Skip if none found — not all work has an issue yet
+   - Skip if none found. Not all work has an issue yet.
 3. If the user provided arguments, use them as the issue description
 
 ## 2. Choose mode and target
@@ -52,7 +52,7 @@ For **cross-repo** issues, also include:
 - Local issue reference: `simpleapps-com/<current-repo>#N` (if exists)
 - Impact: what is blocked without this change
 
-Create the issue immediately — the user invoking this command is the approval:
+Create the issue immediately. The user invoking this command is the approval.
 ```bash
 gh issue create --repo simpleapps-com/<target> --title "type: description" --body-file tmp/issue-body.txt
 ```
@@ -94,8 +94,8 @@ rm tmp/blocked-comment.txt
 ## 6. Report
 
 Show:
-- Issue created: `simpleapps-com/<repo>#N` — title
+- Issue created: `simpleapps-com/<repo>#N`: title
 - Cross-linked to: `simpleapps-com/<current-repo>#N` (if cross-repo with local issue)
 - Labels added (if any)
 
-MUST NOT push or commit — this command only creates GitHub issues and comments.
+MUST NOT push or commit. This command only creates GitHub issues and comments.

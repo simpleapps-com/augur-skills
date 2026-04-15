@@ -1,15 +1,15 @@
 ---
 name: submit
-description: Submit work for review — commit and create a PR as defined in the project wiki Deployment page
-allowed-tools: Bash(git:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Skill(deployment), Skill(git-safety), Skill(conventional-commits), Skill(github), Skill(bash-simplicity), Skill(work-habits), Read, Write, Glob, Grep, Edit
+description: Submit work for review. Commit and create a PR as defined in the project wiki Deployment page.
+allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Skill(deployment), Skill(git-safety), Skill(conventional-commits), Skill(github), Skill(bash-simplicity), Skill(work-habits), Read, Write, Glob, Grep, Edit
 ---
 
 First, load these skills:
-1. Skill("deployment") — reads wiki Deployment page and loads git-safety
-2. Skill("conventional-commits") — commit message format
-3. Skill("github") — PR conventions and gh CLI
-4. Skill("bash-simplicity") — Bash conventions
-5. Skill("work-habits") — autonomous execution rules and RFC 2119 compliance
+1. Skill("deployment"): reads wiki Deployment page and loads git-safety
+2. Skill("conventional-commits"): commit message format
+3. Skill("github"): PR conventions and gh CLI
+4. Skill("bash-simplicity"): Bash conventions
+5. Skill("work-habits"): autonomous execution rules and RFC 2119 compliance
 
 ## What This Command Does
 
@@ -21,7 +21,7 @@ Before doing ANYTHING else, read `wiki/Deployment.md` and find the **Submit** se
 
 **If `wiki/Deployment.md` does not exist or has no Submit section, YOU MUST STOP IMMEDIATELY.** Do not guess, do not improvise, do not use defaults. Tell the user:
 
-> "Cannot run /submit — no Deployment page found at wiki/Deployment.md. Run /curate-wiki to generate it from the codebase."
+> "Cannot run /submit: no Deployment page found at wiki/Deployment.md. Run /curate-wiki to generate it from the codebase."
 
 Then stop. Do nothing else. MUST NOT attempt to commit, create PRs, or figure out the steps on your own.
 
@@ -30,11 +30,11 @@ Then stop. Do nothing else. MUST NOT attempt to commit, create PRs, or figure ou
 This command IS the user's approval to commit and push. Execute all steps without stopping to ask for confirmation.
 
 1. Follow the steps defined in the **Submit** section of `wiki/Deployment.md`
-2. Check the current branch — warn if on main/master
+2. Check the current branch. Warn if on main/master.
 3. Use conventional-commits format for commit messages
 4. Use github skill conventions for PR title and body
-5. Execute all git operations (stage, commit, push, PR creation) — do not pause between them
-6. MUST NOT use `$()` in gh commands — use `--body-file` with a tmp file
+5. Execute all git operations (stage, commit, push, PR creation). Do not pause between them.
+6. MUST NOT use `$()` in gh commands. Use `--body-file` with a tmp file.
 7. Update linked issues (see below)
 8. Report what was done at the end
 
@@ -54,4 +54,4 @@ Summary of changes:
 - <brief list of what changed>
 ```
 
-If the commit message includes `Closes #N` or `Fixes #N`, the issue will auto-close — no need to close it manually. If the work partially addresses the issue, say so in the comment and leave it open.
+If the commit message includes `Closes #N` or `Fixes #N`, the issue will auto-close. No need to close it manually. If the work partially addresses the issue, say so in the comment and leave it open.

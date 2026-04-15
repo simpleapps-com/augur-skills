@@ -1,6 +1,6 @@
 ---
 name: project-init
-description: Check and fix the project directory structure — create missing folders, set up symlinks, clone repos, verify layout
+description: Check and fix the project directory structure. Create missing folders, set up symlinks, clone repos, verify layout.
 argument-hint: "[repo-name]"
 allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(ln:*), Bash(readlink:*), Bash(gh repo clone:*), Bash(gh label:*), Bash(grep:*), Bash(cp:*), Bash(md5sum:*), Bash(md5:*), Read, Write, Edit, Skill(project-defaults), Skill(bash-simplicity), Skill(context-efficiency)
 ---
@@ -26,19 +26,19 @@ Run each command as a separate, simple call. MUST NOT combine commands.
 5. Create or fix symlinks:
    - `ln -sf ../repo/.claude/rules .claude/rules`
    - `ln -sf ../repo/.claude/commands .claude/commands`
-6. **MUST sync plugin rules into the project.** This step is NOT optional — every project MUST have the latest plugin rules.
+6. **MUST sync plugin rules into the project.** This step is NOT optional. Every project MUST have the latest plugin rules.
    a. Set the source path: `ls ~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/`
    b. For EVERY `.md` file found in that directory, do the following:
       - Run `ls repo/.claude/rules/<filename>` to check if it exists
       - If it does NOT exist: `cp ~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/<file> repo/.claude/rules/<file>`
-      - If it DOES exist: hash both files with `md5 -q <file>` (macOS) or `md5sum <file>` (Linux). If hashes differ, overwrite: `cp ~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/<file> repo/.claude/rules/<file>` — plugin rules are the source of truth
+      - If it DOES exist: hash both files with `md5 -q <file>` (macOS) or `md5sum <file>` (Linux). If hashes differ, overwrite: `cp ~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/<file> repo/.claude/rules/<file>`. Plugin rules are the source of truth.
       - If hashes match: skip (already up to date)
    c. Report: which rules were copied (new), updated (hash mismatch), or matched (already current)
 7. Check `.simpleapps/` configuration:
-   a. Check if `~/.simpleapps/settings.json` exists using Read. If missing, create it with default content: `{"projectRoot": "~/projects"}`. Ask the user to confirm the projectRoot value. When comparing the current project path against `projectRoot`, use case-insensitive comparison — macOS APFS is case-insensitive by default, so `~/Projects/` and `~/projects/` are the same directory. Only flag if the path genuinely does not resolve (wrong directory, not just casing).
-   b. Check for old `{siteId}.json` files in `.simpleapps/` — any `.json` file that is NOT `settings.json`, `site.json`, `basecamp.json`, or `augur-api.json` is likely an old site ID file. If found, report them and suggest migrating their content to `site.json`. Do NOT auto-migrate — the files contain PII and the user must review.
-   c. For client projects: if `.simpleapps/site.json` does not exist, suggest creating it. Do NOT create it automatically — the user needs to provide the site data.
-8. Check if `.claude/settings.local.json` exists using Read. If missing or missing deny rules, create/update it with the standard settings from the `project-defaults` skill — including the `env` block with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`, `CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY`, `CLAUDE_CODE_NO_FLICKER`, and the full allow/deny lists. If the file exists but is missing the `env` block or any env vars, add them. `CLAUDE_CODE_NO_FLICKER` MUST be set to `"1"` — this enables fullscreen rendering that eliminates terminal flicker.
+   a. Check if `~/.simpleapps/settings.json` exists using Read. If missing, create it with default content: `{"projectRoot": "~/projects"}`. Ask the user to confirm the projectRoot value. When comparing the current project path against `projectRoot`, use case-insensitive comparison. macOS APFS is case-insensitive by default, so `~/Projects/` and `~/projects/` are the same directory. Only flag if the path genuinely does not resolve (wrong directory, not just casing).
+   b. Check for old `{siteId}.json` files in `.simpleapps/`. Any `.json` file that is NOT `settings.json`, `site.json`, `basecamp.json`, or `augur-api.json` is likely an old site ID file. If found, report them and suggest migrating their content to `site.json`. Do NOT auto-migrate. The files contain PII and the user must review.
+   c. For client projects: if `.simpleapps/site.json` does not exist, suggest creating it. Do NOT create it automatically. The user needs to provide the site data.
+8. Check if `.claude/settings.local.json` exists using Read. If missing or missing deny rules, create/update it with the standard settings from the `project-defaults` skill, including the `env` block with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`, `CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY`, `CLAUDE_CODE_NO_FLICKER`, and the full allow/deny lists. If the file exists but is missing the `env` block or any env vars, add them. `CLAUDE_CODE_NO_FLICKER` MUST be set to `"1"`. This enables fullscreen rendering that eliminates terminal flicker.
 9. Check if cross-project directory access is configured. Read `~/.claude/settings.json` and check for `additionalDirectories`. If missing, suggest adding it so agents can read other project wikis and repos without permission prompts each session:
    ```json
    {
@@ -52,7 +52,7 @@ Run each command as a separate, simple call. MUST NOT combine commands.
      ]
    }
    ```
-   This is a global setting — ask the user before modifying `~/.claude/settings.json`. If already configured, report it as already set up.
+   This is a global setting. Ask the user before modifying `~/.claude/settings.json`. If already configured, report it as already set up.
 10. Check if the augur-skills bin directory is in the user's PATH:
    - The bin path is: `$HOME/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/bin`
    - Run `grep -q 'augur-skills/plugins/simpleapps/bin' ~/.zshrc` to check
@@ -64,8 +64,8 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    - Tell the user to run `source ~/.zshrc` or open a new terminal for the change to take effect
    - If already present, report it as already configured
 11. Check if a status line is configured. Read `~/.claude/settings.json` and check for a `statusLine` field. If missing, suggest setting one up. Two options are available via the plugin bin scripts:
-   - `statusline-basic` — model, project name, version
-   - `statusline-full` — model, project name, git branch, version, context %
+   - `statusline-basic`: model, project name, version
+   - `statusline-full`: model, project name, git branch, version, context %
    Ask the user which they prefer, then add to `~/.claude/settings.json`:
    ```json
    { "statusLine": { "type": "command", "command": "statusline-basic" } }
@@ -104,8 +104,8 @@ Report what was checked, what was created, and what was already correct. Use a s
 - [ ] `wip/` created
 - [x] `.claude/rules` → `repo/.claude/rules`
 
-MUST NOT create `repo/` or `wiki/` with `mkdir` — these are git clones.
+MUST NOT create `repo/` or `wiki/` with `mkdir`. These are git clones.
 
-If `repo/` or `wiki/` is missing, MUST ask the user for the correct repo name before cloning — do not guess or infer from the current directory or plugin. Once confirmed:
+If `repo/` or `wiki/` is missing, MUST ask the user for the correct repo name before cloning. Do not guess or infer from the current directory or plugin. Once confirmed:
 - `gh repo clone simpleapps-com/<name> repo`
 - `gh repo clone simpleapps-com/<name>.wiki wiki`

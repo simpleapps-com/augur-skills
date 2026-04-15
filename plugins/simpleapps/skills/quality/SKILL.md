@@ -17,8 +17,8 @@ These tools keep codebases healthy. When working in a project, check whether the
 | **Prettier** | Consistent formatting | `.prettierrc*`, `prettier.config.*` | `pnpm format` |
 | **TypeScript** | Type safety | `tsconfig.json` | `pnpm typecheck` |
 | **Vitest** / **Jest** | Tests | `vitest.config.*`, `jest.config.*` | `pnpm test` |
-| **knip** | Dead code — unused exports, deps, and files | `knip.json`, `knip.ts` | `pnpm knip` |
-| **Lefthook** | Pre-commit hooks — run checks before push | `lefthook.yml` | auto on commit |
+| **knip** | Dead code: unused exports, deps, and files | `knip.json`, `knip.ts` | `pnpm knip` |
+| **Lefthook** | Pre-commit hooks: run checks before push | `lefthook.yml` | auto on commit |
 
 Also check `repo/package.json` for scripts containing: `lint`, `format`, `typecheck`, `test`, `check`, `validate`.
 
@@ -38,32 +38,32 @@ If any are missing, flag them:
 
 ```
 Missing quality tooling:
-- [ ] Linting — suggest: eslint / ruff / phpstan
-- [ ] Formatting — suggest: prettier / black / php-cs-fixer
-- [ ] Testing — suggest: vitest / pytest / phpunit
-- [ ] Dead code detection — suggest: knip
-- [ ] Pre-commit hooks — suggest: lefthook
+- [ ] Linting: suggest eslint / ruff / phpstan
+- [ ] Formatting: suggest prettier / black / php-cs-fixer
+- [ ] Testing: suggest vitest / pytest / phpunit
+- [ ] Dead code detection: suggest knip
+- [ ] Pre-commit hooks: suggest lefthook
 ```
 
-Do not install or configure tools without the user's approval. Flag what's missing and explain why it helps — let the user decide.
+Do not install or configure tools without the user's approval. Flag what's missing and explain why it helps. Let the user decide.
 
 ## When to suggest
 
-- **Setting up a new project** — suggest the full set
-- **Reviewing code with unused imports/exports** — suggest knip
-- **Seeing inconsistent formatting** — suggest prettier
-- **No tests for changed code** — suggest vitest
-- **No pre-commit hooks** — suggest lefthook
+- **Setting up a new project**: suggest the full set
+- **Reviewing code with unused imports/exports**: suggest knip
+- **Seeing inconsistent formatting**: suggest prettier
+- **No tests for changed code**: suggest vitest
+- **No pre-commit hooks**: suggest lefthook
 
 ## Fix everything, hide nothing
 
-See work-habits: "Leave it better than you found it" and "Resolve, never hide." Both apply fully to quality checks. Fix every issue regardless of who introduced it. NEVER suppress checks — fix the code.
+See work-habits: "Leave it better than you found it" and "Resolve, never hide." Both apply fully to quality checks. Fix every issue regardless of who introduced it. NEVER suppress checks. Fix the code.
 
 When reviewing code, scan for existing suppressions (`eslint-disable`, `@ts-ignore`, `.skip`, `noqa`, `phpcs:ignore`, etc.) and flag every instance to the user. These are hidden technical debt.
 
 ## pnpm lockfile sync
 
-In pnpm workspace projects, the root `pnpm-lock.yaml` and site-level lockfiles MUST stay in sync. CI uses `--frozen-lockfile` and will reject mismatched lockfiles — this is the most common cause of deploy failures.
+In pnpm workspace projects, the root `pnpm-lock.yaml` and site-level lockfiles MUST stay in sync. CI uses `--frozen-lockfile` and will reject mismatched lockfiles. This is the most common cause of deploy failures.
 
 After ANY `pnpm install`, `pnpm update`, or `pnpm add` in a workspace, run `pnpm install` at the repo root to regenerate the root lockfile. Commit both lockfiles together. If you forget, the next deploy will fail.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SimpleApps status line (basic) — user:repo | version | model
+# SimpleApps status line (basic): user:repo | version | model
 # Usage: set in ~/.claude/settings.json:
 #   "statusLine": { "type": "command", "command": "statusline-basic" }
 input=$(cat)

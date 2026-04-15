@@ -24,9 +24,9 @@ All projects live under `~/projects/` in two groups:
 
 - Internal repos go in `~/projects/simpleapps/`
 - Client site repos go in `~/projects/clients/`
-- Workspace files go in `~/projects/workspaces/` — one `.code-workspace` per project
+- Workspace files go in `~/projects/workspaces/`, one `.code-workspace` per project
 
-macOS APFS is case-insensitive by default. `~/Projects/` and `~/projects/` resolve to the same directory. Do NOT flag path casing differences as errors — only flag paths that genuinely do not resolve.
+macOS APFS is case-insensitive by default. `~/Projects/` and `~/projects/` resolve to the same directory. Do NOT flag path casing differences as errors. Only flag paths that genuinely do not resolve.
 
 ## Project Directory Layout
 
@@ -44,7 +44,7 @@ Every project MUST use this layout:
 └── .simpleapps/        # Config, credentials, site profile (not in git)
 ```
 
-The parent `{project}/` is NOT a git repo — it keeps code and wiki side-by-side. The git repo is always at `repo/`. Use `git -C repo` for git operations from the project root.
+The parent `{project}/` is NOT a git repo. It keeps code and wiki side-by-side. The git repo is always at `repo/`. Use `git -C repo` for git operations from the project root.
 
 | Content | Location | Examples |
 |---------|----------|---------|
@@ -53,16 +53,16 @@ The parent `{project}/` is NOT a git repo — it keeps code and wiki side-by-sid
 | Repo `.claude/rules/` | `repo/` | Minimal summaries referencing wiki |
 | Repo `.claude/CLAUDE.md` | `repo/` | Quick reference + wiki links |
 | Active task context | `wip/` | `{issue-number}-{short-desc}.md` files |
-| Temporary files | `tmp/` | Scratch space — commit msgs, PR bodies, intermediate output. Full access. |
+| Temporary files | `tmp/` | Scratch space: commit msgs, PR bodies, intermediate output. Full access. |
 | SimpleApps config | `.simpleapps/` | Settings, site profile, credentials (see below) |
 
 **WIP**: Research, plans, decisions, test results. MUST NOT contain secrets, final docs, or code.
 
-**tmp/**: Fully available for scratch work — commit messages, PR bodies, issue comments, intermediate output, and any throwaway files. Read, write, and delete freely without asking. Create the folder if missing. Clean up files after use.
+**tmp/**: Fully available for scratch work: commit messages, PR bodies, issue comments, intermediate output, and any throwaway files. Read, write, and delete freely without asking. Create the folder if missing. Clean up files after use.
 
 ## Plugin Rules
 
-The plugin ships rule templates in `plugins/simpleapps/rules/` that MUST exist in every project's `repo/.claude/rules/`. Rules are always loaded into context — they enforce baseline guardrails (like git safety) without depending on a skill being invoked. The `/project-init` command copies missing rules from the plugin into the project.
+The plugin ships rule templates in `plugins/simpleapps/rules/` that MUST exist in every project's `repo/.claude/rules/`. Rules are always loaded into context. They enforce baseline guardrails (like git safety) without depending on a skill being invoked. The `/project-init` command copies missing rules from the plugin into the project.
 
 ## .simpleapps/ Configuration
 
@@ -86,7 +86,7 @@ Two scopes, project overrides user:
 | File | Scope | Purpose | Read by |
 |------|-------|---------|---------|
 | `settings.json` | Global + project | Infrastructure config | All skills via project-defaults |
-| `site.json` | Project only | Site profile — defaults, search terms, PII, auth | Skills needing site context |
+| `site.json` | Project only | Site profile: defaults, search terms, PII, auth | Skills needing site context |
 | `basecamp.json` | Global + project | Basecamp MCP credentials | Basecamp MCP server |
 | `augur-api.json` | Global + project | Augur API MCP credentials | Augur API MCP server |
 
@@ -98,11 +98,11 @@ Two scopes, project overrides user:
 }
 ```
 
-Resolution: read `{project}/.simpleapps/settings.json` first, fall back to `~/.simpleapps/settings.json`, fall back to defaults. Field-level override — project wins for any field it defines.
+Resolution: read `{project}/.simpleapps/settings.json` first, fall back to `~/.simpleapps/settings.json`, fall back to defaults. Field-level override: project wins for any field it defines.
 
 ### site.json
 
-One per client project. Consistent structure across all sites — same fields, different values. Replaces the old `{siteId}.json` pattern.
+One per client project. Consistent structure across all sites: same fields, different values. Replaces the old `{siteId}.json` pattern.
 
 ```json
 {
@@ -115,9 +115,9 @@ One per client project. Consistent structure across all sites — same fields, d
 
 ### Rules
 
-- MUST NOT commit `.simpleapps/` to git — contains PII and credentials
-- MUST NOT save site data to wiki or memory — PII
-- MUST NOT create `{siteId}.json` files — use `site.json` instead
+- MUST NOT commit `.simpleapps/` to git. Contains PII and credentials.
+- MUST NOT save site data to wiki or memory (PII)
+- MUST NOT create `{siteId}.json` files. Use `site.json` instead.
 - If old `{siteId}.json` files exist, `/project-init` will flag them for migration to `site.json`
 
 ## Symlink Setup
@@ -180,17 +180,17 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
 
 Why each is denied:
 
-- **`awk`** — Use the Edit tool instead.
-- **`cat`** — Use the Read tool instead.
-- **`cd`** — MUST NOT use in any Bash command, including compound commands (`cd /path && git`). Use `git -C repo` for git, path arguments for everything else. Compound cd+git commands trigger an unblockable Claude Code security prompt that interrupts the user even when `cd` is denied.
-- **`find`** — Use the Glob tool instead.
-- **`for`** — Shell loops are unnecessary; use dedicated tools or make multiple tool calls instead.
-- **`grep`** — Use the Grep tool instead.
-- **`head`/`tail`** — Use the Read tool with `offset` and `limit` parameters instead.
-- **`kill`/`pkill`** — Use `TaskStop` to manage background processes. `TaskStop` cleanly shuts down the task and updates Claude Code's internal tracking.
-- **`rg`** — Use the Grep tool instead (it uses ripgrep internally).
-- **`sed`** — Use the Edit tool instead.
-- **`sleep`** — Unnecessary; use proper sequencing or background tasks.
+- **`awk`**: Use the Edit tool instead.
+- **`cat`**: Use the Read tool instead.
+- **`cd`**: MUST NOT use in any Bash command, including compound commands (`cd /path && git`). Use `git -C repo` for git, path arguments for everything else. Compound cd+git commands trigger an unblockable Claude Code security prompt that interrupts the user even when `cd` is denied.
+- **`find`**: Use the Glob tool instead.
+- **`for`**: Shell loops are unnecessary; use dedicated tools or make multiple tool calls instead.
+- **`grep`**: Use the Grep tool instead.
+- **`head`/`tail`**: Use the Read tool with `offset` and `limit` parameters instead.
+- **`kill`/`pkill`**: Use `TaskStop` to manage background processes. `TaskStop` cleanly shuts down the task and updates Claude Code's internal tracking.
+- **`rg`**: Use the Grep tool instead (it uses ripgrep internally).
+- **`sed`**: Use the Edit tool instead.
+- **`sleep`**: Unnecessary; use proper sequencing or background tasks.
 
 ## Bin Scripts (PATH)
 
