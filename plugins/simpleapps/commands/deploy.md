@@ -1,12 +1,13 @@
 ---
 name: deploy
 description: Deploy to staging — execute the staging deployment steps from the project wiki Deployment page
-allowed-tools: Bash(git:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Skill(deployment), Skill(git-safety), Skill(bash-simplicity), Read, Write, Glob, Grep
+allowed-tools: Bash(git:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Skill(deployment), Skill(git-safety), Skill(bash-simplicity), Skill(work-habits), Read, Write, Glob, Grep
 ---
 
 First, load these skills:
 1. Skill("deployment") — reads wiki Deployment page and loads git-safety
 2. Skill("bash-simplicity") — Bash conventions
+3. Skill("work-habits") — autonomous execution rules and RFC 2119 compliance
 
 ## What This Command Does
 

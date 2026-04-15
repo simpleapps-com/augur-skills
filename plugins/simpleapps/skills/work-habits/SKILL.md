@@ -52,6 +52,22 @@ Every agent interaction should leave the codebase in a better state. If you enco
 
 Do not classify issues as "pre-existing" to justify skipping them — context compaction erases your memory of changes made earlier in the session, so what looks pre-existing is often something you introduced. Even if you truly did not cause it, the goal is zero issues, not blame assignment. Fix it anyway. Do not argue with the user about whether an issue is yours to fix. It is.
 
+## RFC 2119 keywords are binding
+
+When a wiki page, skill, rule, spec, or issue uses MUST, MUST NOT, SHALL, or SHALL NOT, you MUST comply literally. YOU MUST NOT downgrade a MUST to a SHOULD because:
+
+- it would take longer
+- an example in the current session shows otherwise
+- the codebase appears inconsistent
+- you judge the requirement unnecessary
+- it is inconvenient
+
+If a MUST seems wrong, impossible, or in conflict with another MUST — STOP and ask the user. Do not silently relax it and proceed. The writer chose the keyword deliberately; overriding it is the agent substituting its judgment for the writer's. SHOULD allows deviation only with a factual justification about the current situation — convenience and time pressure are never valid justifications.
+
+Session examples do not override written directives. If code in the session contradicts a MUST from the wiki or a skill, the session code is the problem — flag it, do not use it as permission to violate the MUST.
+
+See `simpleapps:writing-style` for the full reading-compliance rules.
+
 ## Resolve, never hide
 
 When a check fails, the solution is ALWAYS to fix the underlying code. NEVER:

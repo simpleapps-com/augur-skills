@@ -11,7 +11,7 @@ Apply these standards to all written output: code comments, docs, specs, PRDs, w
 
 Spec: https://www.rfc-editor.org/rfc/rfc2119
 
-Use ALL CAPS when invoking requirement levels:
+**Every directive MUST use an RFC 2119 keyword in ALL CAPS.** This applies to wikis, skills, rules, specs, PRDs, issue acceptance criteria, and any content that tells a reader or agent what to do. Agents weight capitalized keywords more reliably than prose — soft language is silently downgraded or ignored.
 
 - **MUST / REQUIRED / SHALL** — absolute requirement, no exceptions
 - **MUST NOT / SHALL NOT** — absolute prohibition
@@ -19,11 +19,44 @@ Use ALL CAPS when invoking requirement levels:
 - **SHOULD NOT / NOT RECOMMENDED** — discouraged, acceptable with careful reasoning
 - **MAY / OPTIONAL** — truly optional, implementer's choice
 
-Use lowercase for casual suggestions: "you should consider..." vs "you SHOULD implement..."
-
 Decision framework: Does the system break without it? → MUST. Degrades? → SHOULD. No impact? → MAY.
 
+### Conversion table — soft language MUST be rewritten
+
+| Soft phrase | Rewrite as |
+|---|---|
+| always / never | MUST / MUST NOT |
+| be sure to / make sure | MUST |
+| don't / do not | MUST NOT |
+| don't forget to | MUST |
+| needs to / has to | MUST |
+| try to / aim to | SHOULD |
+| should probably / ideally | SHOULD |
+| can / feel free to | MAY |
+| avoid | SHOULD NOT |
+| remember to | MUST |
+
+### Pre-save checklist
+
+Before saving any directive sentence, confirm it contains one of: MUST, MUST NOT, SHOULD, SHOULD NOT, MAY. If it doesn't, rewrite it or demote it to descriptive prose (no directive verb).
+
+### When lowercase is correct
+
+Use lowercase "should/must/may" only for descriptive prose, not directives: "the build should finish in under a minute" (observation) vs "the build SHOULD finish in under a minute" (requirement). If the sentence tells someone what to do, it's a directive — capitalize.
+
 In CLAUDE.md and skill instructions, use "YOU MUST" or "IMPORTANT" as emphasis markers to improve adherence to critical rules.
+
+### Reading and complying with RFC 2119
+
+Keywords are **binding on the reader**, not suggestions to weigh against convenience. When you encounter a keyword while executing work:
+
+- **MUST / MUST NOT / SHALL / SHALL NOT** — absolute. You MUST NOT downgrade a MUST to a SHOULD because it would take longer, because an example in the session shows otherwise, because the codebase seems to do it differently, or because you judge it unnecessary. The writer chose MUST deliberately. If the requirement seems wrong or impossible, STOP and ask the user — do not silently relax it.
+- **SHOULD / SHOULD NOT** — strong default. Deviation requires a stated justification based on facts of the current situation, not convenience or time pressure. "It would take too long" is never a valid justification.
+- **MAY** — truly optional. Your choice.
+
+The failure mode this prevents: an agent reads "tests MUST cover the edge case", finds writing the test tedious, and silently demotes it to "tests should cover the edge case where practical". That is the agent overriding the writer. MUST means MUST. If you can't comply, stop and report — do not proceed with a weakened version.
+
+Prior examples in the current session do NOT override a MUST. If session context shows code that violates a MUST from the wiki/skill/spec, the session code is wrong — flag it, do not use it as permission to violate the MUST.
 
 ## Token Efficiency
 

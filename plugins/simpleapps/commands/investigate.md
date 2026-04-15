@@ -2,10 +2,10 @@
 name: investigate
 description: Load a WIP file, read the wiki, explore the codebase, and update the WIP with research findings and suggestions. No code changes.
 argument-hint: "[wip/GH14-slug.md]"
-allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(git log:*), Bash(git blame:*), Skill(wiki), Skill(basecamp), Skill(github), Skill(project-defaults), Skill(augur-packages), Skill(writing-style), mcp__plugin_simpleapps_basecamp__*, Read, Glob, Grep, Edit, Agent
+allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(git log:*), Bash(git blame:*), Skill(wiki), Skill(basecamp), Skill(github), Skill(project-defaults), Skill(augur-packages), Skill(writing-style), Skill(work-habits), mcp__plugin_simpleapps_basecamp__*, Read, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("wiki") to load the project wiki for codebase context, then Skill("project-defaults") for directory layout, then Skill("github") for GH conventions, then Skill("writing-style") for naming and documentation standards.
+First, use Skill("wiki") to load the project wiki for codebase context, then Skill("project-defaults") for directory layout, then Skill("github") for GH conventions, then Skill("writing-style") for naming and documentation standards, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
 
 Investigate a WIP file — explore the codebase, analyze the problem, and update the WIP with findings. MUST NOT make code changes.
 

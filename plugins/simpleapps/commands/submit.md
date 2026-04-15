@@ -1,7 +1,7 @@
 ---
 name: submit
 description: Submit work for review — commit and create a PR as defined in the project wiki Deployment page
-allowed-tools: Bash(git:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Skill(deployment), Skill(git-safety), Skill(conventional-commits), Skill(github), Skill(bash-simplicity), Read, Write, Glob, Grep, Edit
+allowed-tools: Bash(git:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Skill(deployment), Skill(git-safety), Skill(conventional-commits), Skill(github), Skill(bash-simplicity), Skill(work-habits), Read, Write, Glob, Grep, Edit
 ---
 
 First, load these skills:
@@ -9,6 +9,7 @@ First, load these skills:
 2. Skill("conventional-commits") — commit message format
 3. Skill("github") — PR conventions and gh CLI
 4. Skill("bash-simplicity") — Bash conventions
+5. Skill("work-habits") — autonomous execution rules and RFC 2119 compliance
 
 ## What This Command Does
 

@@ -11,9 +11,10 @@ allowed-tools:
   - Write
   - Skill(github)
   - Skill(bash-simplicity)
+  - Skill(work-habits)
 ---
 
-First, use Skill("github") to load GitHub conventions and Skill("bash-simplicity") for Bash conventions.
+First, use Skill("github") to load GitHub conventions, Skill("bash-simplicity") for Bash conventions, and Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
 
 File an issue and cross-link it to the current work. Two modes:
 

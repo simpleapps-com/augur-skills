@@ -1,10 +1,10 @@
 ---
 name: curate-wiki
 description: Continuously improve the project wiki — better content, context, organization, and usability within the 20K token budget
-allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Skill(wiki), Skill(git-safety), Skill(bash-simplicity), Skill(context-efficiency), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Skill(wiki), Skill(writing-style), Skill(work-habits), Skill(git-safety), Skill(bash-simplicity), Skill(context-efficiency), Read, Write, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("wiki") to load wiki conventions, Skill("git-safety") to load git guardrails, Skill("bash-simplicity") for Bash conventions, and Skill("context-efficiency") for always-loaded content guidelines.
+First, use Skill("wiki") to load wiki conventions, Skill("writing-style") for RFC 2119 directive language and token-efficient prose, Skill("work-habits") for RFC 2119 reading compliance, Skill("git-safety") to load git guardrails, Skill("bash-simplicity") for Bash conventions, and Skill("context-efficiency") for always-loaded content guidelines.
 
 Curate the project wiki. Each run targets the highest-value gaps — not exhaustive improvement. The wiki MUST stay within its 20K token budget so it can be loaded into context without consuming the working window.
 
@@ -53,8 +53,10 @@ Do not exhaustively cross-link every mention of every concept. Link where a read
 
 ### Usability
 - Can a reader quickly find what they need?
-- Are tables, code blocks, and RFC 2119 keywords used effectively?
 - Are pages self-contained or do they require jumping between pages?
+
+### Directive language (RFC 2119)
+Every directive sentence MUST use MUST / MUST NOT / SHOULD / SHOULD NOT / MAY. Scan each page for soft language that dilutes directives: "always", "never", "be sure to", "make sure", "don't forget", "try to", "should probably", "needs to", "remember to". Rewrite each occurrence per the conversion table in the `writing-style` skill. Agents silently downgrade soft language — a wiki full of "should probably" will not be followed.
 
 ### Consolidation
 - Is there duplicated or scattered information that should be merged?

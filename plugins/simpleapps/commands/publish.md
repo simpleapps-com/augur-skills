@@ -1,12 +1,13 @@
 ---
 name: publish
 description: Publish to production — version bump, tag, and release with mandatory verification. Reads steps from the project wiki Deployment page.
-allowed-tools: Bash(git:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Bash(pnpm:*), Skill(deployment), Skill(git-safety), Skill(bash-simplicity), Read, Write, Glob, Grep, Edit
+allowed-tools: Bash(git:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Bash(pnpm:*), Skill(deployment), Skill(git-safety), Skill(bash-simplicity), Skill(work-habits), Read, Write, Glob, Grep, Edit
 ---
 
 First, load these skills:
 1. Skill("deployment") — reads wiki Deployment page, loads git-safety, defines verification gate
 2. Skill("bash-simplicity") — Bash conventions
+3. Skill("work-habits") — autonomous execution rules and RFC 2119 compliance
 
 ## What This Command Does
 
