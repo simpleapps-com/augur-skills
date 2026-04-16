@@ -14,7 +14,9 @@ Run each command as a separate, simple call. MUST NOT combine commands.
 
 ### 1. Token budget
 
-Run `wc -w wiki/*.md` to get the word count. Multiply total by 1.3 for token estimate. Budget is 20K tokens. Report current usage and percentage.
+Read `.simpleapps/settings.json` for `wikiTokenBudget` (default 20000 if absent). Also note `wikiTokenBudgetReason` if present.
+
+Run `wc -w wiki/*.md` to get the word count. Multiply total by 1.3 for token estimate. Report current usage, active budget, percentage, and reason (if overridden).
 
 ### 2. Cross-link integrity
 
@@ -43,7 +45,7 @@ Build a list of all pages referenced from any other page (via `[[links]]` or mar
 ```
 ## Wiki Audit: {project}
 
-**Token budget**: X / 20,000 (Y%)
+**Token budget**: X / {active budget} (Y%){, reason: "..." if overridden}
 
 **Broken links**: N found
 - Page.md:L42 → [[Missing-Page]]

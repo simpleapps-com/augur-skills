@@ -100,6 +100,11 @@ Two scopes, project overrides user:
 
 Resolution: read `{project}/.simpleapps/settings.json` first, fall back to `~/.simpleapps/settings.json`, fall back to defaults. Field-level override: project wins for any field it defines.
 
+Optional project-scoped fields:
+
+- `wikiTokenBudget` (number): override the 20K default wiki token budget. Set by `/curate-wiki` when the user approves an exception.
+- `wikiTokenBudgetReason` (string): why the budget was raised. Surfaced at the top of every `/curate-wiki` and `/wiki-audit` run so the exception stays visible and re-negotiable.
+
 ### site.json
 
 One per client project. Consistent structure across all sites: same fields, different values. Replaces the old `{siteId}.json` pattern.

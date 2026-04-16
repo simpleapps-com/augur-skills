@@ -47,6 +47,31 @@ Missing quality tooling:
 
 Do not install or configure tools without the user's approval. Flag what's missing and explain why it helps. Let the user decide.
 
+## Runtime Freshness
+
+Projects SHOULD target the current Active LTS of their language runtime. Maintenance LTS is acceptable. EOL runtimes SHOULD be flagged.
+
+Runtime freshness is advisory, not a hard failure. Legitimate exceptions exist: libraries with documented compatibility policies, hosting-locked client projects, migration-in-progress repos. Surface findings as a prompt and let the user decide.
+
+Check the current LTS from the language's official schedule, not memory (LTS designations rotate each October):
+
+- Node: https://nodejs.org/en/about/previous-releases
+- Python: https://devguide.python.org/versions/
+- PHP: https://www.php.net/supported-versions.php
+
+### Where to check
+
+- CI matrices in `.github/workflows/*.yml`
+- `engines` in `package.json`
+- `python_requires` in `pyproject.toml` / `setup.py`
+- `require` or `config.platform.php` in `composer.json`
+
+### Prompt template
+
+> "CI matrix includes Node 18 (EOL). Current Active LTS is Node 24. Drop EOL and add current LTS?"
+
+If the user cites a constraint (hosting, compatibility, library support policy), record it in the project's wiki so future sessions see the exception and skip the prompt.
+
 ## When to suggest
 
 - **Setting up a new project**: suggest the full set
@@ -54,6 +79,7 @@ Do not install or configure tools without the user's approval. Flag what's missi
 - **Seeing inconsistent formatting**: suggest prettier
 - **No tests for changed code**: suggest vitest
 - **No pre-commit hooks**: suggest lefthook
+- **CI matrix or `engines` pins an EOL runtime**: suggest dropping it and adding current Active LTS
 
 ## Fix everything, hide nothing
 

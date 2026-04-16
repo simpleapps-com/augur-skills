@@ -1,12 +1,12 @@
 ---
 name: curate-wiki
-description: Continuously improve the project wiki. Better content, context, organization, and usability within the 20K token budget.
+description: Continuously improve the project wiki. Better content, context, organization, and usability within the wiki's active token budget (default 20K, configurable per project).
 allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Skill(wiki), Skill(writing-style), Skill(work-habits), Skill(git-safety), Skill(bash-simplicity), Skill(context-efficiency), Read, Write, Glob, Grep, Edit, Agent
 ---
 
 First, use Skill("wiki") to load wiki conventions, Skill("writing-style") for RFC 2119 directive language and token-efficient prose, Skill("work-habits") for RFC 2119 reading compliance, Skill("git-safety") to load git guardrails, Skill("bash-simplicity") for Bash conventions, and Skill("context-efficiency") for always-loaded content guidelines.
 
-Curate the project wiki. Each run targets the highest-value gaps, not exhaustive improvement. The wiki MUST stay within its 20K token budget so it can be loaded into context without consuming the working window.
+Curate the project wiki. Each run targets the highest-value gaps, not exhaustive improvement. The wiki MUST stay within its active token budget (default 20K, or the override from `.simpleapps/settings.json`) so it can be loaded into context without consuming the working window.
 
 The working code is the ground truth. The current session is the hint where to start. Use what was learned, discussed, or changed this session to guide where the wiki most needs attention. Then verify against the actual codebase.
 
@@ -14,9 +14,21 @@ The working code is the ground truth. The current session is the hint where to s
 
 **MUST complete ALL steps below in sequence without stopping.** Do not pause between steps or wait for prompts. Run through the entire process, stopping only at step 5 (approve changes) and step 8 (approve commit/push).
 
-## 1. Check token budget
+## 1. Determine token budget
 
-Run `wc -w wiki/*.md`. Multiply total by 1.3 for token estimate. Record the current usage. This is the budget you have to work within. Every change MUST keep the wiki under 20K tokens.
+Read `.simpleapps/settings.json`. If it contains `wikiTokenBudget`, use that number as the active budget. Otherwise the default is 20000 tokens. If `wikiTokenBudgetReason` is present, note it: a previous session recorded why the exception was granted, and it stays visible in this run so the exception can be re-negotiated.
+
+Run `wc -w wiki/*.md` and multiply by 1.3 for the current token estimate. Record:
+
+- Starting usage
+- Active budget (default 20000 or override)
+- Budget reason (if overridden)
+
+Compare usage against the active budget:
+
+- **Under 90% of budget**: normal mode, curate freely.
+- **90%–100% of budget**: pruning is a PRIORITY for this run, not an afterthought. Identify verbose or low-value pages as pruning candidates before step 3 begins. Do not add content unless equivalent trimming is identified alongside it.
+- **Over 100% of budget**: recovery mode. STOP before adding any content. The whole run focuses on trimming back under budget, or on the budget-increase prompt at step 7 if the user has a reason.
 
 ## 2. Load the wiki
 
@@ -138,7 +150,27 @@ If a change requires a new wiki page:
 
 ## 7. Final token budget check
 
-Run `wc -w wiki/*.md` again. Compare against the starting count. If over 18K tokens, identify content to prune or tighten before finishing. The wiki MUST NOT exceed 20K tokens.
+Run `wc -w wiki/*.md` again. Compare against the starting count and the active budget from step 1.
+
+- **Final at or under 90% of budget**: clean finish.
+- **Final 90%–100% of budget**: flag pruning candidates for the next run. Do not exceed the budget.
+- **Final over budget**: STOP. Either prune further now, or surface the budget-increase prompt below.
+
+### Budget increase prompt
+
+When further pruning would remove content the user needs, surface this prompt verbatim:
+
+> "Wiki is at {final} tokens; active budget is {budget}. Further pruning would remove [specific content]. Options:
+> (a) prune anyway,
+> (b) raise budget to N tokens (records to .simpleapps/settings.json with a reason)."
+
+If the user picks (b):
+
+1. Ask for the reason in one sentence ("Why does this project need a larger wiki budget?")
+2. Update `.simpleapps/settings.json` with `wikiTokenBudget: N` and `wikiTokenBudgetReason: "..."`
+3. Report the new budget and reason. Both will surface at the top of every future /curate-wiki run.
+
+Never silently raise the budget. Every increase MUST be explicit, reasoned, and recorded.
 
 ## 8. Report and stop
 
@@ -153,5 +185,5 @@ When the user approves, use this process (MUST NOT use `cd`):
 
 Report:
 - Changes applied (list each with page and action)
-- Token budget: before → after (X / 20,000)
+- Token budget: before → after (X / {active budget}, reason: {reason if overridden})
 - Net improvement summary

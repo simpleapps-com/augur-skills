@@ -28,7 +28,9 @@ The payoff: **the agent and the user share the same model of the project.** Less
 
 ## Token Budget
 
-A wiki MUST NOT exceed **20K tokens** (~15K words, ~60KB). The budget is an editing constraint, not a capacity limit. It is small enough that agents load the whole wiki alongside working context with room to spare, small enough that humans actually read and maintain it, and strict enough to force pruning as the project grows.
+The default wiki budget is **20K tokens** (~15K words, ~60KB). The budget is an editing constraint, not a capacity limit. It is small enough that agents load the whole wiki alongside working context with room to spare, small enough that humans actually read and maintain it, and strict enough to force pruning as the project grows.
+
+Projects MAY raise the budget via `wikiTokenBudget` in `.simpleapps/settings.json` when there is a documented reason (e.g., large integration catalogs, extensive cross-project references). Increases MUST be paired with a `wikiTokenBudgetReason` so future sessions see why the exception exists and can re-negotiate it. `/curate-wiki` handles the prompt and records the change. Never raise the budget silently.
 
 Check size: `wc -w wiki/*.md` (multiply by ~1.3 for token estimate)
 
