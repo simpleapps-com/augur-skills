@@ -27,6 +27,6 @@ Then stop. Do nothing else. MUST NOT attempt to merge PRs, trigger builds, or fi
 
 This command IS the user's approval to deploy. Execute all steps without stopping to ask for confirmation.
 
-1. Follow the steps defined in the **Deploy** section of `wiki/Deployment.md`
+1. Follow the steps defined in the **Deploy** section of `wiki/Deployment.md`. When the wiki uses shell operators (`&&`, `;`, `|`, `$()`), you MUST split them into separate, single-command Bash calls per `bash-simplicity`. One command per call, no exceptions.
 2. Execute all git and deployment operations. Do not pause between them.
 3. Report what was done at the end

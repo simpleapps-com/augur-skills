@@ -172,7 +172,9 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
       "Bash(rg:*)",
       "Bash(sed:*)",
       "Bash(sleep:*)",
-      "Bash(tail:*)"
+      "Bash(tail:*)",
+      "Edit(~/.claude/plugins/**)",
+      "Write(~/.claude/plugins/**)"
     ]
   }
 }
@@ -191,6 +193,7 @@ Why each is denied:
 - **`rg`**: Use the Grep tool instead (it uses ripgrep internally).
 - **`sed`**: Use the Edit tool instead.
 - **`sleep`**: Unnecessary; use proper sequencing or background tasks.
+- **`Edit(~/.claude/plugins/**)` / `Write(~/.claude/plugins/**)`**: The installed plugin tree is a cache. Marketplace updates clobber it. To change plugin behavior, edit the plugin's source repo (e.g., `~/projects/simpleapps/augur-skills/`) instead.
 
 ## Bin Scripts (PATH)
 

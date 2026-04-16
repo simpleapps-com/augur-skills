@@ -29,7 +29,7 @@ Then stop. Do nothing else. MUST NOT attempt to commit, create PRs, or figure ou
 
 This command IS the user's approval to commit and push. Execute all steps without stopping to ask for confirmation.
 
-1. Follow the steps defined in the **Submit** section of `wiki/Deployment.md`
+1. Follow the steps defined in the **Submit** section of `wiki/Deployment.md`. When the wiki uses shell operators (`&&`, `;`, `|`, `$()`), you MUST split them into separate, single-command Bash calls per `bash-simplicity`. One command per call, no exceptions. If the first command in a sequence fails, stop and report. Do not run the next.
 2. Check the current branch. Warn if on main/master.
 3. Use conventional-commits format for commit messages
 4. Use github skill conventions for PR title and body

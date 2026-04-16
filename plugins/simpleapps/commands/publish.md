@@ -43,7 +43,7 @@ Then stop. Do nothing else. MUST NOT attempt to bump versions, tag, or push on y
 
 Once the user confirms, execute ALL remaining steps without pausing. The confirmation IS the approval for all git writes.
 
-1. Follow the steps defined in the Publish section (typically: bump version files, commit, tag, push)
+1. Follow the steps defined in the Publish section (typically: bump version files, commit, tag, push). When the wiki uses shell operators (`&&`, `;`, `|`, `$()`), you MUST split them into separate, single-command Bash calls per `bash-simplicity`.
 2. Report what was done at the end
 
 ## MUST NOT

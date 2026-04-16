@@ -1,5 +1,7 @@
 pre-push:
   commands:
+    validate:
+      run: pnpm validate
     typecheck:
       run: pnpm typecheck
     test:

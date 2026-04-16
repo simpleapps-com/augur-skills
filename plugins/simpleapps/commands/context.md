@@ -59,7 +59,7 @@ Run `wc -w wiki/*.md`. Budget: 20K tokens (~15K words).
 - CLAUDE.md: X / 200 lines
 - Skill descriptions: X / 16K chars
 - Wiki: X / 20K tokens
-- System overhead: ~31% of 200K context
+- System overhead: X tokens (varies by model and loaded MCP servers)
 ```
 
 Flag any budget violations or items approaching limits.

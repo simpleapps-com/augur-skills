@@ -14,7 +14,8 @@
     "test:coverage": "pnpm -r test:coverage",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
-    "prepare-publish": "node scripts/prepare-publish.mjs"
+    "prepare-publish": "node scripts/prepare-publish.mjs",
+    "validate": "node scripts/validate.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": ["esbuild", "lefthook"]

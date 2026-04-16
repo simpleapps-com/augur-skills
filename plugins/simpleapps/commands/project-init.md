@@ -27,11 +27,11 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    - `ln -sf ../repo/.claude/rules .claude/rules`
    - `ln -sf ../repo/.claude/commands .claude/commands`
 6. **MUST sync plugin rules into the project.** This step is NOT optional. Every project MUST have the latest plugin rules.
-   a. Set the source path: `ls ~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/`
+   a. Set the source path using the plugin's install-location env var: `ls ${CLAUDE_PLUGIN_ROOT}/rules/`. If `CLAUDE_PLUGIN_ROOT` is unset (the plugin is not loaded in this session), fall back to `~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/` and warn the user that the plugin may not be properly installed.
    b. For EVERY `.md` file found in that directory, do the following:
       - Run `ls repo/.claude/rules/<filename>` to check if it exists
-      - If it does NOT exist: `cp ~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/<file> repo/.claude/rules/<file>`
-      - If it DOES exist: hash both files with `md5 -q <file>` (macOS) or `md5sum <file>` (Linux). If hashes differ, overwrite: `cp ~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/<file> repo/.claude/rules/<file>`. Plugin rules are the source of truth.
+      - If it does NOT exist: `cp ${CLAUDE_PLUGIN_ROOT}/rules/<file> repo/.claude/rules/<file>`
+      - If it DOES exist: hash both files with `md5 -q <file>` (macOS) or `md5sum <file>` (Linux). If hashes differ, overwrite: `cp ${CLAUDE_PLUGIN_ROOT}/rules/<file> repo/.claude/rules/<file>`. Plugin rules are the source of truth.
       - If hashes match: skip (already up to date)
    c. Report: which rules were copied (new), updated (hash mismatch), or matched (already current)
 7. Check `.simpleapps/` configuration:

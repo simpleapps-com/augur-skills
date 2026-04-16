@@ -21,14 +21,14 @@ The wiki is a **git-backed markdown folder** (`wiki/`) living next to the code r
 - **Markdown in git**: the docs live where the work lives and version alongside the code. Diffs show what changed and why. No login, no API, no stale snapshot.
 - **Separate `wiki/` repo, not embedded in the code repo**: the wiki ships independently of code releases. Doc fixes do not wait on code review cycles, and code commits stay clean of doc noise.
 - **Local file reads, not network fetches**: the agent loads the full wiki at session start with zero latency. No rate limits, no auth, works offline.
-- **20K token budget**: small enough to fit the whole wiki in context while leaving 90% for working memory. Forces ruthless editing; a 200K-token wiki that cannot be loaded helps no one.
+- **20K token budget**: small enough that the agent holds the whole wiki alongside working context with room to spare, and small enough that humans actually read and maintain it. Forces ruthless editing; a bloated wiki helps no one because no one reads past the first screen.
 - **Process and principles, not code snippets**: code in the wiki rots the day it is pasted. Link to the source file instead, so the wiki stays true as the code evolves.
 
 The payoff: **the agent and the user share the same model of the project.** Less re-explaining, fewer guesses, fewer "I assumed..." mistakes. Work goes faster because the agent already knows the conventions, and safer because the agent is not improvising decisions the wiki already settled.
 
 ## Token Budget
 
-A wiki MUST NOT exceed **20K tokens** (~15K words, ~60KB). This is 10% of the AI agent's 200K context window, enough for the agent to load the entire wiki at session start while leaving 90% for working context.
+A wiki MUST NOT exceed **20K tokens** (~15K words, ~60KB). The budget is an editing constraint, not a capacity limit. It is small enough that agents load the whole wiki alongside working context with room to spare, small enough that humans actually read and maintain it, and strict enough to force pruning as the project grows.
 
 Check size: `wc -w wiki/*.md` (multiply by ~1.3 for token estimate)
 

@@ -12,6 +12,8 @@ Run all code quality checks on the FULL codebase and fix issues found.
 
 **Bias warning**: You may be checking code you wrote earlier in this session. Approach with skepticism. Adopt the stance of a reviewer who did not write the code. A clean pass should be earned, not assumed.
 
+**Output rule**: The user's primary question is "what ran and did it pass?" Lead the output with a one-line plan listing every check about to run (by script name). Then run them. Steps that are N/A (e.g., step 3 if no augur-\* packages) MUST be skipped silently — do not print "Not applicable". Discovery details, missing tooling, and suppression scans belong at the END of the report, not interleaved with the runs.
+
 ## 1. Discover quality tools
 
 Use the tool table and config files from the quality skill to check what's configured. Read `repo/package.json` (or equivalent for PHP/Python). The config files are the source of truth. Only run what's defined.
@@ -97,18 +99,23 @@ After fixing all issues from one round:
 ```
 ## Quality Report
 
-**Tools discovered**: lint, format, typecheck, test
-**Missing tooling**: lefthook (pre-commit hooks)
-
 ### Results
-- Format: ✅ clean
-- Lint: ✅ 3 issues fixed
-- Typecheck: ✅ clean
-- Test: ✅ 12/12 passing
+- Format: clean
+- Lint: 3 issues fixed
+- Typecheck: clean
+- Test: 12/12 passing
+- Validate: 17 skills, no drift
 
 ### Files modified
 - path/to/file.ts: fixed lint issues
 - path/to/other.ts: fixed type error
+
+### Asides
+**Tools discovered**: lint, format, typecheck, test, validate
+**Missing tooling**: knip (dead-code detection)
+**Suppressions found**: none
 ```
+
+Results is the headline. Asides go last so the user sees pass/fail status before discovery commentary.
 
 Suggest next step: `/verify` to check in the browser, or `/sanity-check` to audit the solution.
