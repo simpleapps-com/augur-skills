@@ -94,6 +94,16 @@ Right: `Glob(pattern: "{path}/repo/src/components/**/*")`
 
 All project paths are known and predictable (see `simpleapps:wiki` Cross-Project Wiki Access). MUST NOT search the filesystem with `find` or download from the internet. Just use the dedicated tool with the known path.
 
+## Subagent Responsibility
+
+Subagents do NOT inherit this skill. They see only the prompt you give them. The primary agent MUST brief every subagent on bash-simplicity before delegating shell work, and owns the output that comes back.
+
+Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Use dedicated tools (Read, Grep, Glob, Edit, Write) over shell equivalents."
+
+If a subagent returns a command containing any forbidden operator (see the table above), that is the primary agent's failure. Reject and ask for a re-plan, or translate into separate simple calls. Do not execute it. A subagent violating this is running on a stale prompt; fix the prompt.
+
+Parallel subagents each need their own briefing.
+
 ## Check Before Prompting
 
 Before running a command that will trigger a permission prompt, check the wiki and project settings for approved commands. The wiki documents which commands are pre-approved and how to invoke them. Unnecessary permission prompts interrupt the user's flow.
