@@ -33,8 +33,9 @@ If no WIP files exist, use the current session context as the plan: what was dis
 
 1. Read the wiki for project conventions and patterns
 2. If using a WIP, read every file listed in the "Files to modify" table
-3. If using session context, explore the relevant codebase areas to understand current state
-4. Review the approach, alternatives, and risks (from WIP Analysis or session discussion)
+3. **Check for subsystem docs.** For each code path you are about to change, use Glob to look for a colocated `README.md` or similar at the subsystem level (e.g., `repo/src/helpers/README.md`), and any per-item detail doc next to the specific thing you are editing. Read them before touching code. They carry intent, invariants, and prior decisions that the code alone does not. See `simpleapps:wiki` "Progressive Disclosure via Colocated Markdown" for the pattern. These docs MUST be kept current with your changes per `simpleapps:work-habits` "Leave it better than you found it."
+4. If using session context, explore the relevant codebase areas to understand current state
+5. Review the approach, alternatives, and risks (from WIP Analysis or session discussion)
 
 ## 3. Execute the plan
 

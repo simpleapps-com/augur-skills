@@ -100,10 +100,7 @@ Two scopes, project overrides user:
 
 Resolution: read `{project}/.simpleapps/settings.json` first, fall back to `~/.simpleapps/settings.json`, fall back to defaults. Field-level override: project wins for any field it defines.
 
-Optional project-scoped fields:
-
-- `wikiTokenBudget` (number): override the 20K default wiki token budget. Set by `/curate-wiki` when the user approves an exception.
-- `wikiTokenBudgetReason` (string): why the budget was raised. Surfaced at the top of every `/curate-wiki` and `/wiki-audit` run so the exception stays visible and re-negotiable.
+`.simpleapps/` is gitignored and lives on one machine. MUST NOT store anything here that the team needs to share, anything that should travel with the repo (e.g., wiki token budget overrides; those go in `wiki/Home.md` as HTML comments), or anything that MUST be reproducible on a fresh clone.
 
 ### site.json
 

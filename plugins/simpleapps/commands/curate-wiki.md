@@ -1,12 +1,12 @@
 ---
 name: curate-wiki
-description: Continuously improve the project wiki. Better content, context, organization, and usability within the wiki's active token budget (default 20K, configurable per project).
+description: Continuously improve the project wiki. Better content, context, organization, and usability within the wiki's active token budget (default 20K, overridable via HTML comment in wiki/Home.md).
 allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Skill(wiki), Skill(writing-style), Skill(work-habits), Skill(git-safety), Skill(bash-simplicity), Skill(context-efficiency), Read, Write, Glob, Grep, Edit, Agent
 ---
 
 First, use Skill("wiki") to load wiki conventions, Skill("writing-style") for RFC 2119 directive language and token-efficient prose, Skill("work-habits") for RFC 2119 reading compliance, Skill("git-safety") to load git guardrails, Skill("bash-simplicity") for Bash conventions, and Skill("context-efficiency") for always-loaded content guidelines.
 
-Curate the project wiki. Each run targets the highest-value gaps, not exhaustive improvement. The wiki MUST stay within its active token budget (default 20K, or the override from `.simpleapps/settings.json`) so it can be loaded into context without consuming the working window.
+Curate the project wiki. Each run targets the highest-value gaps, not exhaustive improvement. The wiki MUST stay within its active token budget (default 20K, or the override recorded as an HTML comment in `wiki/Home.md`) so it can be loaded into context without consuming the working window.
 
 The working code is the ground truth. The current session is the hint where to start. Use what was learned, discussed, or changed this session to guide where the wiki most needs attention. Then verify against the actual codebase.
 
@@ -16,7 +16,14 @@ The working code is the ground truth. The current session is the hint where to s
 
 ## 1. Determine token budget
 
-Read `.simpleapps/settings.json`. If it contains `wikiTokenBudget`, use that number as the active budget. Otherwise the default is 20000 tokens. If `wikiTokenBudgetReason` is present, note it: a previous session recorded why the exception was granted, and it stays visible in this run so the exception can be re-negotiated.
+Read `wiki/Home.md` and scan for two HTML comment markers:
+
+```
+<!-- wiki-token-budget: 25000 -->
+<!-- wiki-token-budget-reason: Complex integration catalog requires extended reference -->
+```
+
+If `wiki-token-budget` is present, use that number as the active budget. Otherwise the default is 20000 tokens. If `wiki-token-budget-reason` is present, note it: a previous session recorded why the exception was granted, and it stays visible in this run so the exception can be re-negotiated. The override lives in the wiki so it travels with the repo across machines and teammates.
 
 Run `wc -w wiki/*.md` and multiply by 1.3 for the current token estimate. Record:
 
@@ -78,6 +85,20 @@ Every directive sentence MUST use MUST / MUST NOT / SHOULD / SHOULD NOT / MAY. S
 - Is there outdated content that no longer matches reality?
 - Is there filler or verbose text that can be tightened?
 - Can anything be removed to free token budget for higher-value content?
+
+### Relocation (progressive disclosure)
+
+Before compressing or deleting a detail-heavy page, consider relocating it. If a wiki page carries deep detail that is only needed when actively working on a specific code path, that page is a candidate for the colocated-markdown pattern: move the detail into a markdown file next to the code, leave a summary + signpost in the wiki. See `simpleapps:wiki` "Progressive Disclosure via Colocated Markdown" for the location conventions, signpost format, and keep-current invariant.
+
+Flag relocation candidates during assessment using these cues:
+
+- The page is over ~1K tokens and describes a single subsystem's internals (module APIs, helper catalogs, rule engines, attribute systems).
+- The content is needed in a minority of sessions (rule of thumb: under 50%).
+- The codebase already has a doc-location convention that fits (e.g., `helpers/<topic>.md`, per-module `README.md`), possibly with a stale file already present.
+
+Relocation is a stronger move than pruning: it preserves detail for agents who need it while cutting the always-loaded wiki cost. Prefer it over aggressive compression when the detail is genuinely valuable and tied to specific code.
+
+If a stale colocated file already exists for the topic, follow the migration procedure in the wiki skill: reconcile the two versions against current code, land the reconciled version in the colocated file as source of truth, then reduce the wiki page to summary + signpost. Do not point the wiki at a stale file.
 
 ## 3b. Generate Deployment page (if missing)
 
@@ -158,19 +179,29 @@ Run `wc -w wiki/*.md` again. Compare against the starting count and the active b
 
 ### Budget increase prompt
 
-When further pruning would remove content the user needs, surface this prompt verbatim:
+**Running `/curate-wiki` is NOT approval to raise the wiki token budget.** The budget is a long-term cost paid by every agent in every session across every teammate. Raising it MUST be its own separate, explicit approval from the user, outside the blanket approval that lets `/curate-wiki` edit wiki content.
+
+When further pruning would remove content the user needs, surface this prompt verbatim AND STOP:
 
 > "Wiki is at {final} tokens; active budget is {budget}. Further pruning would remove [specific content]. Options:
 > (a) prune anyway,
-> (b) raise budget to N tokens (records to .simpleapps/settings.json with a reason)."
+> (b) raise budget to N tokens (requires explicit approval; records in wiki/Home.md with a reason)."
 
-If the user picks (b):
+MUST wait for the user's response. MUST NOT edit `wiki/Home.md`, commit, or take any other action on the budget until the user explicitly approves option (b) **and names the specific number** (e.g., "yes, raise to 25000"). Generic responses like "ok", "yes", "do it", or "go ahead" are NOT sufficient: the number is a new commitment and MUST come from the user's words, not inference.
+
+If the user approves with a specific number:
 
 1. Ask for the reason in one sentence ("Why does this project need a larger wiki budget?")
-2. Update `.simpleapps/settings.json` with `wikiTokenBudget: N` and `wikiTokenBudgetReason: "..."`
-3. Report the new budget and reason. Both will surface at the top of every future /curate-wiki run.
+2. Wait for the reason. MUST NOT make one up.
+3. Edit `wiki/Home.md` to add or update the two HTML comment markers near the top of the file:
+   ```
+   <!-- wiki-token-budget: N -->
+   <!-- wiki-token-budget-reason: <the user's one-sentence reason> -->
+   ```
+   If the markers already exist, update in place. Otherwise insert them directly after the top-level `# <title>` heading so they travel with the wiki but stay invisible in the rendered view.
+4. Report the new budget and reason. Both will surface at the top of every future `/curate-wiki` and `/wiki-audit` run so the exception stays visible and re-negotiable.
 
-Never silently raise the budget. Every increase MUST be explicit, reasoned, and recorded.
+Never silently raise the budget. Never raise the budget under the umbrella of `/curate-wiki` approval. Every increase MUST be a separate, explicit, numbered approval from the user, paired with a reason they authored.
 
 ## 8. Report and stop
 

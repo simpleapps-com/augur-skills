@@ -14,7 +14,7 @@ Run each command as a separate, simple call. MUST NOT combine commands.
 
 ### 1. Token budget
 
-Read `.simpleapps/settings.json` for `wikiTokenBudget` (default 20000 if absent). Also note `wikiTokenBudgetReason` if present.
+Grep `wiki/Home.md` for the HTML comment markers `<!-- wiki-token-budget: N -->` and `<!-- wiki-token-budget-reason: ... -->`. If present, use the number as the active budget; otherwise default 20000.
 
 Run `wc -w wiki/*.md` to get the word count. Multiply total by 1.3 for token estimate. Report current usage, active budget, percentage, and reason (if overridden).
 

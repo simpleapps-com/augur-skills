@@ -93,6 +93,23 @@ Every token costs time, money, and cognitive load. Be concise without losing cla
 
 Default to brief. Expand only when the reader cannot infer meaning from context. Two sentences that answer the question beat two pages that fill the context window.
 
+## Name Sources to Activate Knowledge
+
+A canonical phrase paired with the author and work names a whole discipline's concept cluster in a handful of tokens. For an agent, this shifts the reasoning pool: "improving daily work" alone pulls from a generic improvement cluster; "Gene Kim's *The Phoenix Project*, the DevOps Second Way" activates feedback loops, toil reduction, blameless post-mortems, value streams, and the rest of the adjacent vocabulary. Cheap tokens, richer reasoning.
+
+**When it fits:**
+
+- The named discipline genuinely shapes the work. DevOps in `work-habits`. Goldratt's commission/omission errors in `/sanity-check`. RFC 2119 in `writing-style`. Each one names a body of thought the agent is expected to apply.
+- The attribution is compact: canonical phrase, author, source, and any shared vocabulary needed to anchor the cluster.
+
+**Anti-patterns:**
+
+- **Name-dropping without vocabulary.** "Gene Kim said improvement matters" activates almost nothing; you need the phrase, the work, and the domain terms together to hit the cluster.
+- **Citing disciplines that do not shape the work.** Invoking Agile Manifesto in a Bash-simplicity skill pulls in adjacent but misaligned concepts, and the cost is confused reasoning.
+- **Citing one source to decorate every skill.** If every skill attributes someone, attribution becomes ornamental and the activation effect dilutes. Keep it rare and deliberate.
+
+This is a technique, not a rule. Most skills should not invoke an external discipline at all. Use it when a skill's guidance genuinely derives from a named body of thought, and the agent will reason better for being told which one.
+
 ## Punctuation: Avoid the Em-Dash
 
 The em-dash (`—`) is one of the strongest tells of AI-generated text. LLMs over-produce it dramatically, far beyond how humans punctuate. Readers (especially developers and clients reading client-facing posts) increasingly read em-dashes as "this was written by AI."

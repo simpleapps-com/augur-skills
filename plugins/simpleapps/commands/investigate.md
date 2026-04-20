@@ -32,12 +32,13 @@ Read the WIP file. Extract:
 Based on the problem statement, systematically investigate:
 
 1. **Check augur-\* packages first**: if this is a NextJS site using `@simpleapps-com/augur-*` packages, use Skill("augur-packages") to check if any package already provides the needed functionality. Sites MUST use augur package features before building custom solutions.
-2. **Search for relevant code**: use Grep and Glob to find files related to the problem. Use Agent with subagent_type=Explore for broader searches.
-3. **Read key files**: understand the current implementation
-4. **Trace the flow**: follow the code path affected by the problem
-5. **Check for existing packages**: search `repo/package.json` for dependencies that may already solve the problem. Check if the project is duplicating functionality that a dependency provides.
-6. **Check git history**: `git -C repo log --oneline -10 -- <file>` for recent changes to relevant files
-7. **Download and review attachments**: if the WIP lists BC attachments, use Basecamp MCP tools to download and read them
+2. **Check for subsystem docs**: once you identify the relevant code path, use Glob to look for a colocated `README.md` or similar at the subsystem level (e.g., `repo/src/helpers/README.md`), and any per-item detail doc next to the specific thing you are investigating. Read them before going deeper into code. They were written to short-circuit exactly this kind of discovery. See `simpleapps:wiki` "Progressive Disclosure via Colocated Markdown" for the pattern.
+3. **Search for relevant code**: use Grep and Glob to find files related to the problem. Use Agent with subagent_type=Explore for broader searches.
+4. **Read key files**: understand the current implementation
+5. **Trace the flow**: follow the code path affected by the problem
+6. **Check for existing packages**: search `repo/package.json` for dependencies that may already solve the problem. Check if the project is duplicating functionality that a dependency provides.
+7. **Check git history**: `git -C repo log --oneline -10 -- <file>` for recent changes to relevant files
+8. **Download and review attachments**: if the WIP lists BC attachments, use Basecamp MCP tools to download and read them
 
 **Stopping condition**: Stop when you can describe the root cause, identify the files to modify, and propose an approach. You do not need to understand the entire system, just enough to act. Investigate until you can inform implementation decisions, then write up findings and stop. Prefer using existing package functionality over custom code.
 

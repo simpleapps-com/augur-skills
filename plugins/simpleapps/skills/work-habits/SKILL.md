@@ -52,6 +52,10 @@ Every agent interaction should leave the codebase in a better state. If you enco
 
 Do not classify issues as "pre-existing" to justify skipping them. Context compaction erases your memory of changes made earlier in the session, so what looks pre-existing is often something you introduced. Even if you truly did not cause it, the goal is zero issues, not blame assignment. Fix it anyway. Do not argue with the user about whether an issue is yours to fix. It is.
 
+**Colocated detail files are first-class code artifacts.** When code has a colocated markdown file (a `README.md`, `helpers/<topic>.md`, `docs/<topic>.md`, or whatever convention the codebase uses) MUST read it before making changes, not after. If your change affects the behavior it describes, update the file in the same commit as the code change. If the file is already stale on arrival (contradicts current behavior before your change), fix or flag it; do not compound the drift. Touching code with a colocated detail file and not keeping the file current is the same category of bug as leaving a test broken.
+
+**Subsystem READMEs count the same way.** When a subsystem uses the index-and-leaves pattern (`<subsystem>/README.md` as entry point, plus per-item `<subsystem>/<item>.md` for complex items), read the README first when landing in the subsystem, then any item doc for the specific thing you are touching. Edits that change the subsystem's shape (add, remove, or significantly alter an item) MUST update the README index, not just the item doc. See `simpleapps:wiki` "Progressive Disclosure via Colocated Markdown" for the wiki-side signpost pattern and the subsystem-hierarchy conventions.
+
 ## Versioned sources win over memory
 
 When a recalled memory conflicts with the wiki, a `.claude/rules/*.md` file, `CLAUDE.md`, or a skill, YOU MUST follow the versioned source and ignore the memory. Memory is personal, unauditable, and often wrong. Agents save memories from misunderstandings or outdated context, and the user cannot easily review what's been saved.
@@ -138,6 +142,8 @@ Wrong approach? Stop, revert, try differently. Do not keep layering fixes on a b
 
 ## Improve the system, not just the output
 
-Removing daily work is more important than doing daily work. While completing a task, notice friction: unnecessary manual steps, repeated patterns that could be shared, error-prone processes that could be automated, custom code that duplicates a package export. When you spot these, flag them. Suggest a package addition, a script, a skill improvement, or a workflow change. The value of eliminating a step that runs every day far exceeds the value of completing it one more time.
+"Improving daily work is even more important than doing daily work." From Gene Kim's *The Phoenix Project* and *The DevOps Handbook*. This is the DevOps discipline we are practicing: continuous feedback, automation over heroics, and reducing the friction of future work as a first-class output of current work.
+
+While completing a task, notice friction: unnecessary manual steps, repeated patterns that could be shared, error-prone processes that could be automated, custom code that duplicates a package export. When you spot these, flag them. Suggest a package addition, a script, a skill improvement, or a workflow change. Eliminating or automating a step that runs every day compounds far beyond the value of completing it one more time.
 
 This is not scope creep on the code. "Do exactly what was asked" still applies to the task. But improving the system the task runs in (making skills clearer, workflows smoother, shared code more complete) is always in scope. File an issue, update a skill, or mention it in your report.

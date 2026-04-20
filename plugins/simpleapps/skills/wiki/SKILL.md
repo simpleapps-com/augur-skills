@@ -30,7 +30,16 @@ The payoff: **the agent and the user share the same model of the project.** Less
 
 The default wiki budget is **20K tokens** (~15K words, ~60KB). The budget is an editing constraint, not a capacity limit. It is small enough that agents load the whole wiki alongside working context with room to spare, small enough that humans actually read and maintain it, and strict enough to force pruning as the project grows.
 
-Projects MAY raise the budget via `wikiTokenBudget` in `.simpleapps/settings.json` when there is a documented reason (e.g., large integration catalogs, extensive cross-project references). Increases MUST be paired with a `wikiTokenBudgetReason` so future sessions see why the exception exists and can re-negotiate it. `/curate-wiki` handles the prompt and records the change. Never raise the budget silently.
+Projects MAY raise the budget by adding two HTML comment markers near the top of `wiki/Home.md`:
+
+```
+<!-- wiki-token-budget: 25000 -->
+<!-- wiki-token-budget-reason: Complex integration catalog requires extended reference -->
+```
+
+HTML comments are invisible in the rendered wiki but parseable by agents. Storing the override in the wiki itself means it travels with the repo across machines and teammates; `.simpleapps/` and other gitignored local config are NOT acceptable locations because they do not sync.
+
+Raising the budget is its own decision, separate from any other command. MUST NOT raise the budget under the blanket approval of `/curate-wiki`, `/wiki-audit`, or any other command. The user MUST explicitly approve both the **specific new number** and author the **reason** in their own words. `/curate-wiki` surfaces the prompt and performs the edit only after the user names the number and provides the reason. Never raise the budget silently. Never infer a number the user did not state.
 
 Check size: `wc -w wiki/*.md` (multiply by ~1.3 for token estimate)
 
@@ -206,6 +215,91 @@ A good Testing page covers: test tiers (automated vs manual), test data (items, 
 - No hardcoded counts, no pinned versions, no full export inventories
 - Describe the pattern, give 1-2 examples, point to source for current list
 - Merge overlapping pages, archive obsolete ones
+
+## Progressive Disclosure via Colocated Markdown
+
+When a wiki topic grows detail that is only needed when actively working on that specific code path, relocate the detail into a markdown file colocated with the code. The wiki keeps a summary and a signpost; the colocated file becomes the source of truth. Every-session readers pay only for the summary; on-topic sessions load the full detail on demand.
+
+### When this fits
+
+- Module-level or subsystem depth (attribute system internals, pipeline stages, component APIs)
+- Content needed in a minority of sessions (rule of thumb: under 50%)
+- Detail that changes in the same commit as the code it describes
+
+### When it does not fit
+
+- Orientation, architecture, cross-cutting decisions (keep in the wiki)
+- Deployment, testing, onboarding (these are the wiki's core job)
+- Content not tied to a specific code path
+
+### Location convention
+
+Follow the codebase's existing doc-location convention. Do not impose a new one.
+
+- `<module>/README.md` if the codebase uses per-module READMEs
+- `<dir>/helpers/<topic>.md` if many siblings share a helpers folder
+- `<module>/docs/<topic>.md` for deep subsystems with several topics
+- `docs/<topic>.md` at repo root when the content does not map cleanly to one path
+
+If no convention exists, propose one and match it across similar topics in the same session.
+
+### Signpost format
+
+The wiki MUST link to the colocated file by exact repo path and state the load condition:
+
+```markdown
+## Attributes
+
+One-paragraph summary.
+
+**Detail file:** `repo/src/helpers/attributes.md`
+**Load when:** working in the attribute system (adding, editing, or debugging attributes).
+```
+
+The **Load when** clause is critical: without it, agents either ignore the signpost or load every signposted file at session start, defeating the budget win.
+
+Wiki signposts SHOULD include keywords the agent will recognize when searching or scanning: the subsystem name, common domain terms, the API the subsystem exposes. Keyword-rich signposts increase the chance an agent notices it has landed in a subsystem that has detail docs available, instead of re-deriving everything from code.
+
+### Subsystem doc hierarchies (index + leaves)
+
+Large monorepos often have subsystems with many sibling items (helpers, components, plugin rules, rule engines) where per-item detail has meaningful variance. A single colocated file does not scale; use a nested structure instead.
+
+**Structure:**
+
+- `<subsystem>/README.md` MUST exist as the entry point. It orients the reader, explains the subsystem's purpose and conventions, and indexes the items that have their own detail docs.
+- `<subsystem>/<item>.md` holds detail for individual items that are complex, non-obvious, or have subtle invariants.
+
+**Selection rule for detail docs:** NOT every item gets a doc. Only items where the *why* and *how* pay back the maintenance cost. Items whose name and signature are self-explanatory MUST NOT get a doc; a doc that restates what the code already says is drift waiting to happen.
+
+**Wiki signpost format** when a subsystem uses the nested pattern:
+
+```markdown
+## Attributes (attribute system, helpers)
+
+One-paragraph summary.
+
+**Entry point:** `repo/src/helpers/README.md`
+**Load when:** working in the attribute system — adding, editing, or debugging attributes, or extending the schema. The README indexes per-helper detail docs for complex items.
+```
+
+Keywords in the page heading and the Load-when clause (subsystem name, adjacent terms, verbs that match what the agent is likely doing) help the agent recognize the subsystem on sight. The signpost points at the README, not at every leaf: the README is the hub, and the agent follows it to individual item docs as needed.
+
+**Keep-current at both levels:** editing an item means updating its `.md` if it has one AND updating the README index when the item's entry there is now wrong (new complexity introduced, a doc was added or removed, an item was deleted). See `simpleapps:work-habits` "Leave it better than you found it" for the binding rule.
+
+### Keep-current invariant
+
+Colocated detail files are first-class code artifacts. When working on code that has one, agents MUST read it before editing, update it in the same commit when behavior it describes changes, and fix or flag it if it arrives stale. See `simpleapps:work-habits` "Leave it better than you found it" for the binding rule.
+
+### Migration: topics that already exist in both places
+
+When adopting this pattern for a topic that has a wiki page AND a stale colocated file (common if a colocated doc existed but drifted):
+
+1. Read both. Identify the source of truth by comparing against the code.
+2. Reconcile. Merge current-and-accurate content from both into a single updated version.
+3. Land the reconciled version in the colocated file. It is the source of truth going forward.
+4. Replace the wiki page body with the summary + signpost format above. Same commit (or paired commits across repos) so both sides land together.
+
+After migration, the colocated file wins any conflict with the wiki; the wiki summary gets fixed, not the colocated file.
 
 ## Maintenance
 
