@@ -60,6 +60,18 @@ These commands are **denied** in project settings and will always be rejected. D
 
 MUST NOT use `node -e` or `python -c` to run inline scripts. These trigger permission prompts. If you need to read a file, use the Read tool. If you need to process data, do it in your response, not in a shell script.
 
+## When a Bash Command Is Denied
+
+If a Bash call is denied, do NOT retry the same command and do NOT ask the user to approve it. Before anything else, check for a tool equivalent or shell plumbing that can be decomposed:
+
+- `grep`/`rg` → Grep tool (for files on disk); for command output, the Bash tool already returned it — read what you have
+- `find`/`ls` → Glob tool
+- `cat`/`head`/`tail` → Read tool
+- `sed`/`awk` → Edit tool
+- `|`, `2>&1`, `&&`, `;`, `$()` → split into separate calls; the Bash tool already captures stdout, stderr, and exit code
+
+Worked example: `pnpm --filter <package> typecheck 2>&1 | grep -c "error TS"` is denied because of the pipe to `grep`. The fix is to run `pnpm --filter <package> typecheck` alone — the Bash tool returns the full output and exit code — then count "error TS" occurrences in the returned output yourself. No grep, no redirection, no retry.
+
 ## Background Tasks
 
 When you start a background task with `run_in_background`, you receive a task ID. That ID is how you manage the task later:
