@@ -29,12 +29,19 @@ Before asking the user for credentials, tokens, siteId, domain, or any site-spec
 
 When debugging in the browser, MUST check for error overlays (red error pill/badge at the bottom of the page) before guessing at the problem. Click it, read the full error, stack trace, and source location. The answer is almost always right there.
 
-## Protect the context window
+## Context discipline
 
-- Prefer targeted searches over broad exploration
-- Use subagents for verbose operations (test runs, log analysis, large file reads)
-- `/clear` between unrelated tasks
-- Two sentences that answer the question beat two pages that fill the context window
+Every file read, command output, and subagent response sits in context for the rest of the session. The agent behaviors that matter:
+
+- Broad exploration ("where is X wired up", "how does Y work") → delegate to an Explore subagent with a word cap. The entire exploration happens outside your context; only the returned summary costs you tokens. This is the single biggest lever for keeping the main thread slim. The trick is asking for everything you will need up front — file paths, line numbers, surrounding context, edge cases — in one specific request. A complete request yields a complete answer; a vague one forces a second round-trip that erases the saving. See `subagent-briefing.md` for the required briefing elements.
+- Do not re-read files already loaded in this session. Trust the earlier Read.
+- After Grep gives you a line number, Read with offset/limit — not the whole file.
+- Commands with large output (test runs, build logs, long grep results): redirect to a `tmp/` file, then Grep or targeted-Read the parts you need.
+- Do not duplicate subagent work. If you delegated the search, use the answer — do not re-run the greps inline to verify.
+
+## Response length
+
+Be complete and concise. Accuracy and completeness come first — do not truncate a real answer to look terse. But verbosity is not thoroughness. Every token sent to the user is a token they are expected to read; too many tokens raise cognitive load and annoy them. Output tokens also cost ~5x input on Opus, so the waste compounds. Multi-option writeups, draft code blocks, and "here are my thoughts" bullets are the default failure mode when a paragraph would cover it. Say what's needed, then stop.
 
 ## Verify your own work
 
