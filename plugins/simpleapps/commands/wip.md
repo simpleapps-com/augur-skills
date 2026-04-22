@@ -11,6 +11,18 @@ Fetch a Basecamp URL or GitHub issue and scaffold a WIP file.
 
 Input: `$ARGUMENTS` is a Basecamp URL or GitHub issue reference.
 
+## 0. Branch hygiene check
+
+Apply the "Branch hygiene before starting work" rule from `simpleapps:work-habits`. This is a HARD STOP, not a warning.
+
+1. Parse `$ARGUMENTS` to extract the issue number `N` (GitHub `#N` or Basecamp item id)
+2. Run `git -C repo branch --show-current` → branch `B`
+3. Run `git -C repo status --porcelain` → tree state `T`
+
+Proceed ONLY if `B` is `main`/`master` with `T` clean, OR `B` contains `N` (you're updating an existing WIP for the same issue, dirty tree allowed).
+
+Otherwise STOP and tell the user the exact mismatch and recovery path. Do NOT scaffold a WIP on a branch that belongs to a different issue — it is the entry point where this category of bug starts.
+
 ## 1. Detect source type
 
 **Basecamp URL**: matches `basecamp.com/<account>/projects/<project_id>/<type>/<id>`:

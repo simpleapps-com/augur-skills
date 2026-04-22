@@ -94,9 +94,26 @@ When a check fails, the solution is ALWAYS to fix the underlying code. NEVER:
 
 These actions hide problems; they do not fix them. If a rule or test seems wrong, investigate why it exists before concluding it should change. Rules exist for reasons. If after investigation it genuinely does not apply, explain the reasoning to the user and let them decide. Do not unilaterally disable it.
 
-## Check the branch before non-trivial work
+## Branch hygiene before starting work
 
-Several lifecycle commands (`/wip`, `/investigate`, `/implement`, `/submit`) repeat the same check: run `git -C repo branch --show-current` and warn the user if the branch is unexpected (not `main`, not a feature branch named after the issue). This is a shared hygiene step. If you find yourself doing meaningful work on an unexpected branch, stop and confirm with the user before continuing. Branching mistakes compound silently.
+The lifecycle commands `/wip`, `/investigate`, and `/implement` MUST verify branch state before doing anything else. This is a HARD STOP, not a warning. A warning the agent emits and then ignores is identical to no check — three concerns end up on one branch and the mess is only discovered at `/submit`.
+
+When invoked for issue `#N`:
+
+1. Run `git -C repo branch --show-current` → branch `B`
+2. Run `git -C repo status --porcelain` → working tree state `T`
+
+Proceed ONLY if one of these holds:
+
+- `B` is `main` or `master` AND `T` is clean
+- `B` contains `N` (e.g., `feat/N-...`, `fix/N-…`) — you are continuing in-flight work for the same issue; dirty tree is allowed
+
+Otherwise STOP. Report exactly what you saw and the recovery path:
+
+- If `B` is for a different issue: tell the user to `/submit` the in-flight work first, then `git -C repo switch main` and re-run the command. Do NOT offer to commit or stash on their behalf.
+- If `B` is `main`/`master` but `T` is dirty: tell the user the uncommitted changes need to land somewhere (their own branch + `/submit`, or explicit discard) before starting new work.
+
+Do NOT proceed with a "warning." Do NOT scaffold, investigate, or implement on a stale or wrong branch. Branching mistakes compound silently and the cost of recovery scales with how many commands later they are caught.
 
 ## Track progress
 

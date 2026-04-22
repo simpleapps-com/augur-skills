@@ -11,9 +11,17 @@ Execute an implementation plan. Work autonomously. Only stop for user input when
 
 **Scope: implementation means code changes only.** Write code, edit files, run build/test commands. Do NOT commit, create branches, or open PRs. Those are separate actions the user will request when ready. When done, report what changed and stop.
 
-## 0. Check branch
+## 0. Branch hygiene check
 
-Run `git -C repo branch --show-current`. If not on `main` or `master`, warn the user. Implementing on the wrong branch means the work may conflict or be based on stale code. Suggest switching before continuing.
+Apply the "Branch hygiene before starting work" rule from `simpleapps:work-habits`. This is a HARD STOP, not a warning.
+
+1. Resolve the issue number `N` from the WIP being implemented (filename like `wip/GH367-…md` → `N=367`)
+2. Run `git -C repo branch --show-current` → branch `B`
+3. Run `git -C repo status --porcelain` → tree state `T`
+
+Proceed ONLY if `B` contains `N` (you're on the issue's branch). If `B` is `main`/`master`, STOP and tell the user to create the issue's branch first: `git -C repo switch -c <type>/<N>-<slug>`. Implementing directly on `main` and sorting it out at `/submit` time is exactly the failure mode this rule prevents.
+
+If `B` is for a different issue, STOP. Tell the user to `/submit` the in-flight work, then create a fresh branch for `N`.
 
 ## 1. Determine the plan
 

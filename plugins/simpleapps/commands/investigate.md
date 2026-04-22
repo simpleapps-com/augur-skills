@@ -9,9 +9,17 @@ First, use Skill("wiki") to load the project wiki for codebase context, then Ski
 
 Investigate a WIP file. Explore the codebase, analyze the problem, and update the WIP with findings. MUST NOT make code changes.
 
-## 0. Check branch
+## 0. Branch hygiene check
 
-Run `git -C repo branch --show-current`. If not on `main` or `master`, warn the user. Investigating on a stale branch means findings may not reflect the current codebase. Suggest switching before continuing.
+Apply the "Branch hygiene before starting work" rule from `simpleapps:work-habits`. This is a HARD STOP, not a warning.
+
+1. Resolve the issue number `N` from `$ARGUMENTS` if provided, or from the WIP filename (e.g., `wip/GH367-…md` → `N=367`)
+2. Run `git -C repo branch --show-current` → branch `B`
+3. Run `git -C repo status --porcelain` → tree state `T`
+
+Proceed ONLY if `B` is `main`/`master` with `T` clean, OR `B` contains `N`.
+
+Otherwise STOP. Investigating on a branch that belongs to a different issue means the user is about to start a second line of work on top of an unfinished first one. Tell the user to `/submit` the in-flight work first, then `git -C repo switch main` and re-run.
 
 ## 1. Find the WIP file
 
