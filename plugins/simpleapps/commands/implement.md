@@ -2,10 +2,10 @@
 name: implement
 description: Execute an implementation plan from a WIP file or session context. Work autonomously, document what was done.
 argument-hint: "[wip/GH30-slug.md]"
-allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Skill(wiki), Skill(project-defaults), Skill(github), Skill(git-safety), Skill(bash-simplicity), Skill(writing-style), Skill(work-habits), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Bash(date:*), Skill(wiki), Skill(project-defaults), Skill(github), Skill(git-safety), Skill(bash-simplicity), Skill(writing-style), Skill(wip), Skill(work-habits), Read, Write, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("wiki") to load project context, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions, then Skill("writing-style") for variable naming and code style standards, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
+First, use Skill("wiki") to load project context, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions, then Skill("writing-style") for variable naming and code style standards, then Skill("wip") for the WIP frontmatter schema, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
 
 Execute an implementation plan. Work autonomously. Only stop for user input when stuck or when a decision has no clear answer.
 
@@ -63,7 +63,15 @@ Work through the implementation. For each change:
 
 ## 4. Document the implementation
 
-If a WIP file was used, update it. If no WIP exists, create an implementation record at `wip/impl-{slug}.md` with the same structure. This ensures every implementation has an audit trail.
+If a WIP file was used, update it. If no WIP exists, create an implementation record at `wip/impl-{slug}.md` with the same structure (including frontmatter per `simpleapps:wip`). This ensures every implementation has an audit trail.
+
+### Frontmatter
+
+Per `simpleapps:wip`, set `status: in-progress`, bump `last_reviewed` to today (`date +%Y-%m-%d`), and set `branch` to the current branch name if not already set (`git -C repo branch --show-current`). Do NOT set `status: shipped` here — that belongs to `/submit` after the push + CI green.
+
+If the file has no frontmatter (legacy), add the full block per the schema before editing sections.
+
+### Implementation section
 
 Add an **Implementation** section (after Analysis, before Files to modify):
 
@@ -89,7 +97,7 @@ Add an **Implementation** section (after Analysis, before Files to modify):
 
 Update the "Files to modify" table to reflect what was actually changed (add new rows for files discovered during implementation).
 
-Change the WIP status to `## Status: Implemented`.
+Leave frontmatter `status: in-progress` at this point. `/submit` is responsible for flipping to `shipped` once the work lands and CI is green.
 
 ## 5. Report and stop
 

@@ -2,10 +2,10 @@
 name: investigate
 description: Load a WIP file, read the wiki, explore the codebase, and update the WIP with research findings and suggestions. No code changes.
 argument-hint: "[wip/GH14-slug.md]"
-allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(git log:*), Bash(git blame:*), Skill(wiki), Skill(basecamp), Skill(github), Skill(project-defaults), Skill(augur-packages), Skill(writing-style), Skill(work-habits), mcp__plugin_simpleapps_basecamp__*, Read, Glob, Grep, Edit, Agent
+allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(git log:*), Bash(git blame:*), Bash(date:*), Skill(wiki), Skill(basecamp), Skill(github), Skill(project-defaults), Skill(augur-packages), Skill(writing-style), Skill(wip), Skill(work-habits), mcp__plugin_simpleapps_basecamp__*, Read, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("wiki") to load the project wiki for codebase context, then Skill("project-defaults") for directory layout, then Skill("github") for GH conventions, then Skill("writing-style") for naming and documentation standards, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
+First, use Skill("wiki") to load the project wiki for codebase context, then Skill("project-defaults") for directory layout, then Skill("github") for GH conventions, then Skill("writing-style") for naming and documentation standards, then Skill("wip") for the WIP frontmatter schema, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
 
 Investigate a WIP file. Explore the codebase, analyze the problem, and update the WIP with findings. MUST NOT make code changes.
 
@@ -52,7 +52,11 @@ Based on the problem statement, systematically investigate:
 
 ## 4. Update the WIP
 
-Use Edit to update the WIP file with findings:
+Use Edit to update the WIP file with findings.
+
+### Frontmatter
+
+Per `simpleapps:wip`, bump `last_reviewed` to today (`date +%Y-%m-%d`) and, if `status` is `open`, flip to `in-progress`. If the file has no frontmatter (legacy), add the full block per the schema before editing sections. Keep `shipped_at`, `pr`, and `disposition` untouched unless the ground truth has changed (e.g., issue is already closed — then reconcile per the wip skill).
 
 ### Research section
 

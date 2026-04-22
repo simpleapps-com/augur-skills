@@ -2,10 +2,10 @@
 name: wip
 description: Fetch a Basecamp URL or GitHub issue with full comments, scaffold a WIP file, and load the wiki
 argument-hint: "<basecamp-url or github-issue>"
-allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(basename:*), Bash(gh label:*), Skill(basecamp), Skill(workflow), Skill(github), Skill(bash-simplicity), Skill(work-habits), mcp__plugin_simpleapps_basecamp__*, Read, Write, Edit, Glob
+allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(basename:*), Bash(date:*), Bash(gh label:*), Skill(basecamp), Skill(workflow), Skill(github), Skill(wip), Skill(bash-simplicity), Skill(work-habits), mcp__plugin_simpleapps_basecamp__*, Read, Write, Edit, Glob
 ---
 
-First, use Skill("basecamp") to load the Basecamp MCP reference, then Skill("workflow") for the Basecamp-to-GitHub flow, then Skill("github") for GH CLI conventions, then Skill("bash-simplicity") for Bash conventions, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
+First, use Skill("basecamp") to load the Basecamp MCP reference, then Skill("workflow") for the Basecamp-to-GitHub flow, then Skill("github") for GH CLI conventions, then Skill("wip") for the WIP frontmatter schema and lifecycle, then Skill("bash-simplicity") for Bash conventions, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
 
 Fetch a Basecamp URL or GitHub issue and scaffold a WIP file.
 
@@ -118,12 +118,14 @@ Use Glob to check `wip/` for a file starting with the same prefix (`BC{#}` or `G
 
 Read the existing WIP file. Compare against freshly fetched content:
 
-1. **Status**: if the GH issue state changed (e.g., closed), update the Status line
+1. **Frontmatter**: if the GH issue is closed and frontmatter `status` is still `open`/`in-progress`, flip to `shipped` and set `shipped_at` to the issue's `closed_at`. Bump `last_reviewed` to today.
 2. **Problem**: update if the issue body was edited
 3. **Attachments**: add any new attachments not already listed
 4. **Comments**: compare comment lists by author + date. Append any new comments after the existing ones. MUST NOT duplicate or remove existing comments.
 5. **Cross-refs**: add any newly detected cross-references
 6. **Preserve user work**: MUST NOT modify Research, Analysis, Files to modify, or any other sections the user has edited
+
+If the existing file has no frontmatter (legacy format), add it per the schema in step 7b. Migrate the prose `## Status:` line into frontmatter `status` (`WIP` → `open`, `Implemented`/`Shipped` → `shipped`) and remove the prose line.
 
 Tell the user what was updated (e.g., "Added 2 new comments, status unchanged").
 
@@ -131,12 +133,24 @@ Tell the user what was updated (e.g., "Added 2 new comments, status unchanged").
 
 Write to `wip/{prefix}{#}-{slug}.md` where prefix is `GH` or `BC`.
 
+Prepend YAML frontmatter per the `simpleapps:wip` schema. Get today's date with `date +%Y-%m-%d`. Leave `shipped_at`, `pr`, `disposition`, and `wiki_candidates` empty — later lifecycle commands fill them in.
+
 Template:
 
 ```markdown
-# {Source type} #{number}: {Title}
+---
+issue: {full URL to the issue or Basecamp item}
+branch:
+status: open
+created: {today}
+last_reviewed: {today}
+shipped_at:
+pr:
+disposition:
+wiki_candidates:
+---
 
-## Status: WIP
+# {Source type} #{number}: {Title}
 
 ## Source
 
@@ -176,6 +190,8 @@ _Investigation notes go here._
 - {Any cross-references found}
 ```
 
+For freeform WIPs (no issue, user-provided scaffold), leave `issue` and `branch` empty in the frontmatter and use a descriptive filename with no `GH`/`BC` prefix.
+
 ## 8. Load the wiki
 
 Load the project wiki into context so the user can chat about the scaffolded WIP before moving on to `/investigate`:
@@ -186,13 +202,7 @@ Load the project wiki into context so the user can chat about the scaffolded WIP
 4. Read every `.md` file with the Read tool. Do NOT use a subagent; the content MUST be in your own context.
 5. If `wiki/` does not exist, skip this step and note it in the report
 
-## 9. Suggest cleanup of stale WIPs
-
-Use Glob to list `wip/*.md`. For each file with a `## Status: Implemented`, `## Status: Shipped`, or `## Status: Closed` heading whose corresponding GitHub issue or PR is closed, suggest the user delete it. Do NOT delete automatically. WIP files contain decisions and research the user may still want.
-
-If `wip/` has more than ~10 files, mention the pile-up. Stale WIPs add noise to `/triage` and `/sanity-check` lookups.
-
-## 10. Report
+## 9. Report
 
 For new WIP files:
 - WIP file created at `wip/{filename}`

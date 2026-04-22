@@ -92,6 +92,8 @@ The three shipping commands (`/submit`, `/deploy`, `/publish`) read project-spec
 
 Commands like `/research` and `/discuss` can be used at any stage. `/quality`, `/verify`, `/curate-wiki`, and `/wiki-audit` can run independently.
 
+`/process-wips` runs daily (outside the lifecycle above) to reconcile WIP frontmatter with ground truth, auto-delete shipped WIPs older than 7 days, and confirm wiki promotions. See `simpleapps:wip` for the frontmatter schema and retention rule.
+
 ## References
 
 - See `simpleapps:basecamp` skill for MCP tools, Chrome fallback, and Basecamp navigation

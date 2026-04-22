@@ -56,7 +56,7 @@ The parent `{project}/` is NOT a git repo. It keeps code and wiki side-by-side. 
 | Temporary files | `tmp/` | Scratch space: commit msgs, PR bodies, intermediate output. Full access. |
 | SimpleApps config | `.simpleapps/` | Settings, site profile, credentials (see below) |
 
-**WIP**: Research, plans, decisions, test results. MUST NOT contain secrets, final docs, or code.
+**WIP**: Research, plans, decisions, test results. MUST NOT contain secrets, final docs, or code. See `simpleapps:wip` for the frontmatter schema, status lifecycle, retention rule, and daily processing via `/process-wips`.
 
 **tmp/**: Fully available for scratch work: commit messages, PR bodies, issue comments, intermediate output, and any throwaway files. Read, write, and delete freely without asking. Create the folder if missing. Clean up files after use.
 

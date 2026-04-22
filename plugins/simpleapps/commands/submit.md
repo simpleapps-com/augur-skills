@@ -1,7 +1,7 @@
 ---
 name: submit
 description: Submit work for review. Commit and create a PR as defined in the project wiki Deployment page.
-allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Skill(deployment), Skill(git-safety), Skill(conventional-commits), Skill(github), Skill(bash-simplicity), Skill(work-habits), Read, Write, Glob, Grep, Edit
+allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Bash(date:*), Skill(deployment), Skill(git-safety), Skill(conventional-commits), Skill(github), Skill(bash-simplicity), Skill(wip), Skill(work-habits), Read, Write, Glob, Grep, Edit
 ---
 
 First, load these skills:
@@ -9,7 +9,8 @@ First, load these skills:
 2. Skill("conventional-commits"): commit message format
 3. Skill("github"): PR conventions and gh CLI
 4. Skill("bash-simplicity"): Bash conventions
-5. Skill("work-habits"): autonomous execution rules and RFC 2119 compliance
+5. Skill("wip"): WIP frontmatter schema, for updating the WIP after push
+6. Skill("work-habits"): autonomous execution rules and RFC 2119 compliance
 
 ## What This Command Does
 
@@ -36,7 +37,8 @@ This command IS the user's approval to commit and push. Execute all steps withou
 5. Execute all git operations (stage, commit, push, PR creation). Do not pause between them.
 6. MUST NOT use `$()` in gh commands. Use `--body-file` with a tmp file.
 7. Update linked issues (see below)
-8. Report what was done at the end
+8. Update the WIP frontmatter (see below)
+9. Report what was done at the end
 
 ## Update Linked Issues
 
@@ -55,3 +57,16 @@ Summary of changes:
 ```
 
 If the commit message includes `Closes #N` or `Fixes #N`, the issue will auto-close. No need to close it manually. If the work partially addresses the issue, say so in the comment and leave it open.
+
+## Update the WIP frontmatter
+
+After the push succeeds and CI is green (or the PR is open if the project uses PRs), find the WIP for this work and mark it shipped per `simpleapps:wip`:
+
+1. Derive the issue number from the branch name (e.g., `fix/42-description` → `N=42`) or from `Closes #N`/`Fixes #N` in the commit message.
+2. Use Glob to find `wip/GH{N}-*.md` or `wip/BC{N}-*.md`. If no match, skip this step — the work was not tracked through the WIP flow.
+3. Edit the frontmatter: set `status: shipped`, `shipped_at: <today>` (`date +%Y-%m-%d`), and `pr` to the PR URL if one exists, otherwise the commit SHA. Bump `last_reviewed` to today.
+4. Leave `disposition` empty. The user or `/process-wips` decides later whether to promote or delete.
+
+If the WIP has no frontmatter (legacy), add the full block per the `simpleapps:wip` schema before setting the fields above.
+
+If CI fails after the push, do NOT update `status` or `shipped_at`. Leave the WIP at `in-progress` so the user can fix and re-run /submit.
