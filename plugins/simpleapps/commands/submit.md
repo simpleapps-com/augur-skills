@@ -39,6 +39,7 @@ This command IS the user's approval to commit and push. Execute all steps withou
 7. Update linked issues (see below)
 8. Update the WIP frontmatter (see below)
 9. Report what was done at the end
+10. If the current branch is not the default branch (`main` / `master`), ask the user whether to switch to it before the next task. Do not switch without approval.
 
 ## Update Linked Issues
 
