@@ -103,24 +103,23 @@ These actions hide problems; they do not fix them. If a rule or test seems wrong
 
 ## Branch hygiene before starting work
 
-The lifecycle commands `/wip`, `/investigate`, and `/implement` MUST verify branch state before doing anything else. This is a HARD STOP, not a warning. A warning the agent emits and then ignores is identical to no check — three concerns end up on one branch and the mess is only discovered at `/submit`.
+Branch management is the agent's job, not the user's. The lifecycle commands `/wip`, `/investigate`, and `/implement` MUST verify branch state before starting, but the agent SHOULD handle the safe transitions itself rather than blocking the user with "go run `git switch` first."
 
 When invoked for issue `#N`:
 
 1. Run `git -C repo branch --show-current` → branch `B`
 2. Run `git -C repo status --porcelain` → working tree state `T`
 
-Proceed ONLY if one of these holds:
+| `B` | `T` | Action |
+|-----|-----|--------|
+| Contains `N` | any | Proceed — continuing in-flight work for this issue |
+| `main` / `master` | clean | For `/wip` and `/investigate` (read/scaffold only): proceed on `main`. For `/implement` (code changes): create the branch yourself with `git -C repo switch -c <type>/<N>-<slug>`, then proceed. Derive `<type>` from the issue title prefix (`feat:`, `fix:`, `chore:`, `docs:`). Derive `<slug>` from the issue title (lowercase-hyphenated, ≤40 chars). |
+| `main` / `master` | dirty | HARD STOP — uncommitted changes need to land somewhere first. Report exactly which files are modified. Let the user decide (commit on a branch, discard, stash). MUST NOT touch their changes. |
+| Belongs to a different issue (`feat/M-…`, `M ≠ N`) | any | HARD STOP — tell the user to `/submit` the in-flight work first, then re-run. MUST NOT switch branches with uncommitted work present. |
 
-- `B` is `main` or `master` AND `T` is clean
-- `B` contains `N` (e.g., `feat/N-...`, `fix/N-…`) — you are continuing in-flight work for the same issue; dirty tree is allowed
+The HARD STOPs only fire when the user's working state would be lost or mixed by proceeding. Clean main + known issue is not a stop condition — `/implement` creates the branch itself; `/wip` and `/investigate` proceed in place because they don't write code.
 
-Otherwise STOP. Report exactly what you saw and the recovery path:
-
-- If `B` is for a different issue: tell the user to `/submit` the in-flight work first, then `git -C repo switch main` and re-run the command. Do NOT offer to commit or stash on their behalf.
-- If `B` is `main`/`master` but `T` is dirty: tell the user the uncommitted changes need to land somewhere (their own branch + `/submit`, or explicit discard) before starting new work.
-
-Do NOT proceed with a "warning." Do NOT scaffold, investigate, or implement on a stale or wrong branch. Branching mistakes compound silently and the cost of recovery scales with how many commands later they are caught.
+Branching mistakes compound silently and the cost of recovery scales with how many commands later they are caught — but the answer is the agent doing the safe transition autonomously, not screaming the sky is falling at the user every time the workflow requires a routine `git switch`.
 
 ## Track progress
 

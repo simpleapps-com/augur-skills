@@ -11,17 +11,24 @@ Execute an implementation plan. Work autonomously. Only stop for user input when
 
 **Scope: implementation means code changes only.** Write code, edit files, run build/test commands. Do NOT commit, create branches, or open PRs. Those are separate actions the user will request when ready. When done, report what changed and stop.
 
-## 0. Branch hygiene check
+## 0. Branch setup
 
-Apply the "Branch hygiene before starting work" rule from `simpleapps:work-habits`. This is a HARD STOP, not a warning.
+Branch management is the agent's job, not the user's. Do NOT stop and ask the user to run `git switch`.
 
 1. Resolve the issue number `N` from the WIP being implemented (filename like `wip/GH367-…md` → `N=367`)
 2. Run `git -C repo branch --show-current` → branch `B`
 3. Run `git -C repo status --porcelain` → tree state `T`
 
-Proceed ONLY if `B` contains `N` (you're on the issue's branch). If `B` is `main`/`master`, STOP and tell the user to create the issue's branch first: `git -C repo switch -c <type>/<N>-<slug>`. Implementing directly on `main` and sorting it out at `/submit` time is exactly the failure mode this rule prevents.
+Decision matrix:
 
-If `B` is for a different issue, STOP. Tell the user to `/submit` the in-flight work, then create a fresh branch for `N`.
+| `B` | `T` | Action |
+|-----|-----|--------|
+| Contains `N` (e.g., `feat/N-slug`) | any | Proceed — continuing in-flight work for this issue |
+| `main` / `master` | clean | Create the branch yourself: `git -C repo switch -c <type>/<N>-<slug>`, then proceed. Derive `<type>` from the issue title prefix (`feat:` → `feat`, `fix:` → `fix`, `chore:` → `chore`, `docs:` → `docs`, etc.). Derive `<slug>` from the issue title (lowercase, hyphenated, ≤40 chars). |
+| `main` / `master` | dirty | HARD STOP — uncommitted changes need to land somewhere first. Tell the user the exact files modified and let them decide (commit them on a branch, discard, or stash). Do NOT touch their changes. |
+| Belongs to a different issue (e.g., `feat/M-…` where `M ≠ N`) | any | HARD STOP — tell the user to `/submit` the in-flight work first, then re-run. Do NOT switch branches with their work uncommitted. |
+
+The HARD STOPs only fire when the user's working state would be lost or mixed by proceeding. Clean main + known issue is not a stop condition — just create the branch.
 
 ## 1. Determine the plan
 
