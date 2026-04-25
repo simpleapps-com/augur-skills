@@ -30,8 +30,10 @@ CLIENT_SECRET = "7e1e63759ec32a3f00813d32b93d339116d0ff62"
 mcp = FastMCP("basecamp")
 
 
-def _strip_html(text: str) -> str:
-    """Remove HTML tags and normalize line breaks."""
+def _strip_html(text: str | None) -> str:
+    """Remove HTML tags and normalize line breaks. Returns "" for None."""
+    if text is None:
+        return ""
     text = text.replace("<br>", "\n").replace("<br/>", "\n")
     return re.sub(r"<[^>]+>", "", text)
 
