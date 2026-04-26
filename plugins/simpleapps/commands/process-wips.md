@@ -1,7 +1,7 @@
 ---
 name: process-wips
 description: Daily WIP reconciliation. Walks wip/*.md, reconciles frontmatter vs ground truth, auto-deletes shipped WIPs older than 7 days, and confirms wiki promotions interactively.
-allowed-tools: Bash(gh issue:*), Bash(gh pr:*), Bash(git -C:*), Bash(rm:*), Skill(wip), Skill(wiki), Skill(github), Skill(bash-simplicity), Skill(work-habits), Read, Write, Glob, Edit
+allowed-tools: Bash(gh issue:*), Bash(gh pr:*), Bash(git -C:*), Bash(rm:*), Bash(ls:*), Skill(wip), Skill(wiki), Skill(github), Skill(bash-simplicity), Skill(work-habits), Read, Write, Edit
 ---
 
 First, use Skill("wip") to load the frontmatter schema and retention rules, then Skill("wiki") for the project wiki, then Skill("github") for gh CLI conventions, then Skill("bash-simplicity") for Bash conventions, then Skill("work-habits") for autonomous execution rules.
@@ -10,7 +10,7 @@ Reconcile and retire WIP files. Runs daily. Most of the work is silent; the only
 
 ## 1. Enumerate WIPs
 
-Use Glob to list `wip/*.md`. If `wip/` does not exist or is empty, report nothing to do and stop.
+List `wip/` with `ls wip/`. If `wip/` does not exist or contains no `*.md` files, report nothing to do and stop.
 
 ## 2. Parse each file
 

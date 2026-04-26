@@ -1,7 +1,7 @@
 ---
 name: curate-wiki
 description: Continuously improve the project wiki. Better content, context, organization, and usability within the wiki's active token budget (default 20K, overridable via HTML comment in wiki/Home.md).
-allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Skill(wiki), Skill(writing-style), Skill(work-habits), Skill(git-safety), Skill(bash-simplicity), Skill(context-efficiency), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Bash(ls:*), Bash(grep:*), Bash(find:*), Skill(wiki), Skill(writing-style), Skill(work-habits), Skill(git-safety), Skill(bash-simplicity), Skill(context-efficiency), Read, Write, Edit, Agent
 ---
 
 First, use Skill("wiki") to load wiki conventions, Skill("writing-style") for RFC 2119 directive language and token-efficient prose, Skill("work-habits") for RFC 2119 reading compliance, Skill("git-safety") to load git guardrails, Skill("bash-simplicity") for Bash conventions, and Skill("context-efficiency") for always-loaded content guidelines.
@@ -39,14 +39,14 @@ Compare usage against the active budget:
 
 ## 2. Load the wiki
 
-Use Glob to find all `wiki/*.md` files. Read every page using the Read tool. The full wiki MUST be in context.
+List `wiki/` with `ls wiki/` to enumerate all `*.md` files. Read every page using the Read tool. The full wiki MUST be in context.
 
 ## 3. Assess the wiki
 
 Evaluate each page against the wiki conventions (from the wiki skill) and the current codebase. Look for improvement opportunities in six areas:
 
 ### Content quality
-- Are statements accurate? Verify claims against the actual code using Grep, Glob, Read, or Agent with subagent_type=Explore.
+- Are statements accurate? Verify claims against the actual code using `grep`/`find` (Bash), Read, or Agent with subagent_type=Explore.
 - Is anything missing that the current session revealed?
 - Are explanations clear for all three audiences?
 - Does `Testing.md` exist? If not, suggest creating one. If it does, update it with any testing knowledge from this session: new edge cases, failure patterns, test data, or verification steps discovered during implementation or debugging.

@@ -1,7 +1,7 @@
 ---
 name: wiki-audit
 description: Check wiki health. Token budget, cross-links, llms.txt sync, and orphan pages.
-allowed-tools: Bash(wc:*), Glob, Grep, Read, Skill(wiki), Skill(bash-simplicity)
+allowed-tools: Bash(wc:*), Bash(ls:*), Bash(grep:*), Bash(find:*), Read, Skill(wiki), Skill(bash-simplicity)
 ---
 
 First, use Skill("wiki") to load wiki conventions.
@@ -14,13 +14,13 @@ Run each command as a separate, simple call. MUST NOT combine commands.
 
 ### 1. Token budget
 
-Grep `wiki/Home.md` for the HTML comment markers `<!-- wiki-token-budget: N -->` and `<!-- wiki-token-budget-reason: ... -->`. If present, use the number as the active budget; otherwise default 20000.
+Search `wiki/Home.md` for the HTML comment markers with `grep -E "wiki-token-budget" wiki/Home.md`. If present, use the number as the active budget; otherwise default 20000.
 
 Run `wc -w wiki/*.md` to get the word count. Multiply total by 1.3 for token estimate. Report current usage, active budget, percentage, and reason (if overridden).
 
 ### 2. Cross-link integrity
 
-Use Grep to find all `[[Page-Name]]` and `[[Page-Name#anchor]]` links across `wiki/*.md`. For each link:
+Find all `[[Page-Name]]` and `[[Page-Name#anchor]]` links with `grep -rEn "\[\[[^\]]+\]\]" wiki/`. For each link:
 - Verify the target page exists as a file in `wiki/`
 - If the link has an `#anchor`, Read the target page and verify the heading exists
 
@@ -28,7 +28,7 @@ Report any broken links.
 
 ### 3. llms.txt sync
 
-If `wiki/llms.txt` exists, Read it and compare against the actual `.md` files found by Glob. Report:
+If `wiki/llms.txt` exists, Read it and compare against the actual `.md` files (list with `ls wiki/*.md`). Report:
 - Files in `llms.txt` that don't exist on disk
 - Files on disk that aren't listed in `llms.txt`
 

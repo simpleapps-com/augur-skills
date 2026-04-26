@@ -188,12 +188,12 @@ Every wiki on the machine is a local knowledge base. When looking for how someth
 2. Pull the latest for all wikis before searching:
    - `git -C {projectRoot}/clients/*/wiki pull` (one call per wiki, not a glob)
    - `git -C {projectRoot}/simpleapps/*/wiki pull`
-3. Search across all wikis with Grep:
-   - `Grep(pattern: "...", path: "{projectRoot}/clients", glob: "*/wiki/*.md")`
-   - `Grep(pattern: "...", path: "{projectRoot}/simpleapps", glob: "*/wiki/*.md")`
+3. Search across all wikis with Bash `grep`:
+   - `grep -rn --include="*.md" "<pattern>" {projectRoot}/clients/*/wiki/`
+   - `grep -rn --include="*.md" "<pattern>" {projectRoot}/simpleapps/*/wiki/`
 4. Read the matching pages to get the full context
 
-Use Glob to discover which projects have wikis: `Glob(pattern: "{projectRoot}/clients/*/wiki")` and `Glob(pattern: "{projectRoot}/simpleapps/*/wiki")`.
+Discover which projects have wikis with Bash `ls`: `ls -d {projectRoot}/clients/*/wiki` and `ls -d {projectRoot}/simpleapps/*/wiki`.
 
 The wikis are kept fresh by `/curate-wiki` runs across projects. Searching locally is instant and requires no internet access; the knowledge is already on the machine.
 

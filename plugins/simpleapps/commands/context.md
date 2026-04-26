@@ -1,7 +1,7 @@
 ---
 name: context
 description: Report current context window usage. Rules, skills loaded, wiki pages, and working context.
-allowed-tools: Bash(wc:*), Bash(ls:*), Read, Glob, Grep
+allowed-tools: Bash(wc:*), Bash(ls:*), Bash(find:*), Bash(grep:*), Read
 ---
 
 Report what is currently consuming context window tokens.
@@ -18,13 +18,13 @@ Platform limit: CLAUDE.md MUST be under 200 lines.
 
 ### Rules
 
-Use Glob to find all `repo/.claude/rules/*.md`. Read each and count words. Rules without a `globs` frontmatter field load on every prompt. Rules with `globs` load only for matching files.
+List `repo/.claude/rules/` with `ls repo/.claude/rules/` to enumerate the `*.md` rule files. Read each and count words. Rules without a `globs` frontmatter field load on every prompt. Rules with `globs` load only for matching files.
 
 Estimate tokens: words * 1.3
 
 ### Skill descriptions
 
-Use Glob to find all `**/SKILL.md` files in the plugin. Count the total characters of all `description` fields in frontmatter. Platform budget: 2% of context window for ALL skill descriptions combined.
+Find all `SKILL.md` files in the plugin with `find repo/plugins -name SKILL.md`. Count the total characters of all `description` fields in frontmatter. Platform budget: 2% of context window for ALL skill descriptions combined.
 
 ## 2. On-demand content loaded this session
 

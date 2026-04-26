@@ -112,7 +112,7 @@ From the title:
 
 ## 6. Check for existing WIP
 
-Use Glob to check `wip/` for a file starting with the same prefix (`BC{#}` or `GH{#}`). If one exists, read it and go to step 7a (update). Otherwise, go to step 7b (create).
+List `wip/` with `ls wip/` and check for a file starting with the same prefix (`BC{#}` or `GH{#}`). If one exists, read it and go to step 7a (update). Otherwise, go to step 7b (create).
 
 ## 7a. Update existing WIP
 
@@ -198,7 +198,7 @@ Load the project wiki into context so the user can chat about the scaffolded WIP
 
 1. Read `wiki/Home.md` first to orient on the project
 2. Read `wiki/llms.txt` if it exists to get the wiki index
-3. Use Glob to find all `*.md` files in `wiki/`
+3. List `wiki/` with `ls wiki/` to enumerate all `*.md` files
 4. Read every `.md` file with the Read tool. Do NOT use a subagent; the content MUST be in your own context.
 5. If `wiki/` does not exist, skip this step and note it in the report
 

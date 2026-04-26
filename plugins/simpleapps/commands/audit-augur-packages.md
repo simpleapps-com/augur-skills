@@ -1,7 +1,7 @@
 ---
 name: audit-augur-packages
 description: Audit site for custom code that duplicates augur package functionality
-allowed-tools: Grep, Glob, Read, Bash(gh issue create:*), Bash(gh issue list:*), Skill(project-defaults), Skill(github), Skill(augur-packages), Skill(bash-simplicity)
+allowed-tools: Bash(grep:*), Bash(rg:*), Bash(find:*), Bash(ls:*), Bash(gh issue create:*), Bash(gh issue list:*), Read, Skill(project-defaults), Skill(github), Skill(augur-packages), Skill(bash-simplicity)
 ---
 
 First, use Skill("augur-packages") to load the package reference and anti-pattern catalog, then Skill("project-defaults") for the project layout.
@@ -12,18 +12,18 @@ Scan the current site repo for custom code that should be replaced with `@simple
 
 ## 1. Locate source
 
-Per project-defaults, the git repo is at `repo/`. Use Glob to detect:
+Per project-defaults, the git repo is at `repo/`. Use `ls` to detect:
 
-1. `repo/app/` → `SOURCE_ROOT = repo/`
-2. `repo/src/app/` → `SOURCE_ROOT = repo/src/`
+1. `ls repo/app` → if exists, `SOURCE_ROOT = repo/`
+2. `ls repo/src/app` → if exists, `SOURCE_ROOT = repo/src/`
 
 ## 2. Check installed packages
 
-Glob for `repo/node_modules/@simpleapps-com/augur-*/package.json`. Only scan anti-patterns for installed packages. Note missing packages separately.
+List installed augur packages: `ls repo/node_modules/@simpleapps-com/`. Only scan anti-patterns for installed packages. Note missing packages separately.
 
 ## 3. Scan
 
-Use Grep to search `SOURCE_ROOT` for each anti-pattern. MUST run each as a separate Grep call. Exclude `node_modules/`, `.next/`, test files (`__tests__/`, `*.test.*`, `*.spec.*`).
+Use `grep -rn` (Bash) to search `SOURCE_ROOT` for each anti-pattern. MUST run each pattern as a separate Bash call. Use `--exclude-dir={node_modules,.next}` and `--exclude={*.test.*,*.spec.*}` to skip noise.
 
 For each match, check whether the file also imports from `@simpleapps-com/augur-*`. If so, mark as "partial migration" instead of a finding.
 
@@ -53,7 +53,7 @@ For each match, check whether the file also imports from `@simpleapps-com/augur-
 
 **Icons/Tailwind:**
 - `from ["']lucide-react["']|from ["']@heroicons/react`: wrong icon library
-- Glob for `tailwind.config.ts` or `tailwind.config.js` in repo root: v3 config
+- Check for `repo/tailwind.config.ts` or `repo/tailwind.config.js` with `ls`: v3 config
 
 ## 4. Output
 

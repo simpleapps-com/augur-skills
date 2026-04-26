@@ -11,13 +11,14 @@ Do not add features, refactor surrounding code, or "improve" beyond the request.
 
 ## Use the right tool
 
-Prefer dedicated tools over Bash equivalents. They are faster, need no permissions, and produce cleaner output:
+Prefer dedicated tools over Bash equivalents when one exists. They are faster, need no permissions, and produce cleaner output:
 - Read not `cat`/`head`/`tail`
-- Grep not `grep`/`rg`
-- Glob not `find`/`ls`
 - Edit not `sed`/`awk`
+- Write not `echo >`/`cat <<EOF`
 
-Reserve Bash for commands that have no dedicated tool equivalent.
+Search is Bash-only — Claude Code 2.1.117 removed the dedicated Grep and Glob tools. Use `grep -rn`, `rg`, `find`, and `ls` directly via Bash, one command per call (no `-exec`, no piping to `head`).
+
+Reserve Bash for searches above and for commands that never had a dedicated tool.
 
 MUST NOT use `cd` in any Bash command, not even in compound commands like `cd /path && git log`. Use `git -C repo` for git, and path arguments for everything else. The `cd` deny rule does not suppress Claude Code's built-in security prompt for compound cd+git commands, so any `cd` usage will interrupt the user.
 

@@ -1,7 +1,7 @@
 ---
 name: guide
 description: Learn how we work. Workflow, available commands, skills, and conventions. Run this first if you're new to the project.
-allowed-tools: Skill(workflow), Skill(project-defaults), Skill(github), Skill(writing-style), Skill(work-habits), Skill(conventional-commits), Skill(bash-simplicity), Skill(context-efficiency), Read, Glob
+allowed-tools: Bash(ls:*), Bash(find:*), Skill(workflow), Skill(project-defaults), Skill(github), Skill(writing-style), Skill(work-habits), Skill(conventional-commits), Skill(bash-simplicity), Skill(context-efficiency), Read
 ---
 
 First, load these skills for context:
@@ -35,7 +35,7 @@ Explain the tool boundaries: Basecamp = client-facing, GitHub = developer-facing
 
 ## 3. Available commands
 
-Use Glob to find all `*.md` files in `repo/plugins/simpleapps/commands/`. For each file, Read with `limit: 12`. This captures the frontmatter (name, description, allowed-tools) without loading the full body, saving context. Present them in lifecycle order first, then supporting commands:
+List `repo/plugins/simpleapps/commands/` with `ls repo/plugins/simpleapps/commands/` to enumerate every `*.md` command file. For each file, Read with `limit: 12`. This captures the frontmatter (name, description, allowed-tools) without loading the full body, saving context. Present them in lifecycle order first, then supporting commands:
 
 **Lifecycle** (in pipeline order):
 `/triage` -> `/wip` -> `/investigate` -> `/discuss` -> `/implement` -> `/quality` -> `/sanity-check` -> `/verify` -> `/submit` -> `/deploy` -> `/publish`
@@ -63,7 +63,7 @@ Walk through a concrete example:
 
 Skills load reference material into context. They're loaded automatically by commands, but can also be loaded manually with `Skill("name")`.
 
-Use Glob to find all `SKILL.md` files under `repo/plugins/simpleapps/skills/`. For each file, Read with `limit: 12`. This captures the frontmatter without loading the full body. Present them in a table, sorted alphabetically by name.
+Find all `SKILL.md` files under `repo/plugins/simpleapps/skills/` with `find repo/plugins/simpleapps/skills/ -name SKILL.md`. For each file, Read with `limit: 12`. This captures the frontmatter without loading the full body. Present them in a table, sorted alphabetically by name.
 
 ### Naming convention: skill, command, and rule may share a name
 

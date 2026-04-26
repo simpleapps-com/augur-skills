@@ -1,7 +1,7 @@
 ---
 name: discuss
 description: Understand the current work better through conversational alignment, wiki context, and session awareness. Use instead of plan mode.
-allowed-tools: Bash(git -C:*), Skill(wiki), Read, Glob, Grep, Agent
+allowed-tools: Bash(git -C:*), Bash(ls:*), Bash(grep:*), Bash(find:*), Skill(wiki), Read, Agent
 ---
 
 First, use Skill("wiki") to load wiki conventions.
@@ -12,7 +12,7 @@ Understand the current work better through conversation. This replaces plan mode
 
 Check what context is available:
 
-1. Use Glob to check `wip/*.md` for any WIP files
+1. List `wip/` with `ls wip/` for any WIP files
 2. If WIP files exist, read the most recently modified one
 3. Review the current session: what has been discussed, changed, or learned so far
 
@@ -20,7 +20,7 @@ If there's a WIP, use it as the starting point. If there's nothing, ask the user
 
 ## 2. Load the wiki
 
-Use Glob to find all `wiki/*.md` files. Read every page using the Read tool. The wiki MUST be in context before asking the user any questions. It may already document a solution, pattern, or convention that addresses the problem. MUST NOT ask the user something the wiki already answers.
+List `wiki/` with `ls wiki/` to enumerate all `*.md` files. Read every page using the Read tool. The wiki MUST be in context before asking the user any questions. It may already document a solution, pattern, or convention that addresses the problem. MUST NOT ask the user something the wiki already answers.
 
 ## 3. Discuss
 
@@ -38,7 +38,7 @@ This is a conversation, not a checklist. The goal is to deeply understand:
 - Listen to the answers and build on them
 - Summarize your understanding back to the user so they can correct you
 - Check the wiki and codebase before asking; don't ask what you can look up
-- Use Grep, Glob, Read, or Agent with subagent_type=Explore to verify assumptions against the actual code
+- Use `grep`/`find` (Bash), Read, or Agent with subagent_type=Explore to verify assumptions against the actual code
 - If the wiki already covers the topic, say so and ask if the user wants to extend or change the existing approach
 
 ### What NOT to do

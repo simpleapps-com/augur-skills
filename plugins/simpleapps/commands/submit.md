@@ -1,7 +1,7 @@
 ---
 name: submit
 description: Submit work for review. Commit and create a PR as defined in the project wiki Deployment page.
-allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Bash(date:*), Skill(deployment), Skill(git-safety), Skill(conventional-commits), Skill(github), Skill(bash-simplicity), Skill(wip), Skill(work-habits), Read, Write, Glob, Grep, Edit
+allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Bash(date:*), Bash(ls:*), Skill(deployment), Skill(git-safety), Skill(conventional-commits), Skill(github), Skill(bash-simplicity), Skill(wip), Skill(work-habits), Read, Write, Edit
 ---
 
 First, load these skills:
@@ -64,7 +64,7 @@ If the commit message includes `Closes #N` or `Fixes #N`, the issue will auto-cl
 After the push succeeds and CI is green (or the PR is open if the project uses PRs), find the WIP for this work and mark it shipped per `simpleapps:wip`:
 
 1. Derive the issue number from the branch name (e.g., `fix/42-description` → `N=42`) or from `Closes #N`/`Fixes #N` in the commit message.
-2. Use Glob to find `wip/GH{N}-*.md` or `wip/BC{N}-*.md`. If no match, skip this step — the work was not tracked through the WIP flow.
+2. List `wip/` with `ls wip/` and look for a file named `GH{N}-*.md` or `BC{N}-*.md`. If no match, skip this step — the work was not tracked through the WIP flow.
 3. Edit the frontmatter: set `status: shipped`, `shipped_at: <today>` (`date +%Y-%m-%d`), and `pr` to the PR URL if one exists, otherwise the commit SHA. Bump `last_reviewed` to today.
 4. Leave `disposition` empty. The user or `/process-wips` decides later whether to promote or delete.
 

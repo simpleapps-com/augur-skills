@@ -18,8 +18,8 @@ The entire plugin system exists to remove the user as the bottleneck. Every perm
 
 | Tier | Method | Speed | Example |
 |------|--------|-------|---------|
-| 1 | Dedicated tools (Read, Grep, Glob, Edit) | **WILL** run immediately, zero permission chance | `Grep(pattern: "...", path: "repo")` |
-| 2 | Simple Bash (one command, no operators) | **MAY** run immediately if pre-approved | `pnpm typecheck` |
+| 1 | Dedicated tools (Read, Edit, Write) | **WILL** run immediately, zero permission chance | `Read(file_path: "repo/src/foo.ts")` |
+| 2 | Simple Bash (one command, no operators) | **MAY** run immediately if pre-approved | `pnpm typecheck`, `grep -rn pattern repo` |
 | 3 | Complex Bash (operators, plumbing) | **WILL** trigger a permission prompt | `pnpm typecheck 2>&1; echo $?` |
 
 Prefer tier 1 over tier 2. Use tier 2 only when no dedicated tool exists. NEVER use tier 3.
@@ -37,26 +37,32 @@ The Bash tool is a managed environment, not a raw shell. It already captures std
 | Limit output | Returned in full | `\| head`, `\| tail`, `\| grep` |
 | Run the next step | Make a separate tool call | `&&`, `;`, `\|\|` |
 | Pass output to another command | Write to a tmp file | `$(...)`, backticks |
-| Run inline code | Use Read/Grep/Edit tools | `node -e`, `python -c` |
+| Run inline code | Use Read/Edit tools | `node -e`, `python -c` |
 
 **One command per Bash call. No operators. No plumbing. If the command has a `;`, `&&`, `|`, `$()`, `2>&1`, or `2>/dev/null` in it, it is wrong.**
 
 ## Use Dedicated Tools
 
-Dedicated tools are faster, require no permission, and produce better output. MUST use them instead of Bash equivalents:
+Dedicated tools are faster, require no permission, and produce better output. MUST use them instead of Bash equivalents when one exists:
 
 | Instead of | Use |
 |------------|-----|
-| `grep`, `rg` | Grep tool |
-| `find`, `ls` (for search) | Glob tool |
 | `cat`, `head`, `tail` | Read tool |
 | `sed`, `awk` | Edit tool |
 | `echo >`, `cat <<EOF` | Write tool |
 
-Reserve Bash for commands that have no dedicated tool equivalent: build tools, test runners, git, package managers, and system commands.
+**Search is now Bash-only.** Claude Code 2.1.117 removed the dedicated Grep and Glob tools. Search files with one of:
+
+| Use case | Bash command |
+|----------|--------------|
+| Search file contents | `grep -rn <pattern> <path>` or `rg <pattern> <path>` |
+| Find files by name | `find <path> -name <pattern>` |
+| List directory entries | `ls <path>` |
+
+Reserve Bash for these and for commands that never had a dedicated tool: build tools, test runners, git, package managers, system commands.
 
 These commands are **denied** in project settings and will always be rejected. Do not attempt them:
-`cd`, `cat`, `grep`, `rg`, `find`, `sed`, `awk`, `head`, `tail`, `sleep`, `kill`, `pkill`
+`cd`, `cat`, `sed`, `awk`, `head`, `tail`, `sleep`, `kill`, `pkill`
 
 MUST NOT use `node -e` or `python -c` to run inline scripts. These trigger permission prompts. If you need to read a file, use the Read tool. If you need to process data, do it in your response, not in a shell script.
 
@@ -64,13 +70,11 @@ MUST NOT use `node -e` or `python -c` to run inline scripts. These trigger permi
 
 If a Bash call is denied, do NOT retry the same command and do NOT ask the user to approve it. Before anything else, check for a tool equivalent or shell plumbing that can be decomposed:
 
-- `grep`/`rg` → Grep tool (for files on disk); for command output, the Bash tool already returned it — read what you have
-- `find`/`ls` → Glob tool
 - `cat`/`head`/`tail` → Read tool
 - `sed`/`awk` → Edit tool
 - `|`, `2>&1`, `&&`, `;`, `$()` → split into separate calls; the Bash tool already captures stdout, stderr, and exit code
 
-Worked example: `pnpm --filter <package> typecheck 2>&1 | grep -c "error TS"` is denied because of the pipe to `grep`. The fix is to run `pnpm --filter <package> typecheck` alone — the Bash tool returns the full output and exit code — then count "error TS" occurrences in the returned output yourself. No grep, no redirection, no retry.
+Worked example: `pnpm --filter <package> typecheck 2>&1 | grep -c "error TS"` is denied because of the pipe and redirection. The fix is to run `pnpm --filter <package> typecheck` alone — the Bash tool returns the full output and exit code — then count "error TS" occurrences in the returned output yourself. No pipe, no redirection, no retry. (`grep` itself is allowed; the deny is on the shell plumbing around it.)
 
 ## Background Tasks
 
@@ -96,21 +100,21 @@ Do not retry the server start until the user confirms the port is free.
 
 ## Cross-Project Searching
 
-When looking at another project's code, use dedicated tools with the project path. MUST NOT use shell commands.
+When looking at another project's code, search with Bash directly using the project path. MUST keep it to one simple command per call — no pipes, no `-exec`, no `2>&1 | head`.
 
 Wrong: `find {path}/repo -name "*.ts" -exec grep -l "pattern" {} \; 2>/dev/null | head -10`
-Right: `Grep(pattern: "pattern", path: "{path}/repo", glob: "*.ts")`
+Right: `grep -rln --include="*.ts" "pattern" {path}/repo`
 
-Wrong: `ls {path}/repo/src/components/`
-Right: `Glob(pattern: "{path}/repo/src/components/**/*")`
+Wrong: `ls {path}/repo/src/components/ | head`
+Right: `ls {path}/repo/src/components/`
 
-All project paths are known and predictable (see `simpleapps:wiki` Cross-Project Wiki Access). MUST NOT search the filesystem with `find` or download from the internet. Just use the dedicated tool with the known path.
+All project paths are known and predictable (see `simpleapps:wiki` Cross-Project Wiki Access). Use the known path; do not search the entire filesystem.
 
 ## Subagent Responsibility
 
 Subagents do NOT inherit this skill. They see only the prompt you give them. The primary agent MUST brief every subagent on bash-simplicity before delegating shell work, and owns the output that comes back.
 
-Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Use dedicated tools (Read, Grep, Glob, Edit, Write) over shell equivalents."
+Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Use dedicated tools (Read, Edit, Write) over their shell equivalents (`cat`, `sed`, `awk`, `echo >`). Search with Bash directly: `grep -rn`, `find`, `ls` — Claude Code 2.1.117 removed the Grep/Glob tools."
 
 If a subagent returns a command containing any forbidden operator (see the table above), that is the primary agent's failure. Reject and ask for a re-plan, or translate into separate simple calls. Do not execute it. A subagent violating this is running on a stale prompt; fix the prompt.
 

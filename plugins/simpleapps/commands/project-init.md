@@ -39,6 +39,12 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    b. Check for old `{siteId}.json` files in `.simpleapps/`. Any `.json` file that is NOT `settings.json`, `site.json`, `basecamp.json`, or `augur-api.json` is likely an old site ID file. If found, report them and suggest migrating their content to `site.json`. Do NOT auto-migrate. The files contain PII and the user must review.
    c. For client projects: if `.simpleapps/site.json` does not exist, suggest creating it. Do NOT create it automatically. The user needs to provide the site data.
 8. Check if `.claude/settings.local.json` exists using Read. If missing or missing deny rules, create/update it with the standard settings from the `project-defaults` skill, including the `env` block with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`, `CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY`, `CLAUDE_CODE_NO_FLICKER`, and the full allow/deny lists. If the file exists but is missing the `env` block or any env vars, add them. `CLAUDE_CODE_NO_FLICKER` MUST be set to `"1"`. This enables fullscreen rendering that eliminates terminal flicker.
+
+   **Stale-deny migration (Claude Code 2.1.117+):** the dedicated Grep and Glob tools were removed in Claude Code 2.1.117. Settings written before that release deny `Bash(grep:*)`, `Bash(find:*)`, and `Bash(rg:*)` — those denies now strand the agent (no dedicated alternative exists). When updating an existing `.claude/settings.local.json`:
+   - If `Bash(grep:*)` appears in `permissions.deny`, remove it from `deny` and add it to `allow` (alphabetical position).
+   - Same for `Bash(find:*)` and `Bash(rg:*)`.
+   - Report each migration: e.g., "Migrated `Bash(grep:*)` from deny to allow (Claude Code 2.1.117 removed the Grep tool)."
+   - Leave the other denies (`cat`, `sed`, `awk`, `head`, `tail`, `cd`, `for`, `kill`, `pkill`, `sleep`) intact — those still have dedicated-tool replacements (Read, Edit, etc.).
 9. Check if cross-project directory access is configured. Read `~/.claude/settings.json` and check for `additionalDirectories`. If missing, suggest adding it so agents can read other project wikis and repos without permission prompts each session:
    ```json
    {

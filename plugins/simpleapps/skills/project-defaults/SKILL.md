@@ -148,30 +148,30 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
   },
   "permissions": {
     "allow": [
-      "Bash(pnpm:*)",
-      "Bash(ls:*)",
-      "Bash(wc:*)",
-      "Bash(md5:*)",
-      "Bash(md5sum:*)",
-      "Bash(readlink:*)",
-      "Bash(which:*)",
       "Bash(basename:*)",
       "Bash(dirname:*)",
-      "Bash(pwd:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
       "Bash(lsof:*)",
+      "Bash(md5:*)",
+      "Bash(md5sum:*)",
+      "Bash(pnpm:*)",
+      "Bash(pwd:*)",
+      "Bash(readlink:*)",
+      "Bash(rg:*)",
+      "Bash(wc:*)",
+      "Bash(which:*)",
       "mcp__plugin_simpleapps_augur-api__*"
     ],
     "deny": [
       "Bash(awk:*)",
       "Bash(cat:*)",
       "Bash(cd:*)",
-      "Bash(find:*)",
       "Bash(for:*)",
-      "Bash(grep:*)",
       "Bash(head:*)",
       "Bash(kill:*)",
       "Bash(pkill:*)",
-      "Bash(rg:*)",
       "Bash(sed:*)",
       "Bash(sleep:*)",
       "Bash(tail:*)",
@@ -187,15 +187,16 @@ Why each is denied:
 - **`awk`**: Use the Edit tool instead.
 - **`cat`**: Use the Read tool instead.
 - **`cd`**: MUST NOT use in any Bash command, including compound commands (`cd /path && git`). Use `git -C repo` for git, path arguments for everything else. Compound cd+git commands trigger an unblockable Claude Code security prompt that interrupts the user even when `cd` is denied.
-- **`find`**: Use the Glob tool instead.
-- **`for`**: Shell loops are unnecessary; use dedicated tools or make multiple tool calls instead.
-- **`grep`**: Use the Grep tool instead.
+- **`for`**: Shell loops are unnecessary; make multiple tool calls instead.
 - **`head`/`tail`**: Use the Read tool with `offset` and `limit` parameters instead.
 - **`kill`/`pkill`**: Use `TaskStop` to manage background processes. `TaskStop` cleanly shuts down the task and updates Claude Code's internal tracking.
-- **`rg`**: Use the Grep tool instead (it uses ripgrep internally).
 - **`sed`**: Use the Edit tool instead.
 - **`sleep`**: Unnecessary; use proper sequencing or background tasks.
 - **`Edit(~/.claude/plugins/**)` / `Write(~/.claude/plugins/**)`**: The installed plugin tree is a cache. Marketplace updates clobber it. To change plugin behavior, edit the plugin's source repo (e.g., `~/projects/simpleapps/augur-skills/`) instead.
+
+Why `find`, `grep`, and `rg` are now ALLOWED (previously denied):
+
+Claude Code 2.1.117 removed the dedicated Grep and Glob tools. Search is now done via Bash. Denying `grep`/`find`/`rg` while no dedicated alternative exists makes the agent unable to search anything. These commands are allowed by default; the bash-simplicity skill still applies (one command per call, no shell plumbing).
 
 ## Bin Scripts (PATH)
 
