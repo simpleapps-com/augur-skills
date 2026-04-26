@@ -1,10 +1,10 @@
 ---
 name: quality
 description: Discover and run all code quality checks, fix every issue, and flag missing quality tooling. No pre-existing excuses.
-allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Skill(quality), Skill(work-habits), Skill(wiki), Skill(project-defaults), Skill(git-safety), Skill(bash-simplicity), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Skill(quality), Skill(work-habits), Skill(wiki), Skill(project-defaults), Skill(git-safety), Skill(bash-simplicity), Skill(code-contracts), Read, Write, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("quality") to load quality tooling awareness, then Skill("work-habits") for "leave it better" and "resolve, never hide" principles, then Skill("wiki") to check for project-specific conventions, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions.
+First, use Skill("quality") to load quality tooling awareness, then Skill("work-habits") for "leave it better" and "resolve, never hide" principles, then Skill("wiki") to check for project-specific conventions, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions, then Skill("code-contracts") to detect contract drift on load-bearing code while quality checks read source files (the skill primes the agent to spot drift between contracts and implementation as a quality issue).
 
 Run all code quality checks on the FULL codebase and fix issues found.
 

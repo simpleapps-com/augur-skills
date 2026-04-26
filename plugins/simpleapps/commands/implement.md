@@ -2,10 +2,10 @@
 name: implement
 description: Execute an implementation plan from a WIP file or session context. Work autonomously, document what was done.
 argument-hint: "[wip/GH30-slug.md]"
-allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Bash(date:*), Skill(wiki), Skill(project-defaults), Skill(github), Skill(git-safety), Skill(bash-simplicity), Skill(writing-style), Skill(wip), Skill(work-habits), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Bash(date:*), Skill(wiki), Skill(project-defaults), Skill(github), Skill(git-safety), Skill(bash-simplicity), Skill(writing-style), Skill(wip), Skill(work-habits), Skill(code-contracts), Read, Write, Glob, Grep, Edit, Agent
 ---
 
-First, use Skill("wiki") to load project context, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions, then Skill("writing-style") for variable naming and code style standards, then Skill("wip") for the WIP frontmatter schema, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
+First, use Skill("wiki") to load project context, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions, then Skill("writing-style") for variable naming and code style standards, then Skill("wip") for the WIP frontmatter schema, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance, then Skill("code-contracts") for the formal-contract discipline on load-bearing code (apply only when scope is load-bearing per the skill's "When to use it" section — money math, auth, concurrency, state machines, security boundaries, non-trivial algorithms).
 
 Execute an implementation plan. Work autonomously. Only stop for user input when stuck or when a decision has no clear answer.
 
