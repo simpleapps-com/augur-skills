@@ -25,7 +25,7 @@ Always-loaded content (CLAUDE.md, rules without `paths`) is paid on every prompt
 - **Skill descriptions**: 2% of context window for all skills combined (16K char fallback). Override with `SLASH_COMMAND_TOOL_CHAR_BUDGET`.
 - **SKILL.md**: under 500 lines. Move detail to supporting files.
 - **Auto memory**: first 200 lines of MEMORY.md loaded. Topic files on demand.
-- **Overhead**: a meaningful share of the context window is consumed by system prompt, tool definitions, and autocompact buffer before you type anything. The exact percentage depends on which MCP servers and tools are loaded. Run `/context` to see the current breakdown.
+- **Overhead**: a meaningful share of the context window is consumed by system prompt, tool definitions, and autocompact buffer before you type anything. The exact percentage depends on which MCP servers and tools are loaded. Run `/context-audit` to see the current breakdown.
 
 ## Evergreen Content
 
@@ -68,7 +68,7 @@ The cheapest pointer with the biggest payoff is a **wiki link in CLAUDE.md**. A 
 
 ## Checking Your Budget
 
-Run `/context` to see current token usage by category. Watch for:
+Run `/context-audit` to see current token usage by category. Watch for:
 - Skills being excluded (descriptions exceeded 2% budget)
 - CLAUDE.md consuming more than ~5% of context
 - Many MCP servers inflating tool definitions

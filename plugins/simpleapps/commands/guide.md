@@ -41,7 +41,7 @@ List `repo/plugins/simpleapps/commands/` with `ls repo/plugins/simpleapps/comman
 `/triage` -> `/wip` -> `/investigate` -> `/discuss` -> `/implement` -> `/quality` -> `/sanity-check` -> `/verify` -> `/submit` -> `/deploy` -> `/publish`
 
 **Supporting** (alphabetical):
-`/audit-augur-packages`, `/commit-message`, `/context`, `/curate-wiki`, `/file-issue`, `/fyxer`, `/guide`, `/project-init`, `/research`, `/wiki`, `/wiki-audit`
+`/audit-augur-packages`, `/commit-message`, `/context-audit`, `/curate-wiki`, `/file-issue`, `/fyxer`, `/guide`, `/project-init`, `/research`, `/wiki`, `/wiki-audit`
 
 For each command, show the name and its frontmatter description in a table.
 

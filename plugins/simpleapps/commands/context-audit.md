@@ -1,6 +1,6 @@
 ---
-name: context
-description: Report current context window usage. Rules, skills loaded, wiki pages, and working context.
+name: context-audit
+description: Detailed breakdown of what is consuming the context window — CLAUDE.md, rules, skills, wiki, and budgets. Use when the built-in /context overview isn't enough.
 allowed-tools: Bash(wc:*), Bash(ls:*), Bash(find:*), Bash(grep:*), Read
 ---
 
