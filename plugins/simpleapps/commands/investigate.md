@@ -11,15 +11,16 @@ Investigate a WIP file. Explore the codebase, analyze the problem, and update th
 
 ## 0. Branch hygiene check
 
-Apply the "Branch hygiene before starting work" rule from `simpleapps:work-habits`. This is a HARD STOP, not a warning.
+Apply the "Branch hygiene before starting work" rule from `simpleapps:work-habits`. `/investigate` is research only — it does not write code, so the bar is low: nudge the user about the branch state, do the safe transition if needed, and proceed. The only pause condition is a dirty tree on a branch unrelated to this issue.
 
 1. Resolve the issue number `N` from `$ARGUMENTS` if provided, or from the WIP filename (e.g., `wip/GH367-…md` → `N=367`)
 2. Run `git -C repo branch --show-current` → branch `B`
 3. Run `git -C repo status --porcelain` → tree state `T`
 
-Proceed ONLY if `B` is `main`/`master` with `T` clean, OR `B` contains `N`.
-
-Otherwise STOP. Investigating on a branch that belongs to a different issue means the user is about to start a second line of work on top of an unfinished first one. Tell the user to `/submit` the in-flight work first, then `git -C repo switch main` and re-run.
+- If `B` contains `N`: proceed (continuing investigation for this issue).
+- If `B` is `main`/`master` with `T` clean: proceed in place.
+- If `B` is a different issue branch (`feat/M-…`, `M ≠ N`) with `T` clean: nudge the user that you're switching off `<branch>` to main, switch, and proceed.
+- If `T` is dirty AND `B` does not contain `N`: pause and ask once. Surface the modified files, propose a path (commit on a branch, stash, discard), and proceed on the user's answer.
 
 ## 1. Find the WIP file
 

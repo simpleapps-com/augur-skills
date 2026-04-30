@@ -13,7 +13,7 @@ Execute an implementation plan. Work autonomously. Only stop for user input when
 
 ## 0. Branch setup
 
-Branch management is the agent's job, not the user's. Do NOT stop and ask the user to run `git switch`.
+Branch management is the agent's job, not the user's. **Encourage** clean main, do not force it. Nudge the user, do the safe transition yourself, and keep moving. The only pause condition is a dirty tree.
 
 1. Resolve the issue number `N` from the WIP being implemented (filename like `wip/GH367-…md` → `N=367`)
 2. Run `git -C repo branch --show-current` → branch `B`
@@ -25,10 +25,10 @@ Decision matrix:
 |-----|-----|--------|
 | Contains `N` (e.g., `feat/N-slug`) | any | Proceed — continuing in-flight work for this issue |
 | `main` / `master` | clean | Create the branch yourself: `git -C repo switch -c <type>/<N>-<slug>`, then proceed. Derive `<type>` from the issue title prefix (`feat:` → `feat`, `fix:` → `fix`, `chore:` → `chore`, `docs:` → `docs`, etc.). Derive `<slug>` from the issue title (lowercase, hyphenated, ≤40 chars). |
-| `main` / `master` | dirty | HARD STOP — uncommitted changes need to land somewhere first. Tell the user the exact files modified and let them decide (commit them on a branch, discard, or stash). Do NOT touch their changes. |
-| Belongs to a different issue (e.g., `feat/M-…` where `M ≠ N`) | any | HARD STOP — tell the user to `/submit` the in-flight work first, then re-run. Do NOT switch branches with their work uncommitted. |
+| Different issue branch (`feat/M-…` where `M ≠ N`) | clean | Nudge: tell the user you're switching off `<branch>` to main. Run `git -C repo switch main`, create the new branch, and proceed. The user's prior work is already committed on `M`'s branch and can be resumed later. |
+| any | dirty | **Pause and ask once.** Uncommitted work would be mixed or lost. Surface the modified files, propose one path (commit on a branch, stash, discard), and let the user choose. Proceed on their answer. Do NOT touch their changes without instruction. |
 
-The HARD STOPs only fire when the user's working state would be lost or mixed by proceeding. Clean main + known issue is not a stop condition — just create the branch.
+The only pause condition is a dirty tree, because proceeding could destroy work the agent didn't make. Clean state — even on someone else's feature branch — is never a stop; transition and continue.
 
 ## 1. Determine the plan
 

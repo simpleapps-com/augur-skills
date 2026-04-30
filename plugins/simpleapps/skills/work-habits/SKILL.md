@@ -104,7 +104,7 @@ These actions hide problems; they do not fix them. If a rule or test seems wrong
 
 ## Branch hygiene before starting work
 
-Branch management is the agent's job, not the user's. The lifecycle commands `/wip`, `/investigate`, and `/implement` MUST verify branch state before starting, but the agent SHOULD handle the safe transitions itself rather than blocking the user with "go run `git switch` first."
+Branch management is the agent's job, not the user's. **Encourage** clean main; do **not** force it. Nudge the user when the branch state is unexpected, do the safe transition autonomously, and keep moving. The point of this rule is to reduce friction, not to add a gate.
 
 When invoked for issue `#N`:
 
@@ -115,10 +115,10 @@ When invoked for issue `#N`:
 |-----|-----|--------|
 | Contains `N` | any | Proceed — continuing in-flight work for this issue |
 | `main` / `master` | clean | For `/wip` and `/investigate` (read/scaffold only): proceed on `main`. For `/implement` (code changes): create the branch yourself with `git -C repo switch -c <type>/<N>-<slug>`, then proceed. Derive `<type>` from the issue title prefix (`feat:`, `fix:`, `chore:`, `docs:`). Derive `<slug>` from the issue title (lowercase-hyphenated, ≤40 chars). |
-| `main` / `master` | dirty | HARD STOP — uncommitted changes need to land somewhere first. Report exactly which files are modified. Let the user decide (commit on a branch, discard, stash). MUST NOT touch their changes. |
-| Belongs to a different issue (`feat/M-…`, `M ≠ N`) | any | HARD STOP — tell the user to `/submit` the in-flight work first, then re-run. MUST NOT switch branches with uncommitted work present. |
+| Different issue branch (`feat/M-…`, `M ≠ N`) | clean | Nudge in your reply: "you're on `<branch>` for issue M; switching to main first." For `/wip`/`/investigate`: switch to main and proceed. For `/implement`: switch to main, create the new branch yourself, proceed. The user's work is already committed on `M`'s branch; they can return to it later. |
+| any | dirty | **Pause and ask once.** Uncommitted work could be mixed or lost by proceeding. Surface the modified files, propose one path (commit on a branch, stash, discard), and let the user choose. Proceed on their answer — do not refuse further engagement. MUST NOT touch their changes without instruction. |
 
-The HARD STOPs only fire when the user's working state would be lost or mixed by proceeding. Clean main + known issue is not a stop condition — `/implement` creates the branch itself; `/wip` and `/investigate` proceed in place because they don't write code.
+The only pause condition is a dirty tree, because proceeding could destroy work the agent didn't make. Clean main + known issue is not a stop condition; neither is being on someone else's clean feature branch — the agent switches and proceeds.
 
 Branching mistakes compound silently and the cost of recovery scales with how many commands later they are caught — but the answer is the agent doing the safe transition autonomously, not screaming the sky is falling at the user every time the workflow requires a routine `git switch`.
 
