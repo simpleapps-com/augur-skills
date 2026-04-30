@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SimpleApps status line (full): user:repo (branch) | version | model | context %
+# SimpleApps status line (full): user:repo (branch) | version | model | context k/k (%)
 # Usage: set in ~/.claude/settings.json:
 #   "statusLine": { "type": "command", "command": "statusline-full" }
 input=$(cat)
@@ -16,6 +16,14 @@ model=$(echo "$input" | jq -r '.model.display_name // empty')
 project_dir=$(echo "$input" | jq -r '.workspace.project_dir // empty')
 version=$(echo "$input" | jq -r '.version // empty')
 context_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+context_size=$(echo "$input" | jq -r '.context_window.context_window_size // empty')
+
+context_used_k=""
+context_total_k=""
+if [ -n "$context_pct" ] && [ -n "$context_size" ]; then
+  context_used_k=$(awk -v p="$context_pct" -v s="$context_size" 'BEGIN { printf "%.0f", (p * s / 100) / 1000 }')
+  context_total_k=$(awk -v s="$context_size" 'BEGIN { printf "%.0f", s / 1000 }')
+fi
 
 project_name="unknown"
 [ -n "$project_dir" ] && project_name=$(basename "$project_dir")
@@ -40,5 +48,11 @@ printf "${green}%s${dim}:${blue}%s${reset}" "$user" "$project_name"
 [ -n "$branch" ] && printf " ${dim}(%s)${reset}" "$branch"
 [ -n "$version" ] && printf " ${dim}|${reset} ${cyan}v%s${reset}" "$version"
 [ -n "$model" ] && printf " ${dim}|${reset} ${yellow}%s${reset}" "$model"
-[ -n "$context_pct" ] && printf " ${dim}|${reset} ${magenta}ctx:%s%%${reset}" "$context_pct"
+if [ -n "$context_pct" ]; then
+  if [ -n "$context_used_k" ] && [ -n "$context_total_k" ]; then
+    printf " ${dim}|${reset} ${magenta}ctx:%sK/%sK (%s%%)${reset}" "$context_used_k" "$context_total_k" "$context_pct"
+  else
+    printf " ${dim}|${reset} ${magenta}ctx:%s%%${reset}" "$context_pct"
+  fi
+fi
 printf '\n'
