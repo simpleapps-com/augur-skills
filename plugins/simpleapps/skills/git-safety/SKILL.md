@@ -1,6 +1,6 @@
 ---
 name: git-safety
-description: This skill should be used when the user asks to "commit", "push", "tag", "merge", "rebase", "branch -D", "stash", or invokes /submit, /deploy, /publish. Also load when editing git safety rules or reviewing git workflow. Provides comprehensive guardrails for safe git operations.
+description: This skill should be used when the user asks to "commit", "push", "tag", "merge", "rebase", "branch -D", "stash", or invokes /submit, /stage, /publish. Also load when editing git safety rules or reviewing git workflow. Provides comprehensive guardrails for safe git operations.
 user-invocable: false
 ---
 
@@ -23,7 +23,7 @@ Every git push, every PR, every wiki edit that hits GitHub is done under the use
 The user gives approval in one of two ways:
 
 1. **Direct instruction**: the user says "commit", "push", "tag", or equivalent
-2. **Shipping commands**: the user invokes `/submit`, `/deploy`, or `/publish`. Invoking the command IS the approval for the git operations defined in that command's workflow.
+2. **Shipping commands**: the user invokes `/submit`, `/stage`, or `/publish`. Invoking the command IS the approval for the git operations defined in that command's workflow.
 
 ### Approval is scoped, not blanket
 

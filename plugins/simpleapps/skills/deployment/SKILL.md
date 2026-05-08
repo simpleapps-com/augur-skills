@@ -10,7 +10,7 @@ allowed-tools:
   - Skill(git-safety)
 ---
 
-First, use Skill("git-safety") to load git guardrails. The shipping commands (`/submit`, `/deploy`, `/publish`) load `conventional-commits` and `github` directly when they need them. This skill does not pre-load them.
+First, use Skill("git-safety") to load git guardrails. The shipping commands (`/submit`, `/stage`, `/publish`) load `conventional-commits` and `github` directly when they need them. This skill does not pre-load them.
 
 # Deployment
 
@@ -45,7 +45,7 @@ Not all projects need all three. Client sites may only have Submit and Deploy. P
 The user invoking a command IS the approval to execute all its steps, including git writes. Do not stop to ask for confirmation mid-execution.
 
 - `/submit`: execute all steps (commit, push, PR). Report at the end.
-- `/deploy`: execute all steps. Report at the end.
+- `/stage`: execute all steps. Report at the end.
 - `/publish`: **EXCEPTION**. Must complete the verification gate below and get secondary confirmation BEFORE executing any publish steps. This is the only command that pauses for approval.
 
 ## Guard Rails

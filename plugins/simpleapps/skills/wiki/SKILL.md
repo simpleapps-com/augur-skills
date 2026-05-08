@@ -201,7 +201,7 @@ The wikis are kept fresh by `/curate-wiki` runs across projects. Searching local
 
 ## Deployment Page
 
-Every project wiki MUST have a `Deployment.md` page with up to three sections: Submit, Deploy, and Publish. This page defines the project-specific steps that `/submit`, `/deploy`, and `/publish` commands execute. Run `/curate-wiki` to generate it from the codebase. The command scans CI workflows, package.json, deploy scripts, and asks the user about anything it cannot determine. See the `deployment` skill for the expected format.
+Every project wiki MUST have a `Deployment.md` page with up to three sections: Submit, Deploy, and Publish. This page defines the project-specific steps that `/submit`, `/stage`, and `/publish` commands execute. Run `/curate-wiki` to generate it from the codebase. The command scans CI workflows, package.json, deploy scripts, and asks the user about anything it cannot determine. See the `deployment` skill for the expected format.
 
 ## Testing Page
 
