@@ -102,7 +102,7 @@ If a stale colocated file already exists for the topic, follow the migration pro
 
 ## 3b. Generate Deployment page (if missing)
 
-**This step is MANDATORY if `wiki/Deployment.md` does not exist.** The `/submit`, `/deploy`, and `/publish` commands refuse to run without it. Generating this page is the highest-priority action in any curate-wiki run when it is missing.
+**This step is MANDATORY if `wiki/Deployment.md` does not exist.** The `/submit`, `/stage`, and `/publish` commands refuse to run without it. Generating this page is the highest-priority action in any curate-wiki run when it is missing.
 
 1. **Scan** the codebase for deployment artifacts:
    - CI workflows (`.github/workflows/`, Jenkinsfile, etc.)
