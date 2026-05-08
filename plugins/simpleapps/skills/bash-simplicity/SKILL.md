@@ -48,10 +48,10 @@ Dedicated tools are faster, require no permission, and produce better output. MU
 | Instead of | Use |
 |------------|-----|
 | `cat`, `head`, `tail` | Read tool |
-| `sed`, `awk` | Edit tool |
+| `sed`, `awk` | Edit or Write tool |
 | `echo >`, `cat <<EOF` | Write tool |
 
-**MUST NOT use `sed` or `awk` for file edits** — use the Edit or Write tools instead. The dedicated tools are faster, require no permission, and produce cleaner output.
+**Prefer Edit/Write over `sed`/`awk`**: The dedicated tools run immediately without permission prompts and produce cleaner output. `sed`/`awk` bash commands are allowed but discouraged.
 
 **Search is now Bash-only.** Claude Code 2.1.117 removed the dedicated Grep and Glob tools. Search files with one of:
 
@@ -64,23 +64,17 @@ Dedicated tools are faster, require no permission, and produce better output. MU
 Reserve Bash for these and for commands that never had a dedicated tool: build tools, test runners, git, package managers, system commands.
 
 These commands are **denied** in project settings and will always be rejected. Do not attempt them:
-`cd`, `cat`, `sed`, `awk`, `head`, `tail`, `sleep`, `kill`, `pkill`
+`cd`, `cat`, `head`, `tail`, `sleep`, `kill`, `pkill`
 
-**Why deny `sed` and `awk`?** They trigger permission prompts and are slower than dedicated tools. Edit and Write tools run immediately with zero permission chance.
+`sed` and `awk` bash commands are **allowed but discouraged** - they require permission prompts and are slower than dedicated tools.
 
 MUST NOT use `node -e` or `python -c` to run inline scripts. These trigger permission prompts. If you need to read a file, use the Read tool. If you need to process data, do it in your response, not in a shell script.
-
-**`sed` and `awk` are denied commands** — they trigger permission prompts and have dedicated tool equivalents:
-- Use Edit tool for precise string replacements in files
-- Use Write tool for creating or overwriting entire files
-- These tools run immediately without permission prompts
 
 ## When a Bash Command Is Denied
 
 If a Bash call is denied, do NOT retry the same command and do NOT ask the user to approve it. Before anything else, check for a tool equivalent or shell plumbing that can be decomposed:
 
 - `cat`/`head`/`tail` → Read tool
-- `sed`/`awk` → Edit or Write tool (NOT sed/awk bash commands)
 - `|`, `2>&1`, `&&`, `;`, `$()` → split into separate calls; the Bash tool already captures stdout, stderr, and exit code
 
 Worked example: `pnpm --filter <package> typecheck 2>&1 | grep -c "error TS"` is denied because of the pipe and redirection. The fix is to run `pnpm --filter <package> typecheck` alone — the Bash tool returns the full output and exit code — then count "error TS" occurrences in the returned output yourself. No pipe, no redirection, no retry. (`grep` itself is allowed; the deny is on the shell plumbing around it.)
@@ -123,7 +117,7 @@ All project paths are known and predictable (see `simpleapps:wiki` Cross-Project
 
 Subagents do NOT inherit this skill. They see only the prompt you give them. The primary agent MUST brief every subagent on bash-simplicity before delegating shell work, and owns the output that comes back.
 
-Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Use dedicated tools (Read, Edit, Write) over their shell equivalents (`cat`, `echo >`). NEVER use `sed` or `awk` bash commands — they are denied and have dedicated tool equivalents (Edit and Write). Search with Bash directly: `grep -rn`, `find`, `ls` — Claude Code 2.1.117 removed the Grep/Glob tools."
+Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Prefer dedicated tools (Read, Edit, Write) over shell equivalents (`cat`, `echo >`, `sed`, `awk`) for faster execution and cleaner output. Search with Bash directly: `grep -rn`, `find`, `ls` — Claude Code 2.1.117 removed the Grep/Glob tools."
 
 If a subagent returns a command containing any forbidden operator (see the table above), that is the primary agent's failure. Reject and ask for a re-plan, or translate into separate simple calls. Do not execute it. A subagent violating this is running on a stale prompt; fix the prompt.
 
