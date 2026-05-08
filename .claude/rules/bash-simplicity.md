@@ -1,5 +1,7 @@
 # Bash Simplicity
 
+MUST read and understand Skill("bash-simplicity") before running every Bash command.
+
 The Bash tool already captures stdout, stderr, and exit codes. NEVER add shell plumbing — no `;`, `&&`, `|`, `$()`, `2>&1`, `echo $?`, `node -e`, or `python -c`. If the command contains any of these, it is wrong. One command per call.
 
 MUST use dedicated tools instead of shell commands — including when searching other projects:
@@ -9,5 +11,3 @@ MUST use dedicated tools instead of shell commands — including when searching 
 - Edit files → Edit tool (not `sed`, `awk`)
 
 MUST NOT use `kill`, `pkill`, or `lsof` to stop processes. Use TaskStop with the task ID instead. TaskStop cleanly shuts down background tasks (dev servers, watchers) and updates internal tracking. If the process was started outside your session, ask the user to stop it.
-
-Load Skill("bash-simplicity") for full conventions before running Bash commands.
