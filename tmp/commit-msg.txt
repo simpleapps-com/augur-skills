@@ -1,0 +1,8 @@
+chore: rename /deploy to /stage and fix context compaction issues
+
+- Renamed /deploy command to /stage for semantic clarity (staging not production)
+- Added context compaction fixes to submit, deploy, publish commands
+  - Check if wiki/Deployment.md is in context before operating
+  - Explicitly reload if dropped from memory
+- Added Tool Priority Order section to bash-simplicity skill
+- Updated all references from /deploy to /stage across commands, skills, rules, and wiki

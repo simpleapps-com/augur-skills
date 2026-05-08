@@ -6,6 +6,27 @@ user-invocable: false
 
 # Bash Simplicity
 
+## Tool Priority Order
+
+**Always use the highest-priority tool that can accomplish the task:**
+
+| Priority | Tool | When to use | Example |
+|----------|------|-------------|---------|
+| 1 | **Read** | Read file contents | `Read(file_path: "...")` |
+| 2 | **Edit** | Edit file contents | `Edit(file_path: "...", ...)` |
+| 3 | **Write** | Write/create files | `Write(file_path: "...", content: "...")` |
+| 4 | **Bash** | Search, build, test, git | `pnpm test`, `grep -rn` |
+
+**If a dedicated tool exists for your task, DO NOT use Bash.** The Read, Edit, and Write tools are:
+- Faster (no permission prompts)
+- Safer (no shell escaping issues)
+- Cleaner (better output formatting)
+
+Only use Bash when:
+- No dedicated tool exists (grep for search, find for file discovery, git for version control)
+- You need to run build tools, test runners, or package managers
+- You need system commands (e.g., `date`, `ls`)
+
 ## Why This Matters
 
 A complex command feels efficient: do more in one call. But the more complex the command, the higher the probability it triggers a permission prompt. A permission prompt blocks the agent until the user responds. If the user doesn't see it for an hour, that hour is lost.
@@ -50,6 +71,13 @@ Dedicated tools are faster, require no permission, and produce better output. MU
 | `cat`, `head`, `tail` | Read tool |
 | `sed`, `awk` | Edit tool |
 | `echo >`, `cat <<EOF` | Write tool |
+| Large JSON file (Read) | `jq '.field' file.json` for field extraction |
+
+**When to use each tool:**
+
+| Use jq | Use Read | Use grep |
+|--------|----------|----------|
+| Extract specific fields from large JSON files | Small JSON files, unknown structure, or malformed JSON | Cross-file string search; not JSON-aware |
 
 **Search is now Bash-only.** Claude Code 2.1.117 removed the dedicated Grep and Glob tools. Search files with one of:
 

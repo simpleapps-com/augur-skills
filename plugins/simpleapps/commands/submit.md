@@ -18,11 +18,15 @@ Submit the current work for review by following the **Submit** section of the pr
 
 ## Hard Requirement: Deployment Page
 
-Before doing ANYTHING else, read `wiki/Deployment.md` and find the **Submit** section.
+**MUST verify `wiki/Deployment.md` exists before proceeding.** Context compaction can cause the file to drop from memory even if it was read earlier in the session.
 
-**If `wiki/Deployment.md` does not exist or has no Submit section, YOU MUST STOP IMMEDIATELY.** Do not guess, do not improvise, do not use defaults. Tell the user:
+1. Check if `wiki/Deployment.md` is currently in context from this session
+2. If NOT in context: explicitly `Read wiki/Deployment.md` to reload it
+3. Find the **Submit** section in the page
 
-> "Cannot run /submit: no Deployment page found at wiki/Deployment.md. Run /curate-wiki to generate it from the codebase."
+**If the page is missing or has no Submit section, STOP IMMEDIATELY.** Do not guess, do not improvise, do not use defaults. Tell the user:
+
+> "Cannot run /submit: `wiki/Deployment.md` is missing or has no Submit section. Run `/curate-wiki` to generate it from the codebase."
 
 Then stop. Do nothing else. MUST NOT attempt to commit, create PRs, or figure out the steps on your own.
 

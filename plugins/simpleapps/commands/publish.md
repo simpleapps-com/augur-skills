@@ -15,11 +15,15 @@ Publish a production release by following the **Publish** section of the project
 
 ## Hard Requirement: Deployment Page
 
-Before doing ANYTHING else, read `wiki/Deployment.md` and find the **Publish** section.
+**MUST verify `wiki/Deployment.md` exists before proceeding.** Context compaction can cause the file to drop from memory even if it was read earlier in the session.
 
-**If `wiki/Deployment.md` does not exist or has no Publish section, YOU MUST STOP IMMEDIATELY.** Do not guess, do not improvise, do not infer steps from the codebase or version files. Tell the user:
+1. Check if `wiki/Deployment.md` is currently in context from this session
+2. If NOT in context: explicitly `Read wiki/Deployment.md` to reload it
+3. Find the **Publish** section in the page
 
-> "Cannot run /publish: no Deployment page found at wiki/Deployment.md. Run /curate-wiki to generate it from the codebase."
+**If the page is missing or has no Publish section, STOP IMMEDIATELY.** Do not guess, do not improvise, do not infer steps from the codebase or version files. Tell the user:
+
+> "Cannot run /publish: `wiki/Deployment.md` is missing or has no Publish section. Run `/curate-wiki` to generate it from the codebase."
 
 Then stop. Do nothing else. MUST NOT attempt to bump versions, tag, or push on your own.
 

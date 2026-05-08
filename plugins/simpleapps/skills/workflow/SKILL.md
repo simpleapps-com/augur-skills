@@ -69,7 +69,7 @@ gh issue create --repo simpleapps-com/<repo> \
 The full workflow from task to delivery, each step feeding the next:
 
 ```
-/triage → /wip → /investigate → /discuss → /implement → /quality → /sanity-check → /verify → /submit → /deploy → /publish
+/triage → /wip → /investigate → /discuss → /implement → /quality → /sanity-check → /verify → /submit → /stage → /publish
 ```
 
 | Phase | Command | What happens |
@@ -83,12 +83,12 @@ The full workflow from task to delivery, each step feeding the next:
 | Solution audit | `/sanity-check` | Did we solve the right problem without commission/omission errors? |
 | Browser checks | `/verify` | Walk through wiki's Testing.md checklist in Chrome |
 | Submit | `/submit` | Commit and create a PR for review |
-| Stage | `/deploy` | Deploy to staging (merge PRs, trigger staging build) |
+| Stage | `/stage` | Deploy to staging (merge PRs, trigger staging build) |
 | Release | `/publish` | Version bump, tag, release to production (with verification) |
 
-Not every task uses all steps. Most daily work ends at `/submit`. `/deploy` and `/publish` are used less frequently. `/publish` is intentionally rare and requires explicit verification of the exact version going to production.
+Not every task uses all steps. Most daily work ends at `/submit`. `/stage` and `/publish` are used less frequently. `/publish` is intentionally rare and requires explicit verification of the exact version going to production.
 
-The three shipping commands (`/submit`, `/deploy`, `/publish`) read project-specific steps from `wiki/Deployment.md`. They refuse to operate if the Deployment page is missing. Run `/curate-wiki` to generate it from the codebase.
+The three shipping commands (`/submit`, `/stage`, `/publish`) read project-specific steps from `wiki/Deployment.md`. They refuse to operate if the Deployment page is missing. Run `/curate-wiki` to generate it from the codebase.
 
 Commands like `/research` and `/discuss` can be used at any stage. `/quality`, `/verify`, `/curate-wiki`, and `/wiki-audit` can run independently.
 

@@ -38,7 +38,7 @@ Explain the tool boundaries: Basecamp = client-facing, GitHub = developer-facing
 List `repo/plugins/simpleapps/commands/` with `ls repo/plugins/simpleapps/commands/` to enumerate every `*.md` command file. For each file, Read with `limit: 12`. This captures the frontmatter (name, description, allowed-tools) without loading the full body, saving context. Present them in lifecycle order first, then supporting commands:
 
 **Lifecycle** (in pipeline order):
-`/triage` -> `/wip` -> `/investigate` -> `/discuss` -> `/implement` -> `/quality` -> `/sanity-check` -> `/verify` -> `/submit` -> `/deploy` -> `/publish`
+`/triage` -> `/wip` -> `/investigate` -> `/discuss` -> `/implement` -> `/quality` -> `/sanity-check` -> `/verify` -> `/submit` -> `/stage` -> `/publish`
 
 **Supporting** (alphabetical):
 `/audit-augur-packages`, `/commit-message`, `/context-audit`, `/curate-wiki`, `/file-issue`, `/fyxer`, `/guide`, `/project-init`, `/research`, `/wiki`, `/wiki-audit`
@@ -55,7 +55,7 @@ Walk through a concrete example:
 /investigate                     → explore codebase, update WIP with findings
                                  → review the analysis, start coding
 /submit                          → commit and create a PR
-/deploy                          → merge PRs and deploy to staging
+/stage                           → merge PRs and deploy to staging
 /publish                         → version bump, tag, release to production
 ```
 

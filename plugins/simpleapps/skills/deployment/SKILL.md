@@ -1,6 +1,6 @@
 ---
 name: deployment
-description: Project deployment conventions. Reads the wiki Deployment page and executes submit, deploy, or publish steps. Refuses to operate without a Deployment page.
+description: Project deployment conventions. Reads the wiki Deployment page and executes submit, stage, or publish steps. Refuses to operate without a Deployment page.
 user-invocable: false
 allowed-tools:
   - Read
@@ -10,7 +10,7 @@ allowed-tools:
   - Skill(git-safety)
 ---
 
-First, use Skill("git-safety") to load git guardrails. The shipping commands (`/submit`, `/deploy`, `/publish`) load `conventional-commits` and `github` directly when they need them. This skill does not pre-load them.
+First, use Skill("git-safety") to load git guardrails. The shipping commands (`/submit`, `/stage`, `/publish`) load `conventional-commits` and `github` directly when they need them. This skill does not pre-load them.
 
 # Deployment
 
@@ -35,17 +35,32 @@ Not all projects need all three. Client sites may only have Submit and Deploy. P
 
 ## How It Works
 
-1. Read `wiki/Deployment.md`
-2. Find the section matching the requested action (Submit, Deploy, or Publish)
-3. If the page or section is missing, **refuse to operate**. Tell the user to run `/curate-wiki` to generate it.
-4. Execute the steps in that section
+1. Check if `wiki/Deployment.md` is in context (from previous reads this session)
+2. If NOT in context, explicitly read `wiki/Deployment.md` using the Read tool
+3. Find the section matching the requested action (Submit, Deploy, or Publish)
+4. If the page or section is missing, **refuse to operate**. Tell the user to run `/curate-wiki` to generate it.
+5. Execute the steps in that section
+
+## Critical: Deployment Page Must Exist
+
+**MUST verify `wiki/Deployment.md` exists before proceeding.** Context compaction can cause the file to drop from memory even if it was read earlier in the session. Before any deployment action, check:
+
+1. Is `wiki/Deployment.md` currently in context from this session?
+2. If NO: use `Read` to load `wiki/Deployment.md` explicitly
+3. If YES: proceed
+
+**If the Read tool returns empty or the page is missing, STOP IMMEDIATELY.** Do not guess, do not improvise, do not infer steps from the codebase. Tell the user:
+
+> "Cannot read `wiki/Deployment.md`. This file is required for /submit, /stage, and /publish to work. Run `/curate-wiki` to generate it from the codebase."
+
+Then stop. Do nothing else.
 
 ## Command approval model
 
 The user invoking a command IS the approval to execute all its steps, including git writes. Do not stop to ask for confirmation mid-execution.
 
 - `/submit`: execute all steps (commit, push, PR). Report at the end.
-- `/deploy`: execute all steps. Report at the end.
+- `/stage`: execute all steps. Report at the end.
 - `/publish`: **EXCEPTION**. Must complete the verification gate below and get secondary confirmation BEFORE executing any publish steps. This is the only command that pauses for approval.
 
 ## Guard Rails
