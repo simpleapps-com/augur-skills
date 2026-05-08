@@ -1,6 +1,6 @@
 ---
 name: git-safety
-description: Git safety guardrails. MUST NOT commit, push, create PRs, or merge without explicit user approval. Load this skill before any git write operations.
+description: This skill should be used when the user asks to "commit", "push", "tag", "merge", "rebase", "branch -D", "stash", or invokes /submit, /deploy, /publish. Also load when editing git safety rules or reviewing git workflow. Provides comprehensive guardrails for safe git operations.
 user-invocable: false
 ---
 

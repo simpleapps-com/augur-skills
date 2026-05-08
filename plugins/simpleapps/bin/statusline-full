@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SimpleApps status line (full): user:repo (branch) | version | model | context k/k (%)
+# SimpleApps status line (full): user:repo (branch) | context k/k (%) | model | version
 # Usage: set in ~/.claude/settings.json:
 #   "statusLine": { "type": "command", "command": "statusline-full" }
 input=$(cat)
@@ -46,8 +46,6 @@ reset='\033[0m'
 
 printf "${green}%s${dim}:${blue}%s${reset}" "$user" "$project_name"
 [ -n "$branch" ] && printf " ${dim}(%s)${reset}" "$branch"
-[ -n "$version" ] && printf " ${dim}|${reset} ${cyan}v%s${reset}" "$version"
-[ -n "$model" ] && printf " ${dim}|${reset} ${yellow}%s${reset}" "$model"
 if [ -n "$context_pct" ]; then
   if [ -n "$context_used_k" ] && [ -n "$context_total_k" ]; then
     printf " ${dim}|${reset} ${magenta}ctx:%sK/%sK (%s%%)${reset}" "$context_used_k" "$context_total_k" "$context_pct"
@@ -55,4 +53,6 @@ if [ -n "$context_pct" ]; then
     printf " ${dim}|${reset} ${magenta}ctx:%s%%${reset}" "$context_pct"
   fi
 fi
+[ -n "$model" ] && printf " ${dim}|${reset} ${yellow}%s${reset}" "$model"
+[ -n "$version" ] && printf " ${dim}|${reset} ${cyan}v%s${reset}" "$version"
 printf '\n'

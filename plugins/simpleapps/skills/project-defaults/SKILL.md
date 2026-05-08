@@ -1,9 +1,10 @@
 ---
 name: project-defaults
-description: SimpleApps project conventions. Covers directory layout, symlink setup for .claude integration, permission defaults (deny cd, kill), and per-project baseline settings. Use when setting up projects, checking structure, or configuring Claude Code defaults.
+description: SimpleApps project conventions for directory layout, .claude integration, permission defaults, and .simpleapps/ configuration. Load when setting up projects, checking structure, or configuring Claude Code defaults.
 allowed-tools:
   - Read
   - Bash
+user-invocable: false
 ---
 
 # Project Defaults
@@ -122,16 +123,15 @@ One per client project. Consistent structure across all sites: same fields, diff
 - MUST NOT create `{siteId}.json` files. Use `site.json` instead.
 - If old `{siteId}.json` files exist, `/project-init` will flag them for migration to `site.json`
 
+### Resolution order
+
+`{project}/.simpleapps/settings.json` is read first, then falls back to `~/.simpleapps/settings.json`. Project-level fields override user-level ones.
+
+## .claude/settings.local.json
+
+This file SHOULD be gitignored. It contains project-specific settings that are machine-local and should not be committed.
+
 ## Symlink Setup
-
-The repo contains `.claude/rules/` and `.claude/commands/` with project-specific rules and commands. To make these active from the project root (without starting Claude Code inside `repo/`), symlink them into the project-level `.claude/` folder:
-
-```bash
-mkdir -p {project}/.claude
-mkdir -p {project}/repo/.claude/rules {project}/repo/.claude/commands
-ln -sf ../repo/.claude/rules {project}/.claude/rules
-ln -sf ../repo/.claude/commands {project}/.claude/commands
-```
 
 This lets you run Claude Code from `{project}/` and still get the repo's rules and commands loaded automatically.
 
@@ -165,16 +165,9 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
       "mcp__plugin_simpleapps_augur-api__*"
     ],
     "deny": [
-      "Bash(awk:*)",
-      "Bash(cat:*)",
       "Bash(cd:*)",
-      "Bash(for:*)",
-      "Bash(head:*)",
       "Bash(kill:*)",
       "Bash(pkill:*)",
-      "Bash(sed:*)",
-      "Bash(sleep:*)",
-      "Bash(tail:*)",
       "Edit(~/.claude/plugins/**)",
       "Write(~/.claude/plugins/**)"
     ]
@@ -182,21 +175,10 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
 }
 ```
 
-Why each is denied:
-
-- **`awk`**: Use the Edit tool instead.
-- **`cat`**: Use the Read tool instead.
-- **`cd`**: MUST NOT use in any Bash command, including compound commands (`cd /path && git`). Use `git -C repo` for git, path arguments for everything else. Compound cd+git commands trigger an unblockable Claude Code security prompt that interrupts the user even when `cd` is denied.
-- **`for`**: Shell loops are unnecessary; make multiple tool calls instead.
-- **`head`/`tail`**: Use the Read tool with `offset` and `limit` parameters instead.
-- **`kill`/`pkill`**: Use `TaskStop` to manage background processes. `TaskStop` cleanly shuts down the task and updates Claude Code's internal tracking.
-- **`sed`**: Use the Edit tool instead.
-- **`sleep`**: Unnecessary; use proper sequencing or background tasks.
-- **`Edit(~/.claude/plugins/**)` / `Write(~/.claude/plugins/**)`**: The installed plugin tree is a cache. Marketplace updates clobber it. To change plugin behavior, edit the plugin's source repo (e.g., `~/projects/simpleapps/augur-skills/`) instead.
-
-Why `find`, `grep`, and `rg` are now ALLOWED (previously denied):
-
-Claude Code 2.1.117 removed the dedicated Grep and Glob tools. Search is now done via Bash. Denying `grep`/`find`/`rg` while no dedicated alternative exists makes the agent unable to search anything. These commands are allowed by default; the bash-simplicity skill still applies (one command per call, no shell plumbing).
+**Deny reasons:**
+- `cd` - Use `git -C repo` instead; compound `cd && git` triggers unblockable prompts
+- `kill`/`pkill` - Use `TaskStop` to manage background tasks
+- `Edit(~/.claude/plugins/**)` / `Write(~/.claude/plugins/**)` - Plugin tree is a cache; edit source repo instead
 
 ## Bin Scripts (PATH)
 
@@ -217,12 +199,6 @@ This path is stable across plugin updates (marketplace updates are git pulls). T
 
 ## New Project Setup
 
-```bash
-mkdir {project} && cd {project}
-git clone https://github.com/simpleapps-com/<name>.git repo
-git clone https://github.com/simpleapps-com/<name>.wiki.git wiki
-mkdir -p wip tmp .simpleapps .claude
-mkdir -p repo/.claude/rules repo/.claude/commands
-ln -sf ../repo/.claude/rules .claude/rules
-ln -sf ../repo/.claude/commands .claude/commands
-```
+Use `/project-init` to set up a new project. This command verifies the directory structure, syncs plugin rules, and configures permissions automatically.
+
+For manual setup (advanced), see the [wiki](../../../wiki/Development.md#local-setup) for the complete setup procedure.
