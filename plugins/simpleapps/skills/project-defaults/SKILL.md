@@ -35,9 +35,14 @@ Every project MUST use this layout:
 
 ```
 {project}/
+├── CLAUDE.md           # → repo/.claude/CLAUDE.md
 ├── .claude/            # Claude Code config (symlinks to repo/.claude/)
+│   ├── settings.json   # → repo/.claude/settings.json
+│   ├── settings.local.json  # Machine-local, gitignored, NOT symlinked
 │   ├── rules/          # → repo/.claude/rules/
-│   └── commands/       # → repo/.claude/commands/
+│   ├── commands/       # → repo/.claude/commands/
+│   ├── prompts/        # → repo/.claude/prompts/
+│   └── hooks/          # → repo/.claude/hooks/
 ├── repo/               # Git repo (simpleapps-com/<name>.git)
 ├── wiki/               # Wiki repo (simpleapps-com/<name>.wiki.git)
 ├── wip/                # Work-in-progress files (not in git)
@@ -133,11 +138,26 @@ This file SHOULD be gitignored. It contains project-specific settings that are m
 
 ## Symlink Setup
 
-This lets you run Claude Code from `{project}/` and still get the repo's rules and commands loaded automatically.
+Six symlinks let you run Claude Code from `{project}/` and still get the repo's memory, settings, rules, commands, prompts, and hooks loaded automatically:
+
+| Symlink | Target | Purpose |
+|---------|--------|---------|
+| `{project}/CLAUDE.md` | `repo/.claude/CLAUDE.md` | Project memory loaded at session start |
+| `{project}/.claude/settings.json` | `repo/.claude/settings.json` | Shared, committed project settings |
+| `{project}/.claude/rules` | `repo/.claude/rules` | Always-loaded rule files |
+| `{project}/.claude/commands` | `repo/.claude/commands` | Slash commands |
+| `{project}/.claude/prompts` | `repo/.claude/prompts` | Reusable prompt files |
+| `{project}/.claude/hooks` | `repo/.claude/hooks` | Hook scripts |
+
+The canonical files live in `repo/.claude/` so they travel with the repo and are version-controlled. The symlinks make them visible from the parent `{project}/` working directory. `CLAUDE.md` symlinks to the project root (not inside `.claude/`) because Claude Code loads project memory from `{project}/CLAUDE.md`.
+
+`.claude/settings.local.json` is NOT symlinked — it is machine-local, gitignored, and stays directly in `{project}/.claude/`. See [.claude/settings.local.json](#claudesettingslocaljson) below.
+
+`/project-init` creates and repairs all six.
 
 ## Permission Defaults
 
-Every project SHOULD configure `.claude/settings.local.json` with these deny rules:
+Every project SHOULD configure `.claude/settings.local.json` with these rules:
 
 ```json
 {
@@ -170,6 +190,12 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
       "Bash(pkill:*)",
       "Edit(~/.claude/plugins/**)",
       "Write(~/.claude/plugins/**)"
+    ],
+    "ask": []
+  },
+  "autoMode": {
+    "hard_deny": [
+      "Bash(git push:*)"
     ]
   }
 }
@@ -179,6 +205,9 @@ Every project SHOULD configure `.claude/settings.local.json` with these deny rul
 - `cd` - Use `git -C repo` instead; compound `cd && git` triggers unblockable prompts
 - `kill`/`pkill` - Use `TaskStop` to manage background tasks
 - `Edit(~/.claude/plugins/**)` / `Write(~/.claude/plugins/**)` - Plugin tree is a cache; edit source repo instead
+
+**autoMode.hard_deny reasons:**
+- `git push` - Auto mode MUST NOT auto-approve `git push`. `hard_deny` blocks the auto-mode classifier from approving it regardless of user intent or allow exceptions, so the `simpleapps:git-safety` guardrail (explicit user approval per push) is enforceable. Manual approval at the prompt still works. Added in Claude Code 2.1.136 — see `settings.autoMode.hard_deny`.
 
 ## Bin Scripts (PATH)
 

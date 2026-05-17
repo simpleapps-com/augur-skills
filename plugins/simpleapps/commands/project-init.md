@@ -19,13 +19,32 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    - `mkdir -p tmp` (if missing)
    - `mkdir -p .simpleapps` (if missing)
    - `mkdir -p .claude` (if missing)
-3. Check current symlink state: `readlink .claude/rules` and `readlink .claude/commands`
+3. Check current symlink state: `readlink CLAUDE.md`, `readlink .claude/settings.json`, `readlink .claude/rules`, `readlink .claude/commands`, `readlink .claude/prompts`, and `readlink .claude/hooks`
 4. If `repo/` exists, ensure symlink targets exist:
    - `mkdir -p repo/.claude/rules` (if missing)
    - `mkdir -p repo/.claude/commands` (if missing)
+   - `mkdir -p repo/.claude/prompts` (if missing)
+   - `mkdir -p repo/.claude/hooks` (if missing)
+   - For `repo/.claude/settings.json`: run `ls repo/.claude/settings.json`. If missing, create it with the Write tool as an empty stub: `{}`. Report it as created (stub). Do NOT touch `.claude/settings.local.json` — that file is machine-local and handled separately in step 8.
+   - For `repo/.claude/CLAUDE.md`: run `ls repo/.claude/CLAUDE.md`. If missing, create it with the Write tool using this minimal stub (substitute `<repo-name>` from the git remote or the command argument):
+     ```markdown
+     # <repo-name>
+
+     Project memory. See the wiki for full dev docs:
+
+     - [Home](../../wiki/Home.md)
+     - [Architecture](../../wiki/Architecture.md)
+     - [Development](../../wiki/Development.md)
+     - [Deployment](../../wiki/Deployment.md)
+     ```
+     Report it as created (stub) and tell the user to flesh it out with a quick reference.
 5. Create or fix symlinks:
+   - `ln -sf repo/.claude/CLAUDE.md CLAUDE.md`
+   - `ln -sf ../repo/.claude/settings.json .claude/settings.json`
    - `ln -sf ../repo/.claude/rules .claude/rules`
    - `ln -sf ../repo/.claude/commands .claude/commands`
+   - `ln -sf ../repo/.claude/prompts .claude/prompts`
+   - `ln -sf ../repo/.claude/hooks .claude/hooks`
 6. **MUST sync plugin rules into the project.** This step is NOT optional. Every project MUST have the latest plugin rules.
    a. Set the source path using the plugin's install-location env var: `ls ${CLAUDE_PLUGIN_ROOT}/rules/`. If `CLAUDE_PLUGIN_ROOT` is unset (the plugin is not loaded in this session), fall back to `~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/rules/` and warn the user that the plugin may not be properly installed.
    b. For EVERY `.md` file found in that directory, do the following:
@@ -99,7 +118,7 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    For each missing label, create it: `gh label create "<name>" --color "<color>" --description "<purpose>" --repo <org>/<repo>`
 
    Report which labels were created and which already existed.
-13. Final verification: `ls -la .claude/`
+13. Final verification: `ls -la` (confirms the `CLAUDE.md` symlink) and `ls -la .claude/` (confirms the `rules` and `commands` symlinks)
 
 ## Output
 
@@ -108,7 +127,12 @@ Report what was checked, what was created, and what was already correct. Use a s
 - [x] `repo/` exists
 - [x] `wiki/` exists
 - [ ] `wip/` created
+- [x] `CLAUDE.md` → `repo/.claude/CLAUDE.md`
+- [x] `.claude/settings.json` → `repo/.claude/settings.json`
 - [x] `.claude/rules` → `repo/.claude/rules`
+- [x] `.claude/commands` → `repo/.claude/commands`
+- [x] `.claude/prompts` → `repo/.claude/prompts`
+- [x] `.claude/hooks` → `repo/.claude/hooks`
 
 MUST NOT create `repo/` or `wiki/` with `mkdir`. These are git clones.
 
