@@ -51,12 +51,12 @@ Dedicated tools are faster, require no permission, and produce better output. MU
 | `sed`, `awk` | Edit tool |
 | `echo >`, `cat <<EOF` | Write tool |
 
-**Search is now Bash-only.** Claude Code 2.1.117 removed the dedicated Grep and Glob tools. Search files with one of:
+**Search is now Bash-only.** Claude Code 2.1.117 removed its built-in Grep and Glob tools; it now relies on the OS. Prefer `rg` (faster, respects `.gitignore`). Search files with one of:
 
 | Use case | Bash command |
 |----------|--------------|
-| Search file contents | `grep -rn <pattern> <path>` or `rg <pattern> <path>` |
-| Find files by name | `find <path> -name <pattern>` |
+| Search file contents | `rg <pattern> <path>` (preferred) or `grep -rn <pattern> <path>` |
+| Find files by name | `rg --files <path>` or `find <path> -name <pattern>` |
 | List directory entries | `ls <path>` |
 
 Reserve Bash for these and for commands that never had a dedicated tool: build tools, test runners, git, package managers, system commands.
@@ -114,7 +114,7 @@ All project paths are known and predictable (see `simpleapps:wiki` Cross-Project
 
 Subagents do NOT inherit this skill. They see only the prompt you give them. The primary agent MUST brief every subagent on bash-simplicity before delegating shell work, and owns the output that comes back.
 
-Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Use dedicated tools (Read, Edit, Write) over their shell equivalents (`cat`, `sed`, `awk`, `echo >`). Search with Bash directly: `grep -rn`, `find`, `ls` — Claude Code 2.1.117 removed the Grep/Glob tools."
+Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Use dedicated tools (Read, Edit, Write) over their shell equivalents (`cat`, `sed`, `awk`, `echo >`). Search with Bash directly, preferring `rg` (then `grep -rn`, `find`, `ls`) — Claude Code 2.1.117 removed the built-in Grep/Glob tools."
 
 If a subagent returns a command containing any forbidden operator (see the table above), that is the primary agent's failure. Reject and ask for a re-plan, or translate into separate simple calls. Do not execute it. A subagent violating this is running on a stale prompt; fix the prompt.
 

@@ -1,11 +1,9 @@
 ---
 name: deployment
-description: Project deployment conventions. Reads the wiki Deployment page and executes submit, deploy, or publish steps. Refuses to operate without a Deployment page.
+description: Project deployment conventions. Reads the wiki Deployment page and executes submit, stage, or publish steps. Refuses to operate without a Deployment page.
 user-invocable: false
 allowed-tools:
   - Read
-  - Glob
-  - Grep
   - Bash
   - Skill(git-safety)
 ---
@@ -25,7 +23,7 @@ Every project wiki MUST have a `Deployment.md` page with up to three sections:
 How to commit and create a PR for review.
 
 ## Deploy
-How to deploy to staging.
+How to deploy to staging. (Run by `/stage` — the command is named "stage"; the wiki section is "Deploy".)
 
 ## Publish
 How to release to production.
@@ -36,7 +34,7 @@ Not all projects need all three. Client sites may only have Submit and Deploy. P
 ## How It Works
 
 1. Read `wiki/Deployment.md`
-2. Find the section matching the requested action (Submit, Deploy, or Publish)
+2. Find the section matching the requested action. Command→section map: `/submit`→`## Submit`, `/stage`→`## Deploy`, `/publish`→`## Publish`. Note `/stage` maps to the `## Deploy` heading.
 3. If the page or section is missing, **refuse to operate**. Tell the user to run `/curate-wiki` to generate it.
 4. Execute the steps in that section
 
@@ -58,7 +56,7 @@ The user invoking a command IS the approval to execute all its steps, including 
 
 Wiki Deployment pages often contain shell snippets written for humans, e.g. `pnpm typecheck && pnpm test` or `git add -A; git commit -m "..."`. These violate `simpleapps:bash-simplicity` (no `&&`, `;`, `|`, `$()`).
 
-When a wiki step uses shell operators, you MUST translate it into separate, single-command Bash calls. The wiki defines **what** to run; `bash-simplicity` defines **how** to run it. Both rules stand. One does not override the other.
+When a wiki step uses shell operators, you MUST translate it into separate, single-command Bash calls. The wiki defines **what** to run; `bash-simplicity` defines **how** to run it. Both rules stand. One does not override the other. (The invoking command — `/submit`, `/stage`, `/publish` — loads `Skill("bash-simplicity")`; if reading this skill on its own, load it first for the full translation rules.)
 
 Example: wiki says `pnpm typecheck && pnpm test` → make two Bash calls: `pnpm typecheck`, then `pnpm test`. If the first fails, stop and report. Do not run the second.
 

@@ -1,7 +1,7 @@
 ---
 name: verify
 description: Run the E2E verification checklist from the wiki's Testing page using Chrome automation
-allowed-tools: Skill(wiki), Skill(work-habits), Skill(bash-simplicity), Skill(git-safety), Read, Write, Edit, Glob, Grep, mcp__claude-in-chrome__*, Bash(pnpm:*)
+allowed-tools: Skill(wiki), Skill(work-habits), Skill(bash-simplicity), Skill(git-safety), Read, Write, Edit, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*), mcp__claude-in-chrome__*, Bash(pnpm:*)
 ---
 
 First, use Skill("wiki") to load wiki conventions and Skill("work-habits") for error overlay guidance.

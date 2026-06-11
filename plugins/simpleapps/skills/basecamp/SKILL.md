@@ -3,8 +3,7 @@ name: basecamp
 description: Basecamp 2 integration via MCP. Covers MCP tool reference, URL parsing, authentication, Chrome fallback, attachments, and site-info documents. Use when reading or writing Basecamp data.
 allowed-tools:
   - Read
-  - Glob
-  - Grep
+  - Bash
   - mcp__plugin_simpleapps_basecamp__*
   - mcp__claude-in-chrome__*
 ---
@@ -74,7 +73,7 @@ If the MCP server is unavailable (credentials expired, server not running), use 
 | Todo lists | `/projects/<project_id>/todolists` |
 | Documents | `/projects/<project_id>/documents` |
 
-**Me** page (`/people/<person_id>`): open to-dos (~45+ shows a "See all X open to-dos" link, YOU MUST click it). The full list is at `/people/<person_id>/outstanding_todos`.
+**Me** page (`/people/<person_id>`): open to-dos. When the list is long (roughly 45+ items), Basecamp truncates it and shows a "See all X open to-dos" link — if that link is present, YOU MUST click it to load the full list. The complete list is also at `/people/<person_id>/outstanding_todos`.
 
 **JSON API via Chrome**: Navigate to `/api/v1/projects/<project_id>/todos/<todo_id>.json` then use `get_page_text`. WebFetch will NOT work; Chrome carries session cookies.
 

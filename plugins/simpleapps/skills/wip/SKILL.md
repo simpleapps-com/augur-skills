@@ -39,6 +39,8 @@ Fields:
 | `disposition` | `keep` \| `promote` \| `delete` or empty | `/process-wips` or user | Empty means "not yet decided" |
 | `wiki_candidates` | comma-separated wiki page names | `/process-wips` (draft) or user | Optional; only meaningful when `disposition: promote` |
 
+At scaffold time `/wip` writes `issue`, `branch`, `status: open`, `created`, and `last_reviewed`; it leaves `shipped_at`, `pr`, `disposition`, and `wiki_candidates` empty for later lifecycle commands to fill. Do not invent values for those at scaffold.
+
 Freeform WIPs (no issue) leave `issue`, `branch`, and `pr` empty. Everything else still applies.
 
 ## Status lifecycle

@@ -1,7 +1,7 @@
 ---
 name: publish
 description: Publish to production. Version bump, tag, and release with mandatory verification. Reads steps from the project wiki Deployment page.
-allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Bash(pnpm:*), Skill(deployment), Skill(git-safety), Skill(bash-simplicity), Skill(work-habits), Read, Write, Glob, Grep, Edit
+allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Bash(pnpm:*), Skill(deployment), Skill(git-safety), Skill(bash-simplicity), Skill(work-habits), Read, Write, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*), Edit
 ---
 
 First, load these skills:

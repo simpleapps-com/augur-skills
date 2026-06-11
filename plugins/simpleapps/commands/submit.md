@@ -39,7 +39,7 @@ This command IS the user's approval to commit and push. Execute all steps withou
 7. Update linked issues (see below)
 8. Update the WIP frontmatter (see below)
 9. Report what was done at the end
-10. If the current branch is not the default branch (`main` / `master`), ask the user whether to switch to it before the next task. Do not switch without approval.
+10. After a successful push, if the current branch is not the default branch (`main` / `master`), switch back to it automatically: `git -C repo switch main` (or `master`). This is part of `/submit` — do NOT ask. The tree is clean post-commit; the work is already pushed and recoverable. If the tree is unexpectedly dirty, report it and stay on the current branch rather than risk uncommitted changes.
 
 ## Update Linked Issues
 

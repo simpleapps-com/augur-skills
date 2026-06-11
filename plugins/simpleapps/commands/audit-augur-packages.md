@@ -27,7 +27,7 @@ Use `grep -rn` (Bash) to search `SOURCE_ROOT` for each anti-pattern. MUST run ea
 
 For each match, check whether the file also imports from `@simpleapps-com/augur-*`. If so, mark as "partial migration" instead of a finding.
 
-### Grep patterns by package
+### Search patterns by package (use with `rg`/`grep`)
 
 **augur-utils:**
 - `from ["']@/lib/utils["']`: custom cn()

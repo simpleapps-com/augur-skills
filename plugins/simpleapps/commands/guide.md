@@ -67,7 +67,7 @@ Find all `SKILL.md` files under `repo/plugins/simpleapps/skills/` with `find rep
 
 ### Naming convention: skill, command, and rule may share a name
 
-Several names exist as both a skill AND a command (and sometimes a rule too): `wiki`, `fyxer`, `quality`, `workflow`, `git-safety`. They are different things:
+Several names exist as both a skill AND a command (and sometimes a rule too): `wiki`, `fyxer`, `quality`, `wip`. (`workflow` and `git-safety` are a skill + a rule, but have no command.) They are different things:
 
 - **Skill**: reference material loaded into context (`Skill("wiki")` loads conventions)
 - **Command**: a workflow you invoke (`/wiki` reads every wiki page into context)

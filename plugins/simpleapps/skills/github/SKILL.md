@@ -5,8 +5,6 @@ allowed-tools:
   - Skill(project-defaults)
   - Skill(git-safety)
   - Read
-  - Glob
-  - Grep
   - Bash
 ---
 

@@ -2,7 +2,7 @@
 name: investigate
 description: Load a WIP file, read the wiki, explore the codebase, and update the WIP with research findings and suggestions. No code changes.
 argument-hint: "[wip/GH14-slug.md]"
-allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(git log:*), Bash(git blame:*), Bash(date:*), Skill(wiki), Skill(basecamp), Skill(github), Skill(project-defaults), Skill(augur-packages), Skill(writing-style), Skill(wip), Skill(work-habits), mcp__plugin_simpleapps_basecamp__*, Read, Glob, Grep, Edit, Agent
+allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(git log:*), Bash(git blame:*), Bash(date:*), Skill(wiki), Skill(basecamp), Skill(github), Skill(project-defaults), Skill(augur-packages), Skill(writing-style), Skill(wip), Skill(work-habits), mcp__plugin_simpleapps_basecamp__*, Read, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*), Edit, Agent
 ---
 
 First, use Skill("wiki") to load the project wiki for codebase context, then Skill("project-defaults") for directory layout, then Skill("github") for GH conventions, then Skill("writing-style") for naming and documentation standards, then Skill("wip") for the WIP frontmatter schema, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
@@ -26,7 +26,7 @@ Apply the "Branch hygiene before starting work" rule from `simpleapps:work-habit
 
 If `$ARGUMENTS` is provided, read it directly as a relative path (e.g., `wip/GH14-fix-oauth.md`).
 
-If no argument, use Glob to find all `wip/*.md` files. If none exist, inform the user and suggest running `/wip` first. If only one exists, use it. If multiple exist, list them and ask the user which to investigate.
+If no argument, run `ls wip/` (Bash) to find all `wip/*.md` files. If none exist, inform the user and suggest running `/wip` first. If only one exists, use it. If multiple exist, list them and ask the user which to investigate.
 
 ## 2. Read the WIP
 
@@ -41,8 +41,8 @@ Read the WIP file. Extract:
 Based on the problem statement, systematically investigate:
 
 1. **Check augur-\* packages first**: if this is a NextJS site using `@simpleapps-com/augur-*` packages, use Skill("augur-packages") to check if any package already provides the needed functionality. Sites MUST use augur package features before building custom solutions.
-2. **Check for subsystem docs**: once you identify the relevant code path, use Glob to look for a colocated `README.md` or similar at the subsystem level (e.g., `repo/src/helpers/README.md`), and any per-item detail doc next to the specific thing you are investigating. Read them before going deeper into code. They were written to short-circuit exactly this kind of discovery. See `simpleapps:wiki` "Progressive Disclosure via Colocated Markdown" for the pattern.
-3. **Search for relevant code**: use Grep and Glob to find files related to the problem. Use Agent with subagent_type=Explore for broader searches.
+2. **Check for subsystem docs**: once you identify the relevant code path, use `find <dir> -name README.md` or `ls` (Bash) to look for a colocated `README.md` or similar at the subsystem level (e.g., `repo/src/helpers/README.md`), and any per-item detail doc next to the specific thing you are investigating. Read them before going deeper into code. They were written to short-circuit exactly this kind of discovery. See `simpleapps:wiki` "Progressive Disclosure via Colocated Markdown" for the pattern.
+3. **Search for relevant code**: use `rg` (preferred) or `grep -rn`/`find` via Bash to find files related to the problem. Use Agent with subagent_type=Explore for broader searches.
 4. **Read key files**: understand the current implementation
 5. **Trace the flow**: follow the code path affected by the problem
 6. **Check for existing packages**: search `repo/package.json` for dependencies that may already solve the problem. Check if the project is duplicating functionality that a dependency provides.

@@ -1,7 +1,7 @@
 ---
 name: stage
 description: Stage to staging environment. Execute the staging deployment steps from the project wiki Deployment page.
-allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Skill(deployment), Skill(git-safety), Skill(bash-simplicity), Skill(work-habits), Read, Write, Glob, Grep
+allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Skill(deployment), Skill(git-safety), Skill(bash-simplicity), Skill(work-habits), Read, Write, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*)
 ---
 
 First, load these skills:

@@ -2,7 +2,7 @@
 name: fyxer
 description: Process a Fyxer meeting recording. Extract, cache locally, and post to Basecamp.
 argument-hint: "<fyxer-url> <basecamp-project-id>"
-allowed-tools: Bash(pbpaste:*), Bash(wc:*), Bash(rm:*), Bash(mv:*), Bash(cp:*), Bash(ls:*), Bash(mkdir:*), Skill(fyxer), Skill(basecamp), Skill(bash-simplicity), Read, Write, Glob, mcp__plugin_simpleapps_basecamp__*, mcp__claude-in-chrome__*
+allowed-tools: Bash(pbpaste:*), Bash(wc:*), Bash(rm:*), Bash(mv:*), Bash(cp:*), Bash(ls:*), Bash(mkdir:*), Skill(fyxer), Skill(basecamp), Skill(bash-simplicity), Read, Write, Bash(find:*), mcp__plugin_simpleapps_basecamp__*, mcp__claude-in-chrome__*
 ---
 
 First, use Skill("fyxer") to load Fyxer conventions, then Skill("basecamp") for MCP tools, then Skill("bash-simplicity") for Bash conventions.

@@ -2,10 +2,10 @@
 name: contract-audit
 description: Audit code for missing or weak formal contracts on load-bearing functions. With no args, scans files read or written this session. With a path, audits that file in depth.
 argument-hint: "[file path] (omit for session-aware mode)"
-allowed-tools: Read, Glob, Skill(code-contracts), Skill(bash-simplicity)
+allowed-tools: Read, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*), Skill(code-contracts), Skill(bash-simplicity)
 ---
 
-First, use `Skill("code-contracts")` to load the contract-writing core, then read `${CLAUDE_SKILL_DIR}/../skills/code-contracts/audit.md` for the audit-mode instructions.
+First, use `Skill("code-contracts")` to load the contract-writing core, then read `${CLAUDE_PLUGIN_ROOT}/skills/code-contracts/audit.md` for the audit-mode instructions. (`CLAUDE_PLUGIN_ROOT` is the plugin's install path — the same env var `/project-init` uses; `CLAUDE_SKILL_DIR` is NOT set in command context.)
 
 # Contract Audit
 

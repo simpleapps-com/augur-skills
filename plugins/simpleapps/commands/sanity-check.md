@@ -2,7 +2,7 @@
 name: sanity-check
 description: Check that we solved the right problem without errors of commission or omission. Goldratt's two types of mistakes.
 argument-hint: "[wip-file]"
-allowed-tools: Bash(git -C:*), Bash(gh issue:*), Bash(git remote:*), Skill(wiki), Skill(basecamp), mcp__plugin_simpleapps_basecamp__*, Read, Glob, Grep
+allowed-tools: Bash(git -C:*), Bash(gh issue:*), Bash(git remote:*), Skill(wiki), Skill(basecamp), mcp__plugin_simpleapps_basecamp__*, Read, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*)
 ---
 
 First, use Skill("wiki") for project conventions, then Skill("basecamp") for MCP tools.

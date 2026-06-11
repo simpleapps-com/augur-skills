@@ -3,8 +3,7 @@ name: augur-packages
 description: Shared npm packages under @simpleapps-com/augur-*. Directs agents to check installed packages before writing custom code. This skill is a starting point; always read the actual package code for current API surface.
 allowed-tools:
   - Read
-  - Glob
-  - Grep
+  - Bash
 ---
 
 # Augur Packages
@@ -25,7 +24,7 @@ This skill is a **stub, not an archive**. New packages are created, existing pac
 
 **Always read the installed packages' documentation in `node_modules/`:**
 
-1. Use `Glob("repo/node_modules/@simpleapps-com/*")` to discover ALL available packages. There may be packages not listed here.
+1. Use `ls repo/node_modules/@simpleapps-com/` (Bash) to discover ALL available packages. There may be packages not listed here.
 2. Read `repo/node_modules/@simpleapps-com/<package>/llms.txt`, which is machine-readable and lists every export with descriptions and usage examples. This is the fastest path to discovering what exists.
 3. Read `repo/node_modules/@simpleapps-com/<package>/README.md` for full API docs, code examples, and "Replaces" guidance
 4. MUST NOT read `dist/`, `.d.ts`, or compiled JS files to discover capabilities. They are minified, chunked, and incomplete. The README and llms.txt are the source of truth.
@@ -110,4 +109,4 @@ The goal is to grow the packages over time so sites write less custom code.
 - **Tailwind:** v4, CSS-first
 - **Validation:** Valibot (not Zod, not Yup)
 - **Auth:** NextAuth 5 via package auth factory
-- **Reference site:** Ask the user which site to reference. Use `Grep`, `Glob`, and `Read` with the project path (see `simpleapps:project-defaults` for layout). MUST NOT use `find`, `grep`, or other shell commands.
+- **Reference site:** Ask the user which site to reference. Use `Read` for known files and Bash search (`rg` preferred, then `grep -rn`/`find`/`ls`) with the project path (see `simpleapps:project-defaults` for layout). Claude Code 2.1.117 removed the built-in Grep/Glob tools; one command per call.

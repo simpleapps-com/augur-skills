@@ -2,7 +2,7 @@
 name: implement
 description: Execute an implementation plan from a WIP file or session context. Work autonomously, document what was done.
 argument-hint: "[wip/GH30-slug.md]"
-allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Bash(date:*), Skill(wiki), Skill(project-defaults), Skill(github), Skill(git-safety), Skill(bash-simplicity), Skill(writing-style), Skill(wip), Skill(work-habits), Skill(code-contracts), Read, Write, Glob, Grep, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Bash(date:*), Skill(wiki), Skill(project-defaults), Skill(github), Skill(git-safety), Skill(bash-simplicity), Skill(writing-style), Skill(wip), Skill(work-habits), Skill(code-contracts), Read, Write, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*), Edit, Agent
 ---
 
 First, use Skill("wiki") to load project context, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions, then Skill("writing-style") for variable naming and code style standards, then Skill("wip") for the WIP frontmatter schema, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance, then Skill("code-contracts") for the formal-contract discipline on load-bearing code (apply only when scope is load-bearing per the skill's "When to use it" section — money math, auth, concurrency, state machines, security boundaries, non-trivial algorithms).
@@ -36,7 +36,7 @@ The only pause condition is a dirty tree, because proceeding could destroy work 
 
 If `$ARGUMENTS` is provided, read it directly as a relative path.
 
-If no argument, use Glob to check `wip/*.md` for WIP files. If one exists, use it. If multiple exist, list them and ask which to implement.
+If no argument, run `ls wip/` (Bash) to check for WIP files. If one exists, use it. If multiple exist, list them and ask which to implement.
 
 If a WIP is found, check that Research, Analysis, and Files to modify are populated. If they're empty, tell the user the WIP isn't ready and suggest `/investigate` and `/discuss` first.
 
@@ -48,7 +48,7 @@ If no WIP files exist, use the current session context as the plan: what was dis
 
 1. Read the wiki for project conventions and patterns
 2. If using a WIP, read every file listed in the "Files to modify" table
-3. **Check for subsystem docs.** For each code path you are about to change, use Glob to look for a colocated `README.md` or similar at the subsystem level (e.g., `repo/src/helpers/README.md`), and any per-item detail doc next to the specific thing you are editing. Read them before touching code. They carry intent, invariants, and prior decisions that the code alone does not. See `simpleapps:wiki` "Progressive Disclosure via Colocated Markdown" for the pattern. These docs MUST be kept current with your changes per `simpleapps:work-habits` "Leave it better than you found it."
+3. **Check for subsystem docs.** For each code path you are about to change, use `find <dir> -name README.md` or `ls` (Bash) to look for a colocated `README.md` or similar at the subsystem level (e.g., `repo/src/helpers/README.md`), and any per-item detail doc next to the specific thing you are editing. Read them before touching code. They carry intent, invariants, and prior decisions that the code alone does not. See `simpleapps:wiki` "Progressive Disclosure via Colocated Markdown" for the pattern. These docs MUST be kept current with your changes per `simpleapps:work-habits` "Leave it better than you found it."
 4. If using session context, explore the relevant codebase areas to understand current state
 5. Review the approach, alternatives, and risks (from WIP Analysis or session discussion)
 
