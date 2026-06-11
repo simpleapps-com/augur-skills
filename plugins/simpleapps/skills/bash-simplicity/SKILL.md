@@ -61,6 +61,16 @@ Dedicated tools are faster, require no permission, and produce better output. MU
 
 Reserve Bash for these and for commands that never had a dedicated tool: build tools, test runners, git, package managers, system commands.
 
+**JSON: prefer `jq`.** For JSON files, default to `jq` for field extraction rather than Read or `grep`. Reading a large JSON file with the Read tool dumps the whole structure — base64 blobs, embedding vectors, inlined doc strings — into context for the rest of the session; `grep` can't navigate JSON structure.
+
+| Use case | Bash command |
+|----------|--------------|
+| Extract a field | `jq '.field' file.json` |
+| Strip a noisy field | `jq 'del(.bigField)' file.json` |
+| Pull values from an array | `jq '.[].itemId' file.json` |
+
+Each is one command with no operators — the one-command-per-call rule still holds. `Read` and `grep` remain right for small JSON where the structure is unknown, malformed JSON, and cross-file string search.
+
 These commands are **denied** in project settings and will always be rejected. Do not attempt them:
 `cd`, `cat`, `sed`, `awk`, `head`, `tail`, `sleep`, `kill`, `pkill`
 

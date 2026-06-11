@@ -122,6 +122,18 @@ When invoked for issue `#N`:
 
 The only pause condition is a dirty tree, because proceeding could destroy work the agent didn't make. Clean main + known issue is not a stop condition; neither is being on someone else's clean feature branch — the agent switches and proceeds.
 
+## Branch hygiene at end-of-turn
+
+The mirror of "before starting work" (above): the agent leaves the checkout clean, not just finds it clean. After completing work that left the checkout on any branch other than `main`/`master`, switch back to `main` before ending the turn — after `/submit` lands, after an admin-merge leaves you on the source branch, after a cleanup PR, or whenever the user moves on to a new task.
+
+Do it **silently** — not as an announced step, just leave the checkout in the right state:
+
+1. `git -C repo branch --show-current`
+2. `git -C repo switch main` (if not already there)
+3. `git -C repo fetch origin main`
+
+The only pause condition is a dirty tree on a branch unrelated to the next task (same rule as start-of-work — MUST NOT touch uncommitted work the agent didn't make). A clean tree on any branch transitions cleanly.
+
 Branching mistakes compound silently and the cost of recovery scales with how many commands later they are caught — but the answer is the agent doing the safe transition autonomously, not screaming the sky is falling at the user every time the workflow requires a routine `git switch`.
 
 ## Track progress
