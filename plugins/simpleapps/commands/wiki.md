@@ -11,7 +11,7 @@ Load a wiki into your context so you can answer questions and assist with the pr
 ## Determine mode
 
 - **No arguments** → load the local wiki from the filesystem (`wiki/`)
-- **Argument provided** → shallow-clone the remote wiki to `/tmp/`, read it, then clean up
+- **Argument provided** → shallow-clone the remote wiki to the project-level `tmp/`, read it, then clean up
 
 ## Local wiki (no arguments)
 

@@ -311,8 +311,9 @@ The wiki is a separate git repo at `wiki/`. No branch protection, no PRs.
 
 ```bash
 git -C wiki add -A
-# Write commit message using Write tool → tmp/commit-msg.txt
-git -C wiki commit -F tmp/commit-msg.txt
+# Write commit message with the Write tool to the project-level tmp/ → tmp/commit-msg.txt
+# `git -C wiki` resolves -F relative to wiki/, so reference it as ../tmp/ (NOT tmp/ = wiki/tmp/):
+git -C wiki commit -F ../tmp/commit-msg.txt
 rm tmp/commit-msg.txt
 git -C wiki push
 ```

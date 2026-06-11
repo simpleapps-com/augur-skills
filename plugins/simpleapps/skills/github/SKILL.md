@@ -37,23 +37,25 @@ See `simpleapps:git-safety` (loaded above). MUST NOT commit, push, create PRs, o
 
 ## Git Commands (no `cd`)
 
-`cd` is denied. MUST use `git -C repo` for all git operations. For multi-line commit messages, write the message to a tmp file and use `git commit -F`:
+`cd` is denied. MUST use `git -C repo` for all git operations. For multi-line commit messages, write the message to the project-level `tmp/` (sibling of `repo/`, NEVER `repo/tmp/`) and use `git commit -F`:
 
 ```bash
 # Stage files
 git -C repo add path/to/file.md
 
-# Write commit message to tmp file (use Write tool, not echo/cat)
-# → /tmp/commit-msg.txt
+# Write the commit message with the Write tool (not echo/cat) to the
+# project-level tmp/ (sibling of repo/):
+# → tmp/commit-msg.txt
 
-# Commit using -F flag
-git -C repo commit -F /tmp/commit-msg.txt
+# Commit. NOTE: `git -C repo` resolves -F relative to repo/, so reference
+# the project-level file as ../tmp/ — NOT tmp/ (that would be repo/tmp/):
+git -C repo commit -F ../tmp/commit-msg.txt
 
 # Clean up
-rm /tmp/commit-msg.txt
+rm tmp/commit-msg.txt
 ```
 
-This avoids shell quoting issues with HEREDOCs and `cd` permission blocks. The Write tool creates the tmp file safely.
+This avoids shell quoting issues with HEREDOCs and `cd` permission blocks. The Write tool creates the tmp file safely. Keep scratch files in the project-level `tmp/` (never `repo/tmp/`) so `git add` cannot sweep them into a commit.
 
 ## Issues
 

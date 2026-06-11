@@ -64,7 +64,18 @@ The parent `{project}/` is NOT a git repo. It keeps code and wiki side-by-side. 
 
 **WIP**: Research, plans, decisions, test results. MUST NOT contain secrets, final docs, or code. See `simpleapps:wip` for the frontmatter schema, status lifecycle, retention rule, and daily processing via `/process-wips`.
 
-**tmp/**: Fully available for scratch work: commit messages, PR bodies, issue comments, intermediate output, and any throwaway files. Read, write, and delete freely without asking. Create the folder if missing. Clean up files after use.
+**tmp/**: Project-level scratch space (sibling of `repo/`) for commit messages, PR/issue bodies, intermediate output, and throwaway files. Read, write, and delete freely without asking; create the folder if missing; clean up after use.
+
+MUST keep scratch files in the **project-level** `tmp/` — NEVER `repo/tmp/` (or `wiki/tmp/`). Files inside a git tree get swept into commits by `git add -A`/`git add .`; a real incident put `tmp/commit-msg.txt` onto a project's main branch this way. Add `tmp/` to each repo's `.gitignore` as a safety net, but the convention is to stay outside the tree entirely so the accident cannot recur.
+
+Standard patterns — note the `../tmp/` indirection: `git -C repo` / `git -C wiki` resolves `-F` and other paths relative to that subdir, so a plain `tmp/` would wrongly mean `repo/tmp/`:
+- Commit message → Write `tmp/commit-msg.txt`, then `git -C repo commit -F ../tmp/commit-msg.txt`
+- Wiki commit → Write `tmp/commit-msg.txt`, then `git -C wiki commit -F ../tmp/commit-msg.txt`
+- PR body → Write `tmp/pr-body.txt`, then `gh pr create ... --body-file tmp/pr-body.txt` (gh runs from the project root, so plain `tmp/` is correct — no `../`)
+- Issue body/comment → Write `tmp/issue-*.txt`, then `gh issue ... --body-file tmp/issue-*.txt`
+- Clean up with `rm tmp/<file>` after each op
+
+See `simpleapps:github` for the full git/gh command conventions.
 
 ## Plugin Rules
 
