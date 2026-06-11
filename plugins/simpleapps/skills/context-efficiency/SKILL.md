@@ -66,6 +66,24 @@ The cheapest pointer with the biggest payoff is a **wiki link in CLAUDE.md**. A 
 | Is it shared knowledge across projects? | Wiki |
 | Is it personal to one user? | Memory |
 
+## Navigator Tables (SKILL.md)
+
+A lean SKILL.md keeps the description, the always-true gate, and a **navigator** that routes to supporting files for conditional detail. Every navigator row MUST carry **WHEN** (the trigger situation) and **WHY** (the payoff, or the failure it prevents) — not just a topic-to-file mapping. A bare `| Topic | File |` table says which files exist but not whether the agent is in the situation that needs one, so it loads nothing (and misses the detail) or everything (defeating progressive disclosure).
+
+Before — bare, don't:
+
+| Topic | File |
+|-------|------|
+| Auth | auth.md |
+
+After — carries WHEN/WHY, do:
+
+| When you're… | Load | Why |
+|--------------|------|-----|
+| adding a login/session flow | auth.md | token-refresh edge cases live here; skipping it ships the 401 retry loop |
+
+Rationale: better routing decisions, a lean SKILL.md, and a cheap forced load where a PreToolUse skill-gating hook forces `Skill('X')` on a matching file touch — the leaner the SKILL.md, the cheaper every forced load.
+
 ## Checking Your Budget
 
 Run `/context-audit` to see current token usage by category. Watch for:

@@ -62,6 +62,8 @@ Prior examples in the current session do NOT override a MUST. If session context
 
 Every token costs time, money, and cognitive load. Be concise without losing clarity.
 
+**Why this matters:** brevity is front-loaded effort. A short text costs the author more and every reader less — the work doesn't vanish, it moves from the author once to every reader never (the same ledger as "code is a liability": ongoing cost, one-time value). As Pascal wrote in 1657, "I have made this longer than usual because I have not had time to make it shorter" — commonly misattributed to Mark Twain.
+
 **Rules:**
 1. Start with action verbs: fix, add, update, remove
 2. Use file:line references: `auth.ts:45` not "authentication file line 45"
