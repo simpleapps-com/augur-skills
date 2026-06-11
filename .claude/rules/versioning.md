@@ -1,8 +1,3 @@
----
-description: Version management and deployment process
-globs: ["**/package.json", "**/marketplace.json", "**/plugin.json", "VERSION"]
----
-
 # Versioning & Deployment
 
 Full docs: [Versioning](../../../wiki/Versioning.md)

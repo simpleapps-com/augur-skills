@@ -1,8 +1,3 @@
----
-description: Plugin directory structure conventions
-globs: plugins/**/*
----
-
 # Plugin Structure
 
 Full docs: [Plugin Structure](../../../wiki/Plugin-Structure.md)

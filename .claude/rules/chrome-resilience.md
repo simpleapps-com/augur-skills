@@ -1,6 +1,6 @@
 # Chrome Browser Automation Resilience
 
-The Chrome MCP connection frequently fails on the first attempt. This is normal — the extension may need a moment to respond. MUST NOT give up after a single failure.
+The Chrome MCP connection frequently fails on the first attempt. This is normal. The extension may need a moment to respond. MUST NOT give up after a single failure.
 
 ## Connection failures
 

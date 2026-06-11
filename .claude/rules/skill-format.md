@@ -1,8 +1,3 @@
----
-description: SKILL.md frontmatter and content format
-globs: plugins/**/SKILL.md
----
-
 # SKILL.md Format
 
 Full docs: [Skill Format](../../../wiki/Skill-Format.md)

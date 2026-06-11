@@ -38,7 +38,7 @@ MUST NOT spawn a subagent with zero wiki context when project conventions apply 
 
 Subagents do NOT reliably inherit project rules from `.claude/rules/`. The main agent MUST paste the relevant rule verbatim into the briefing whenever the subagent will touch that tool:
 
-- **Bash use** → paste `bash-simplicity.md` (no shell plumbing, dedicated tools over `grep`/`find`/`cat`/`sed`)
+- **Bash use** → paste `bash-simplicity.md` (no shell plumbing, one command per call, dedicated tools over `cat`/`sed`/`echo >`, `rg` preferred for search)
 - **git use** → paste `git-safety.md` (no write operations without explicit user approval)
 - **Chrome automation** → paste `chrome-resilience.md` (retry sequence on MCP failures)
 

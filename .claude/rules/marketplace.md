@@ -1,8 +1,3 @@
----
-description: Marketplace configuration rules
-globs: .claude-plugin/**/*
----
-
 # Marketplace
 
 Full docs: [Marketplace](../../../wiki/Marketplace.md)

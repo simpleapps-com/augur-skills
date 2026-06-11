@@ -1,5 +1,20 @@
 # Subagent Briefing
 
+## When to delegate
+
+Subagents are the single biggest lever for context discipline. The entire exploration happens outside the main agent's context; only the returned summary costs tokens in the main thread. Reach for a subagent — do not inline — when:
+
+- Broad exploration ("where is X wired up", "how does Y work", "find all usages of Z")
+- Multi-file reads where most of the content will not end up in the final answer
+- Verbose command output (full test runs, long logs, large greps)
+- Research across the wiki, external docs, or unfamiliar code
+
+Inline work is only cheaper when the answer is one or two targeted Reads or Greps. Once it grows past that, delegate. A complete request up front — specific question, file paths, expected output format, word cap — yields a single-round-trip summary; vague prompts force a second round that erases the saving.
+
+Spawn independent subagents in parallel, not sequentially. When two or more delegations do not depend on each other's output, issue them in a single message with multiple Agent calls. Sequential delegation of independent work doubles wall-clock time for no benefit. Each parallel subagent still needs its own complete briefing (including any operational rules listed below).
+
+## Briefing: zero inherited context
+
 Subagents start with zero context — they cannot see this conversation, the wiki, or what has already been tried. Every Agent/Task call MUST brief the subagent completely, or results come back generic, wrong, or ignore project conventions.
 
 ## Required in every subagent prompt
@@ -23,7 +38,7 @@ MUST NOT spawn a subagent with zero wiki context when project conventions apply 
 
 Subagents do NOT reliably inherit project rules from `.claude/rules/`. The main agent MUST paste the relevant rule verbatim into the briefing whenever the subagent will touch that tool:
 
-- **Bash use** → paste `bash-simplicity.md` (no shell plumbing, dedicated tools over `grep`/`find`/`cat`/`sed`)
+- **Bash use** → paste `bash-simplicity.md` (no shell plumbing, one command per call, dedicated tools over `cat`/`sed`/`echo >`, `rg` preferred for search)
 - **git use** → paste `git-safety.md` (no write operations without explicit user approval)
 - **Chrome automation** → paste `chrome-resilience.md` (retry sequence on MCP failures)
 
