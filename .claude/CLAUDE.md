@@ -16,6 +16,10 @@ The wiki is cloned at `../../wiki/` relative to this file. Read it locally:
 - [Development](../../wiki/Development.md)
 - [Deployment](../../wiki/Deployment.md)
 
+## Rules
+
+`plugins/simpleapps/rules/` is **canonical** (shipped + versioned). `.claude/rules/` mirrors the shared rules so agents working in this repo get the same governance, plus repo-dev-only rules (marketplace, plugin-structure, skill-format, skill-token-limit, versioning). Edit the plugin copy, then sync shared rules plugin→repo. `pnpm validate` fails on same-named drift.
+
 ## Quick Reference
 
 ```bash

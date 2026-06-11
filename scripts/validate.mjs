@@ -5,7 +5,11 @@
 //   - SKILL.md frontmatter, name/directory match, kebab-case, 5K-token budget
 //   - Skill("X") references in commands and skills resolve to a real skill
 //   - command frontmatter (name, description) present and name matches file
+//   - rules: no frontmatter (always-loaded plain markdown) + .claude/rules/ mirrors
+//     the shared plugin rules (same-named files, plugin canonical)
 //   - CLAUDE.md under 200 lines
+//
+// Run from the repo root (cwd = repo root); all paths are resolved relative to it.
 
 import { readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
@@ -145,6 +149,56 @@ async function checkCommands(knownSkills) {
   }
 }
 
+// Rules invariants:
+//  1. No frontmatter. Rules load unconditionally, so `description`/`globs` (the
+//     Cursor .mdc conditional-attach convention) have no effect and are forbidden.
+//     A rule file MUST be plain markdown — never start with `---`.
+//  2. No drift. plugins/<plugin>/rules/ is canonical; .claude/rules/ mirrors the
+//     shared rules so agents working IN this repo get the same governance the plugin
+//     ships. Compare SAME-NAMED files only — .claude/rules/ also holds repo-dev-only
+//     rules (marketplace, plugin-structure, etc.) absent from the plugin; those are
+//     intentional, not drift. Never require the two dirs to be identical.
+async function checkRules() {
+  const repoRulesDir = join(ROOT, ".claude/rules");
+  let plugins;
+  try { plugins = await readdir(PLUGINS_DIR); } catch { return; }
+
+  // (1) Frontmatter ban across every rules dir (repo mirror + each plugin's).
+  const ruleDirs = [["", repoRulesDir]];
+  for (const plugin of plugins) ruleDirs.push([`plugins/${plugin}/`, join(PLUGINS_DIR, plugin, "rules")]);
+  for (const [prefix, dir] of ruleDirs) {
+    let files;
+    try { files = await readdir(dir); } catch { continue; }
+    for (const file of files) {
+      if (!file.endsWith(".md")) continue;
+      const text = await readFile(join(dir, file), "utf8");
+      if (text.startsWith("---"))
+        err(`Rule has frontmatter: ${prefix || ".claude/"}rules/${file} — rules MUST be plain markdown (no description/globs; they load unconditionally)`);
+    }
+  }
+
+  // (2) Same-named drift check, plugin canonical.
+  for (const plugin of plugins) {
+    const pluginRulesDir = join(PLUGINS_DIR, plugin, "rules");
+    let files;
+    try { files = await readdir(pluginRulesDir); } catch { continue; }
+
+    for (const file of files) {
+      if (!file.endsWith(".md")) continue;
+      const canonical = await readFile(join(pluginRulesDir, file), "utf8");
+      const rel = `.claude/rules/${file}`;
+      let mirror;
+      try { mirror = await readFile(join(repoRulesDir, file), "utf8"); }
+      catch {
+        err(`Missing rule mirror: ${rel} (canonical: plugins/${plugin}/rules/${file})`);
+        continue;
+      }
+      if (mirror !== canonical)
+        err(`Rule drift: ${rel} differs from canonical plugins/${plugin}/rules/${file} (copy plugin→repo)`);
+    }
+  }
+}
+
 async function checkClaudeMd() {
   for (const rel of [".claude/CLAUDE.md"]) {
     try {
@@ -159,6 +213,7 @@ async function checkClaudeMd() {
 await checkVersions();
 const skills = await checkSkills();
 await checkCommands(skills);
+await checkRules();
 await checkClaudeMd();
 
 if (warnings.length) {
