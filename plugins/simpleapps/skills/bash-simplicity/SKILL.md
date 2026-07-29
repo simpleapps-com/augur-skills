@@ -51,7 +51,7 @@ Dedicated tools are faster, require no permission, and produce better output. MU
 | `sed`, `awk` | Edit tool |
 | `echo >`, `cat <<EOF` | Write tool |
 
-**Search is now Bash-only.** Claude Code 2.1.117 removed its built-in Grep and Glob tools; it now relies on the OS. Prefer `rg` (faster, respects `.gitignore`). Search files with one of:
+**Search is Bash-only.** Claude Code has no built-in Grep or Glob tools; it relies on the OS (they were removed in 2.1.117). Prefer `rg` (faster, respects `.gitignore`). Search files with one of:
 
 | Use case | Bash command |
 |----------|--------------|
@@ -73,6 +73,10 @@ Each is one command with no operators — the one-command-per-call rule still ho
 
 These commands are **denied** in project settings and will always be rejected. Do not attempt them:
 `cd`, `cat`, `sed`, `awk`, `head`, `tail`, `sleep`, `kill`, `pkill`
+
+`sleep` is denied because foreground sleeping burns a turn to accomplish nothing. To wait on a condition, use the `Monitor` tool; to collect a background task's output, use `TaskOutput`/`TaskGet`. MUST NOT build a poll-and-sleep loop.
+
+`lsof` is **allowed** and useful for reading state (finding what holds a port). It MUST NOT be used as a step toward stopping a process: the answer to "something is on the port" is `TaskStop`, or asking the user, never `kill`.
 
 MUST NOT use `node -e` or `python -c` to run inline scripts. These trigger permission prompts. If you need to read a file, use the Read tool. If you need to process data, do it in your response, not in a shell script.
 
@@ -103,7 +107,7 @@ If a process was started **outside your session** (by the user in a terminal), y
 When a dev server fails with EADDRINUSE, a process from a previous session is occupying the port. Follow this sequence:
 
 1. Check `TaskList`. If the task is listed, use `TaskStop`.
-2. If `TaskList` is empty, the process is from outside your session. Ask the user: "Port N is in use by a process from a previous session. Can you stop it?"
+2. If `TaskList` is empty, the process is from outside your session. `lsof -i :<port>` MAY be used to name it for the user. Then ask: "Port N is in use by `<process>` from a previous session. Can you stop it?"
 3. MUST NOT attempt `kill`, `pkill`, or ask for permission to kill. These are denied and waste turns.
 
 Do not retry the server start until the user confirms the port is free.
@@ -124,7 +128,7 @@ All project paths are known and predictable (see `simpleapps:wiki` Cross-Project
 
 Subagents do NOT inherit this skill. They see only the prompt you give them. The primary agent MUST brief every subagent on bash-simplicity before delegating shell work, and owns the output that comes back.
 
-Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Use dedicated tools (Read, Edit, Write) over their shell equivalents (`cat`, `sed`, `awk`, `echo >`). Search with Bash directly, preferring `rg` (then `grep -rn`, `find`, `ls`) — Claude Code 2.1.117 removed the built-in Grep/Glob tools."
+Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Use dedicated tools (Read, Edit, Write) over their shell equivalents (`cat`, `sed`, `awk`, `echo >`). Search with Bash directly, preferring `rg` (then `grep -rn`, `find`, `ls`); there are no built-in Grep/Glob tools."
 
 If a subagent returns a command containing any forbidden operator (see the table above), that is the primary agent's failure. Reject and ask for a re-plan, or translate into separate simple calls. Do not execute it. A subagent violating this is running on a stale prompt; fix the prompt.
 

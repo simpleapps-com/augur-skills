@@ -87,12 +87,16 @@ Bug reports also include **Steps to Reproduce** and **Current Behavior** with er
 
 ### Commands
 
+Write the body to `tmp/issue-body.txt` with the Write tool first, then:
+
 ```bash
-gh issue create --repo simpleapps-com/<repo> --title "type: desc" --body "..."
+gh issue create --repo simpleapps-com/<repo> --title "type: desc" --body-file tmp/issue-body.txt
 gh issue list --repo simpleapps-com/<repo>
 gh issue view <number> --repo simpleapps-com/<repo>
 gh issue close <number> --repo simpleapps-com/<repo>
 ```
+
+`rm tmp/issue-body.txt` after the create succeeds. There is no inline-`--body` form of these commands in this project: the file-based flag is the only approved path.
 
 For closing with a comment, use two calls (avoids `$()` permission prompts):
 1. Write comment to `tmp/issue-comment.txt` using the Write tool

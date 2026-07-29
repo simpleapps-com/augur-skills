@@ -16,7 +16,7 @@ Prefer dedicated tools over Bash equivalents when one exists. They are faster, n
 - Edit not `sed`/`awk`
 - Write not `echo >`/`cat <<EOF`
 
-Search is Bash-only — Claude Code 2.1.117 removed its built-in Grep and Glob tools; it now relies on the OS. Use `rg` (preferred), then `grep -rn`, `find`, and `ls` directly via Bash, one command per call (no `-exec`, no piping to `head`).
+Search is Bash-only. Claude Code has no built-in Grep or Glob tools; it relies on the OS. Use `rg` (preferred), then `grep -rn`, `find`, and `ls` directly via Bash, one command per call (no `-exec`, no piping to `head`).
 
 Reserve Bash for searches above and for commands that never had a dedicated tool.
 
@@ -44,7 +44,7 @@ Every file read, command output, and subagent response sits in context for the r
 
 Aim for the **Goldilocks zone — not too long, not too short.** Match the response length to the question: scale to its complexity and give the shortest answer that is still complete. A factual lookup is a sentence; a "how does X work" is a few scannable, labeled lines — not a one-liner, not a wall of text. The failure mode is oscillating between the two extremes; when unsure, land in the middle.
 
-Be complete and concise. Accuracy and completeness come first — do not truncate a real answer to look terse. But verbosity is not thoroughness. Every token sent to the user is a token they are expected to read; too many tokens raise cognitive load and annoy them. Output tokens also cost ~5x input on Opus, so the waste compounds. Multi-option writeups, draft code blocks, and "here are my thoughts" bullets are the default failure mode when a paragraph would cover it. Say what's needed, then stop.
+Be complete and concise. Accuracy and completeness come first. Do not truncate a real answer to look terse. But verbosity is not thoroughness. Every token sent to the user is a token they are expected to read; too many tokens raise cognitive load and annoy them. Output tokens are also billed at a multiple of input tokens on every current model, so the waste compounds. Multi-option writeups, draft code blocks, and "here are my thoughts" bullets are the default failure mode when a paragraph would cover it. Say what's needed, then stop.
 
 ## Verify your own work
 

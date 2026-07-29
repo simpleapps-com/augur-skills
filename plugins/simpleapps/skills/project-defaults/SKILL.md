@@ -45,6 +45,7 @@ Every project MUST use this layout:
 │   └── hooks/          # → repo/.claude/hooks/
 ├── repo/               # Git repo (simpleapps-com/<name>.git)
 ├── wiki/               # Wiki repo (simpleapps-com/<name>.wiki.git)
+├── goals/              # Active goal tracking (not in git)
 ├── wip/                # Work-in-progress files (not in git)
 ├── tmp/                # Temporary files (not in git)
 └── .simpleapps/        # Config, credentials, site profile (not in git)
@@ -58,9 +59,12 @@ The parent `{project}/` is NOT a git repo. It keeps code and wiki side-by-side. 
 | Dev documentation | `wiki/` | Architecture, guides, specs, conventions |
 | Repo `.claude/rules/` | `repo/` | Minimal summaries referencing wiki |
 | Repo `.claude/CLAUDE.md` | `repo/` | Quick reference + wiki links |
+| Active goals | `goals/` | Current cycle/sprint objectives being tracked |
 | Active task context | `wip/` | `{issue-number}-{short-desc}.md` files |
 | Temporary files | `tmp/` | Scratch space: commit msgs, PR bodies, intermediate output. Full access. |
 | SimpleApps config | `.simpleapps/` | Settings, site profile, credentials (see below) |
+
+**goals/**: Project-level scratch space (sibling of `repo/`) for the goals/objectives currently being worked. Short-lived: reviewed regularly, archived or deleted when the goal is met — like `wip/`, but goal-scoped rather than task-scoped. Not in git; lives on one machine. MUST NOT hold durable team-shared goals (those go in `wiki/`) or secrets.
 
 **WIP**: Research, plans, decisions, test results. MUST NOT contain secrets, final docs, or code. See `simpleapps:wip` for the frontmatter schema, status lifecycle, retention rule, and daily processing via `/process-wips`.
 
@@ -168,7 +172,7 @@ The canonical files live in `repo/.claude/` so they travel with the repo and are
 
 ## Permission Defaults
 
-Every project SHOULD configure `.claude/settings.local.json` with these rules:
+Every project SHOULD configure `.claude/settings.local.json` with these rules. `env` and `permissions` are honoured at project scope; `autoMode` is NOT (see below):
 
 ```json
 {
@@ -203,11 +207,6 @@ Every project SHOULD configure `.claude/settings.local.json` with these rules:
       "Write(~/.claude/plugins/**)"
     ],
     "ask": []
-  },
-  "autoMode": {
-    "hard_deny": [
-      "Bash(git push:*)"
-    ]
   }
 }
 ```
@@ -217,8 +216,23 @@ Every project SHOULD configure `.claude/settings.local.json` with these rules:
 - `kill`/`pkill` - Use `TaskStop` to manage background tasks
 - `Edit(~/.claude/plugins/**)` / `Write(~/.claude/plugins/**)` - Plugin tree is a cache; edit source repo instead
 
-**autoMode.hard_deny reasons:**
-- `git push` - Auto mode MUST NOT auto-approve `git push`. `hard_deny` blocks the auto-mode classifier from approving it regardless of user intent or allow exceptions, so the `simpleapps:git-safety` guardrail (explicit user approval per push) is enforceable. Manual approval at the prompt still works. Added in Claude Code 2.1.136 — see `settings.autoMode.hard_deny`.
+## Auto Mode Guardrail (user settings only)
+
+`autoMode` MUST live in **`~/.claude/settings.json`**, not in any project settings file. Claude Code reads `autoMode` from user settings, the `--settings` flag, and managed settings only; it is **ignored** in project `.claude/settings.json` and `.claude/settings.local.json`. A `hard_deny` written into a project file looks correct in review and silently protects nothing.
+
+```json
+{
+  "autoMode": {
+    "hard_deny": [
+      "Bash(git push:*)"
+    ]
+  }
+}
+```
+
+`hard_deny` blocks the auto-mode classifier from approving `git push` regardless of user intent or allow exceptions, which is what makes the `simpleapps:git-safety` guardrail (explicit user approval per push) enforceable in auto mode. Manual approval at the prompt still works.
+
+`autoMode` also accepts `environment`, `allow`, and `soft_deny` arrays. Include the literal string `"$defaults"` in an array to inherit the built-in rules at that position.
 
 ## Bin Scripts (PATH)
 

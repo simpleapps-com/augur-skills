@@ -15,6 +15,7 @@ Run each command as a separate, simple call. MUST NOT combine commands.
 
 1. Check which directories exist: `ls -la` in the current directory
 2. For each missing directory, create it:
+   - `mkdir -p goals` (if missing)
    - `mkdir -p wip` (if missing)
    - `mkdir -p tmp` (if missing)
    - `mkdir -p .simpleapps` (if missing)
@@ -64,6 +65,20 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    - Same for `Bash(find:*)` and `Bash(rg:*)`.
    - Report each migration: e.g., "Migrated `Bash(grep:*)` from deny to allow (Claude Code 2.1.117 removed the Grep tool)."
    - Leave the other denies (`cat`, `sed`, `awk`, `head`, `tail`, `cd`, `for`, `kill`, `pkill`, `sleep`) intact — those still have dedicated-tool replacements (Read, Edit, etc.).
+
+   **`autoMode` MUST NOT be written here.** Claude Code reads `autoMode` from user settings, the `--settings` flag, and managed settings only; it is ignored in `.claude/settings.json` and `.claude/settings.local.json`. If an `autoMode` block is found in either project file, report it as non-functional and move it to `~/.claude/settings.json` (step 8a).
+
+8a. Check the auto-mode push guardrail. Read `~/.claude/settings.json` and look for `autoMode.hard_deny` containing `Bash(git push:*)`. If missing, ask the user before adding:
+   ```json
+   {
+     "autoMode": {
+       "hard_deny": [
+         "Bash(git push:*)"
+       ]
+     }
+   }
+   ```
+   This is what makes the `simpleapps:git-safety` rule enforceable in auto mode: `hard_deny` blocks the classifier from auto-approving a push regardless of allow rules. Manual approval at the prompt still works. This is a global setting; ask before modifying. If already configured, report it as already set up.
 9. Check if cross-project directory access is configured. Read `~/.claude/settings.json` and check for `additionalDirectories`. If missing, suggest adding it so agents can read other project wikis and repos without permission prompts each session:
    ```json
    {
@@ -126,6 +141,7 @@ Report what was checked, what was created, and what was already correct. Use a s
 
 - [x] `repo/` exists
 - [x] `wiki/` exists
+- [ ] `goals/` created
 - [ ] `wip/` created
 - [x] `CLAUDE.md` → `repo/.claude/CLAUDE.md`
 - [x] `.claude/settings.json` → `repo/.claude/settings.json`
@@ -133,6 +149,7 @@ Report what was checked, what was created, and what was already correct. Use a s
 - [x] `.claude/commands` → `repo/.claude/commands`
 - [x] `.claude/prompts` → `repo/.claude/prompts`
 - [x] `.claude/hooks` → `repo/.claude/hooks`
+- [x] `~/.claude/settings.json` `autoMode.hard_deny` blocks `git push`
 
 MUST NOT create `repo/` or `wiki/` with `mkdir`. These are git clones.
 

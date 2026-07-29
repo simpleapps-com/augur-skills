@@ -165,4 +165,6 @@ Use descriptive variable and function names. Abbreviations save keystrokes but c
 
 ## Claude Code Keywords
 
-Thinking trigger words (`think`, `think hard`, `ultrathink`) are deprecated. Extended thinking is on by default. Use `/effort` (low/medium/high/max) for control.
+Reasoning depth is set by **effort level**, not by prose. `/effort` accepts `low`, `medium`, `high`, `xhigh`, and `max` (available levels depend on the model), plus `ultracode`, which is a Claude Code setting rather than a model level. A skill MAY pin its own level with the `effort` frontmatter field.
+
+`ultrathink` is the one recognised keyword: include it anywhere in a prompt or in skill content to request deeper reasoning for that turn without changing the session effort. `think`, `think hard`, and `think more` are NOT keywords. They are passed through as ordinary prompt text, so MUST NOT be written as if they control anything.

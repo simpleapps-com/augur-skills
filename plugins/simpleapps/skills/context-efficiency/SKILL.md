@@ -15,17 +15,32 @@ Always-loaded content (CLAUDE.md, rules without `paths`) is paid on every prompt
 | CLAUDE.md | Every prompt | Orient + link. Under 200 lines (official limit). |
 | Rules (no `paths`) | Every prompt | Short guardrails. One topic per file. Invoke a skill for detail. |
 | Rules (with `paths`) | On demand | Scoped guidance that only matters for specific file types. |
-| Skills (descriptions) | Every prompt | One-line descriptions. 2% of context window for ALL combined. |
-| Skills (full content) | When invoked | Full behavioral detail. Under 500 lines per skill. |
+| Skills (descriptions) | Every prompt | One-line descriptions. All skills share one listing budget. |
+| Skills (full content) | When invoked | Full behavioral detail. Under 500 lines per skill. Stays in context for the rest of the session. |
 | Wiki | When read | Complete project knowledge. Unlimited but we budget 20K tokens. |
 
 ## Platform Limits
 
 - **CLAUDE.md**: under 200 lines. "Bloated files cause Claude to ignore your actual instructions."
-- **Skill descriptions**: 2% of context window for all skills combined (16K char fallback). Override with `SLASH_COMMAND_TOOL_CHAR_BUDGET`.
+- **Skill listing budget**: **1% of the model's context window**, shared by every skill description. Names are always listed; descriptions are what get trimmed. Raise it with the `skillListingBudgetFraction` setting (e.g. `0.02` = 2%) or set a fixed character count via the `SLASH_COMMAND_TOOL_CHAR_BUDGET` env var.
+- **Per-skill description cap**: **1,536 characters**, counting `description` plus `when_to_use` together, applied regardless of remaining budget. Configurable via `skillListingMaxDescChars`. Front-load the trigger keywords; truncation cuts from the end.
+- **Overflow behaviour**: when the listing overflows, Claude Code drops descriptions starting with the **least-invoked** skills, so frequently used skills keep their full text. A rarely used skill is the first to lose the keywords that would have triggered it.
 - **SKILL.md**: under 500 lines. Move detail to supporting files.
 - **Auto memory**: first 200 lines of MEMORY.md loaded. Topic files on demand.
 - **Overhead**: a meaningful share of the context window is consumed by system prompt, tool definitions, and autocompact buffer before you type anything. The exact percentage depends on which MCP servers and tools are loaded. Run `/context-audit` to see the current breakdown.
+
+## Frontmatter That Buys Back Budget
+
+Four skill frontmatter fields change what a skill costs. Reach for them before trimming prose:
+
+| Field | Effect on context |
+|-------|-------------------|
+| `disable-model-invocation: true` | Removes the description from the listing entirely. The skill still runs via `/name`. Best lever for a command-shaped skill Claude should never auto-load. |
+| `user-invocable: false` | Hides the skill from the `/` menu but **keeps** the description in the listing. Costs the same as a normal skill; use it for reference skills other skills load, not to save budget. |
+| `paths` | Limits auto-activation to matching files. Same idea as a `paths` rule, applied to a skill. |
+| `context: fork` | Runs the skill in a subagent. Its work never enters the main context; only the result comes back. |
+
+The pairing that actually frees budget is `disable-model-invocation: true`. `user-invocable: false` alone does not.
 
 ## Evergreen Content
 
@@ -87,6 +102,6 @@ Rationale: better routing decisions, a lean SKILL.md, and a cheap forced load wh
 ## Checking Your Budget
 
 Run `/context-audit` to see current token usage by category. Watch for:
-- Skills being excluded (descriptions exceeded 2% budget)
+- Skill descriptions being trimmed (listing budget exceeded). The symptom is a skill that exists but never auto-triggers.
 - CLAUDE.md consuming more than ~5% of context
 - Many MCP servers inflating tool definitions

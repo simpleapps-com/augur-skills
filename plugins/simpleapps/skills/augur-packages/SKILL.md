@@ -109,4 +109,4 @@ The goal is to grow the packages over time so sites write less custom code.
 - **Tailwind:** v4, CSS-first
 - **Validation:** Valibot (not Zod, not Yup)
 - **Auth:** NextAuth 5 via package auth factory
-- **Reference site:** Ask the user which site to reference. Use `Read` for known files and Bash search (`rg` preferred, then `grep -rn`/`find`/`ls`) with the project path (see `simpleapps:project-defaults` for layout). Claude Code 2.1.117 removed the built-in Grep/Glob tools; one command per call.
+- **Reference site:** Ask the user which site to reference. Use `Read` for known files and Bash search (`rg` preferred, then `grep -rn`/`find`/`ls`) with the project path (see `simpleapps:project-defaults` for layout). Claude Code has no built-in Grep/Glob tools; one command per call.

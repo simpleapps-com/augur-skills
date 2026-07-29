@@ -40,12 +40,10 @@ Before creating an issue, gather context from Basecamp (see `simpleapps:basecamp
 
 See the `simpleapps:github` skill for `gh` CLI usage and org conventions.
 
-Issue template for Basecamp-linked issues:
+Issue body template for Basecamp-linked issues. Write it to `tmp/issue-body.txt` with the Write tool:
 
-```bash
-gh issue create --repo simpleapps-com/<repo> \
-  --title "<brief technical title>" \
-  --body "## Basecamp
+```markdown
+## Basecamp
 <basecamp_todo_url>
 
 ## Client
@@ -55,8 +53,16 @@ gh issue create --repo simpleapps-com/<repo> \
 <technical summary of what needs to be done>
 
 ## Acceptance Criteria
-- [ ] <criteria from the Basecamp request>"
+- [ ] <criteria from the Basecamp request>
 ```
+
+Then create the issue in one Bash call, and clean up:
+
+```bash
+gh issue create --repo simpleapps-com/<repo> --title "<brief technical title>" --body-file tmp/issue-body.txt
+```
+
+MUST use `--body-file`, never an inline `--body` or a backslash-continued command. Inline bodies trigger permission prompts and break the one-command-per-call rule. See `simpleapps:github` and `simpleapps:bash-simplicity`.
 
 ## Cross-Linking
 

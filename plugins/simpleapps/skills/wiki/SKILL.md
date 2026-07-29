@@ -176,7 +176,7 @@ All projects follow the same directory layout (see `simpleapps:project-defaults`
 - Search code: `rg <pattern> {path-to-project}/repo` (preferred) or `grep -rn <pattern> {path-to-project}/repo`
 - Find files: `rg --files {path-to-project}/repo` or `find {path-to-project}/repo -name <pattern>`
 
-Use Read for known files; search with `rg`/`grep`/`find`/`ls` via Bash — Claude Code 2.1.117 removed the built-in Grep/Glob tools. One command per call, no operators.
+Use Read for known files; search with `rg`/`grep`/`find`/`ls` via Bash. Claude Code has no built-in Grep/Glob tools. One command per call, no operators.
 
 ### Search all wikis
 
