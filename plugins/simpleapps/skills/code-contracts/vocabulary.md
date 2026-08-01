@@ -1,10 +1,10 @@
-# Code Contracts — Vocabulary Reference
+# Code Contracts: Vocabulary Reference
 
 The full glyph palette, ASCII gloss patterns, clause-first derivation table, and per-language examples. Loaded by `SKILL.md` on demand.
 
 ## Glyph palette
 
-A small, opinionated set. MUST stay narrow — each glyph the agent emits should be one a reader has seen elsewhere in this codebase, not a novelty.
+A small, opinionated set. MUST stay narrow: each glyph the agent emits should be one a reader has seen elsewhere in this codebase, not a novelty.
 
 | Family | Glyphs | ASCII gloss |
 |--------|--------|-------------|
@@ -19,8 +19,8 @@ A small, opinionated set. MUST stay narrow — each glyph the agent emits should
 
 ### What stays ASCII
 
-- Tag prefixes (`@requires`, `@ensures`, `@invariant`, `@trusted`, `@pure`) — for tooling compatibility (Psalm, PHPStan, JSDoc tooling, mypy, pyright)
-- Operators inside type signatures (TS/PHP/Python syntax — `&`, `|`, `:`, `?`, etc.)
+- Tag prefixes (`@requires`, `@ensures`, `@invariant`, `@trusted`, `@pure`), for tooling compatibility (Psalm, PHPStan, JSDoc tooling, mypy, pyright)
+- Operators inside type signatures (TS/PHP/Python syntax: `&`, `|`, `:`, `?`, etc.)
 - Inline gloss text on every clause (the dual-audience pattern)
 
 Unicode lives inside the *clause body*. ASCII gloss lives on the same or next line.
@@ -30,13 +30,13 @@ Unicode lives inside the *clause body*. ASCII gloss lives on the same or next li
 - `⇒` (implication) vs `→` (function arrow) vs `↦` (mapsto). Use `⇒` for logical implication, `→` for "function from A to B," `↦` for "x mapsto f(x)."
 - `≡` (logical equivalence / equal-by-definition in some traditions) vs `≜` (definition). Prefer `≜` for definitions, `≡` for "same up to" relations.
 - `⊆` (subset-or-equal) vs `⊂` (proper subset). Most contract uses want `⊆`.
-- `Θ(f)` (tight bound) vs `O(f)` (upper bound only) vs `Ω(f)` (lower bound). Most code calling itself "O(n log n)" is actually `Θ(n log n)` — the bound is tight, not just an upper limit. SHOULD use `Θ` when the bound is tight; `O` is correct only when the function may run *faster* than f. Loose `O` claims prime the wrong reasoning ("this is at most O(n²)" when the agent should think "this is exactly Θ(n log n)").
+- `Θ(f)` (tight bound) vs `O(f)` (upper bound only) vs `Ω(f)` (lower bound). Most code calling itself "O(n log n)" is actually `Θ(n log n)`: the bound is tight, not just an upper limit. SHOULD use `Θ` when the bound is tight; `O` is correct only when the function may run *faster* than f. Loose `O` claims prime the wrong reasoning ("this is at most O(n²)" when the agent should think "this is exactly Θ(n log n)").
 
 ## Pairing patterns
 
 Pick one and apply consistently within a file. **The gloss MUST carry assumption-naming, not just translation** (see `SKILL.md` § "Two surfaces per clause"). The Unicode formal surface activates careful reasoning in readers with bandwidth to parse it; the prose gloss carries the same content for readers without that bandwidth, plus the assumptions the formal notation cannot express.
 
-### Pattern A — inline assumption-naming gloss after the formal clause
+### Pattern A: inline assumption-naming gloss after the formal clause
 
 ```ts
 @requires q ≥ 0           // q is non-negative; assumes caller validated input
@@ -45,7 +45,7 @@ Pick one and apply consistently within a file. **The gloss MUST carry assumption
 
 Denser. Reads as a column of formal clauses with the prose-and-assumptions as a sidebar.
 
-### Pattern B — bracketed gloss on the same line
+### Pattern B: bracketed gloss on the same line
 
 ```ts
 @requires q ≥ 0  (q is non-negative; assumes caller validated input)
@@ -56,13 +56,13 @@ Less dense. Reads more like prose. Better when the clauses are short and the ass
 
 ### What the gloss is NOT
 
-A redundant translation. `@requires q ≥ 0  // q >= 0` is the wrong gloss — both lines say the same thing, neither names what is assumed. The gloss MUST add at least one of:
+A redundant translation. `@requires q ≥ 0  // q >= 0` is the wrong gloss: both lines say the same thing, neither names what is assumed. The gloss MUST add at least one of:
 
 - An assumption the formal notation does not express (no NaN, integer not float, validated upstream)
 - A side condition (locking, transactional context, ordering)
 - A boundary the contract treats as out-of-scope (overflow, empty input, sentinels)
 
-If the gloss is exactly `@requires q ≥ 0  // q >= 0`, drop it — it's bookkeeping, not load-bearing prose.
+If the gloss is exactly `@requires q ≥ 0  // q >= 0`, drop it. It's bookkeeping, not load-bearing prose.
 
 ## Clause-first derivation table
 
@@ -77,7 +77,7 @@ Write the clause first. The encoding falls out of the clause shape.
 | Effect: `pure`, `mutates X`, `throws Y` | 2 | `@psalm-pure`, `@psalm-mutation-free`, `eslint-plugin-functional` |
 | Otherwise (algebraic law, multi-step protocol invariant, external state) | 3 | Formal-prose annotation in JSDoc / docstring |
 
-The discipline: write the clause **before** the function. Reversing the order — writing the function and back-fitting a contract — bypasses the cognitive work and produces tautological annotations.
+The discipline: write the clause **before** the function. Reversing the order, writing the function and back-fitting a contract, bypasses the cognitive work and produces tautological annotations.
 
 ## Per-language examples
 
@@ -93,7 +93,7 @@ The discipline: write the clause **before** the function. Reversing the order �
  *           // result is the sum of qty × unitPrice; assumes integer cents, no rounding here
  * @ensures  result ∈ ℕ                 // result is non-negative; overflow is caller's responsibility
  * @time     Θ(n)                       // linear in n = items.length
- * @space    O(1)                       // auxiliary space — accumulator only
+ * @space    O(1)                       // auxiliary space, accumulator only
  * @pure
  */
 function totalCents(items: LineItem[]): number { ... }
@@ -140,7 +140,7 @@ def transfer(src: Account, dst: Account, cents: int) -> None:
               # dst.balance increases by cents; same locking assumption
     @invariant src.balance + dst.balance ≡ old(src.balance) + old(dst.balance)
                # total balance is conserved; holds across the atomic boundary, not mid-flight
-    @time     Θ(1)                                # constant — three field updates
+    @time     Θ(1)                                # constant, three field updates
     @space    Θ(1)
     @mutates  src, dst
     """
@@ -148,17 +148,17 @@ def transfer(src: Account, dst: Account, cents: int) -> None:
 
 ## Annotation forms reference
 
-- `@requires <precondition>` — must hold of inputs at call time
-- `@ensures <postcondition>` — guaranteed of result / observable state
-- `@invariant <property>` — holds at loop head, between method calls, across state transitions
-- `@trusted <param>` — value inlined into a security-sensitive sink (SQL, HTML, shell); origin must be trusted code, never user input
-- `@pure` — no observable effects (no mutation, no IO, no throws under normal inputs)
-- `@mutates <state>` — names the state mutated (a parameter, a field, a global)
-- `@throws <type>` — names the exceptions that may be raised
-- `@io` — performs IO (filesystem, network, console)
-- `@property <law>` — algebraic law the function satisfies (idempotence, commutativity, associativity, monotonicity)
-- `@time <bound>` — runtime complexity. Use `Θ(...)` for tight bound, `O(...)` for upper bound only, `Ω(...)` for lower bound. Amortized: `@time Θ(1) amortized`. Worst/avg split: `@time worst Θ(n²)  avg Θ(n log n)`.
-- `@space <bound>` — auxiliary space complexity (excluding input). Same `Θ`/`O`/`Ω` conventions.
+- `@requires <precondition>`: must hold of inputs at call time
+- `@ensures <postcondition>`: guaranteed of result / observable state
+- `@invariant <property>`: holds at loop head, between method calls, across state transitions
+- `@trusted <param>`: value inlined into a security-sensitive sink (SQL, HTML, shell); origin must be trusted code, never user input
+- `@pure`: no observable effects (no mutation, no IO, no throws under normal inputs)
+- `@mutates <state>`: names the state mutated (a parameter, a field, a global)
+- `@throws <type>`: names the exceptions that may be raised
+- `@io`: performs IO (filesystem, network, console)
+- `@property <law>`: algebraic law the function satisfies (idempotence, commutativity, associativity, monotonicity)
+- `@time <bound>`: runtime complexity. Use `Θ(...)` for tight bound, `O(...)` for upper bound only, `Ω(...)` for lower bound. Amortized: `@time Θ(1) amortized`. Worst/avg split: `@time worst Θ(n²)  avg Θ(n log n)`.
+- `@space <bound>`: auxiliary space complexity (excluding input). Same `Θ`/`O`/`Ω` conventions.
 
 ## Glossary
 
@@ -186,9 +186,9 @@ A reader unfamiliar with the symbols can use this section. Over repeated exposur
 | `≜` | "is defined as" | left side is defined to mean the right |
 | `≡` | "equivalent to" | the two are interchangeable in this context |
 | `Σ(xs, f)` | "sum of f over xs" | sum of f(x) for each x in xs |
-| `Θ(f(n))` | "Theta of f of n" | tight asymptotic bound — function grows exactly at the rate f(n) |
-| `O(f(n))` | "Big-O of f of n" | upper bound only — function grows at most as fast as f(n) |
-| `Ω(f(n))` | "Big-Omega of f of n" | lower bound — function grows at least as fast as f(n) |
+| `Θ(f(n))` | "Theta of f of n" | tight asymptotic bound; function grows exactly at the rate f(n) |
+| `O(f(n))` | "Big-O of f of n" | upper bound only; function grows at most as fast as f(n) |
+| `Ω(f(n))` | "Big-Omega of f of n" | lower bound; function grows at least as fast as f(n) |
 | `ω(f(n))` | "little-omega of f of n" | strictly faster than f(n) |
 | `f ~ g` | "f is asymptotic to g" | f(n)/g(n) → 1 as n → ∞ |
 | `n → ∞` | "as n grows without bound" | the limiting case for asymptotic claims |

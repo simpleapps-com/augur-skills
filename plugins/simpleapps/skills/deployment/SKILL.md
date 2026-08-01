@@ -23,7 +23,7 @@ Every project wiki MUST have a `Deployment.md` page with up to three sections:
 How to commit and create a PR for review.
 
 ## Deploy
-How to deploy to staging. (Run by `/stage` — the command is named "stage"; the wiki section is "Deploy".)
+How to deploy to staging. (Run by `/stage`: the command is named "stage"; the wiki section is "Deploy".)
 
 ## Publish
 How to release to production.
@@ -56,7 +56,7 @@ The user invoking a command IS the approval to execute all its steps, including 
 
 Wiki Deployment pages often contain shell snippets written for humans, e.g. `pnpm typecheck && pnpm test` or `git add -A; git commit -m "..."`. These violate `simpleapps:bash-simplicity` (no `&&`, `;`, `|`, `$()`).
 
-When a wiki step uses shell operators, you MUST translate it into separate, single-command Bash calls. The wiki defines **what** to run; `bash-simplicity` defines **how** to run it. Both rules stand. One does not override the other. (The invoking command — `/submit`, `/stage`, `/publish` — loads `Skill("bash-simplicity")`; if reading this skill on its own, load it first for the full translation rules.)
+When a wiki step uses shell operators, you MUST translate it into separate, single-command Bash calls. The wiki defines **what** to run; `bash-simplicity` defines **how** to run it. Both rules stand. One does not override the other. (The invoking commands `/submit`, `/stage`, and `/publish` load `Skill("bash-simplicity")`; if reading this skill on its own, load it first for the full translation rules.)
 
 Example: wiki says `pnpm typecheck && pnpm test` → make two Bash calls: `pnpm typecheck`, then `pnpm test`. If the first fails, stop and report. Do not run the second.
 

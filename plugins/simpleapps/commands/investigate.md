@@ -11,7 +11,7 @@ Investigate a WIP file. Explore the codebase, analyze the problem, and update th
 
 ## 0. Branch hygiene check
 
-Apply the "Branch hygiene before starting work" rule from `simpleapps:work-habits`. `/investigate` is research only — it does not write code, so the bar is low: nudge the user about the branch state, do the safe transition if needed, and proceed. The only pause condition is a dirty tree on a branch unrelated to this issue.
+Apply the "Branch hygiene before starting work" rule from `simpleapps:work-habits`. `/investigate` is research only. It does not write code, so the bar is low: nudge the user about the branch state, do the safe transition if needed, and proceed. The only pause condition is a dirty tree on a branch unrelated to this issue.
 
 1. Resolve the issue number `N` from `$ARGUMENTS` if provided, or from the WIP filename (e.g., `wip/GH367-…md` → `N=367`)
 2. Run `git -C repo branch --show-current` → branch `B`
@@ -57,7 +57,7 @@ Use Edit to update the WIP file with findings.
 
 ### Frontmatter
 
-Per `simpleapps:wip`, bump `last_reviewed` to today (`date +%Y-%m-%d`) and, if `status` is `open`, flip to `in-progress`. If the file has no frontmatter (legacy), add the full block per the schema before editing sections. Keep `shipped_at`, `pr`, and `disposition` untouched unless the ground truth has changed (e.g., issue is already closed — then reconcile per the wip skill).
+Per `simpleapps:wip`, bump `last_reviewed` to today (`date +%Y-%m-%d`) and, if `status` is `open`, flip to `in-progress`. If the file has no frontmatter (legacy), add the full block per the schema before editing sections. Keep `shipped_at`, `pr`, and `disposition` untouched unless the ground truth has changed (e.g., issue is already closed, then reconcile per the wip skill).
 
 ### Research section
 

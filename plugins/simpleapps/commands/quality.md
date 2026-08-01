@@ -12,7 +12,7 @@ Run all code quality checks on the FULL codebase and fix issues found.
 
 **Bias warning**: You may be checking code you wrote earlier in this session. Approach with skepticism. Adopt the stance of a reviewer who did not write the code. A clean pass should be earned, not assumed.
 
-**Output rule**: The user's primary question is "what ran and did it pass?" Lead the output with a one-line plan listing every check about to run (by script name). Then run them. Steps that are N/A (e.g., step 3 if no augur-\* packages) MUST be skipped silently — do not print "Not applicable". Discovery details, missing tooling, and suppression scans belong at the END of the report, not interleaved with the runs.
+**Output rule**: The user's primary question is "what ran and did it pass?" Lead the output with a one-line plan listing every check about to run (by script name). Then run them. Steps that are N/A (e.g., step 3 if no augur-\* packages) MUST be skipped silently. Do not print "Not applicable". Discovery details, missing tooling, and suppression scans belong at the END of the report, not interleaved with the runs.
 
 ## 1. Discover quality tools
 

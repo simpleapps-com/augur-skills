@@ -58,11 +58,40 @@ The failure mode this prevents: an agent reads "tests MUST cover the edge case",
 
 Prior examples in the current session do NOT override a MUST. If session context shows code that violates a MUST from the wiki/skill/spec, the session code is wrong. Flag it, do not use it as permission to violate the MUST.
 
+### Prohibitions go before the procedure
+
+A MUST NOT placed after the steps it governs is read too late to prevent anything. Aerospace documentation standards put warnings and cautions before the step for exactly this reason.
+
+- MUST place prohibitions, approval gates, and safety conditions above the procedure they constrain.
+- MUST NOT bury an approval gate in a closing paragraph. The `versioning` rule is the model: "MUST NOT deploy without explicit user approval" precedes the deploy steps.
+
+## Controlled Vocabulary
+
+RFC 2119 is controlled language applied to one word class. It fixes the sense of modal verbs so they cannot be read two ways. ASD-STE100 (Simplified Technical English, the aerospace maintenance standard from ASD's STE Maintenance Group) applies the same move to the whole document under one constraint: **one word, one meaning, one part of speech**. Its approved dictionary is aerospace vocabulary and MUST NOT be adopted here. Two of its rules earn their keep in agent-facing writing.
+
+### One term per concept
+
+Pick one word per concept and use only that word. A synonym reads as a new concept to an agent, which then hunts for a distinction that does not exist.
+
+- MUST use the same term for the same thing across a document set. In this repo a **rule** is always-loaded markdown in `rules/`, a **skill** is on-demand markdown in `skills/`, and a **command** is a skill invoked by slash. MUST NOT substitute "guardrail", "convention", or "standard" for any of them.
+- MUST NOT vary wording for style. Repetition is correct here. Elegant variation is a defect.
+- SHOULD define a term once, where the reader first meets it, then reuse it verbatim.
+
+### Name the noun, do not point at it
+
+"This", "it", and "that" pointing back at a whole clause is the most common ambiguity in technical prose, and the one agents most often resolve wrongly.
+
+- MUST NOT open a sentence with "This" or "It" referring to the preceding sentence as a whole. Repeat the noun.
+- ❌ "The validator compares same-named files only. This means repo-only rules are safe."
+- ✅ "The validator compares same-named files only. The same-name comparison means repo-only rules are safe."
+
+Repeating a noun costs a few tokens. Resolving the wrong referent costs a wrong edit.
+
 ## Token Efficiency
 
 Every token costs time, money, and cognitive load. Be concise without losing clarity.
 
-**Why this matters:** brevity is front-loaded effort. A short text costs the author more and every reader less — the work doesn't vanish, it moves from the author once to every reader never (the same ledger as "code is a liability": ongoing cost, one-time value). As Pascal wrote in 1657, "I have made this longer than usual because I have not had time to make it shorter" — commonly misattributed to Mark Twain.
+**Why this matters:** brevity is front-loaded effort. A short text costs the author more and every reader less. The work doesn't vanish, it moves from the author once to every reader never (the same ledger as "code is a liability": ongoing cost, one-time value). As Pascal wrote in 1657, "I have made this longer than usual because I have not had time to make it shorter." The line is commonly misattributed to Mark Twain.
 
 **Rules:**
 1. Start with action verbs: fix, add, update, remove

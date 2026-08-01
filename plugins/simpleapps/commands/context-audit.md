@@ -1,6 +1,6 @@
 ---
 name: context-audit
-description: Detailed breakdown of what is consuming the context window — CLAUDE.md, rules, skills, wiki, and budgets. Use when the built-in /context overview isn't enough.
+description: Detailed breakdown of what is consuming the context window: CLAUDE.md, rules, skills, wiki, and budgets. Use when the built-in /context overview isn't enough.
 allowed-tools: Bash(wc:*), Bash(ls:*), Bash(find:*), Bash(grep:*), Read
 ---
 

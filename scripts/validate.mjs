@@ -152,10 +152,10 @@ async function checkCommands(knownSkills) {
 // Rules invariants:
 //  1. No frontmatter. Rules load unconditionally, so `description`/`globs` (the
 //     Cursor .mdc conditional-attach convention) have no effect and are forbidden.
-//     A rule file MUST be plain markdown — never start with `---`.
+//     A rule file MUST be plain markdown and MUST never start with `---`.
 //  2. No drift. plugins/<plugin>/rules/ is canonical; .claude/rules/ mirrors the
 //     shared rules so agents working IN this repo get the same governance the plugin
-//     ships. Compare SAME-NAMED files only — .claude/rules/ also holds repo-dev-only
+//     ships. Compare SAME-NAMED files only; .claude/rules/ also holds repo-dev-only
 //     rules (marketplace, plugin-structure, etc.) absent from the plugin; those are
 //     intentional, not drift. Never require the two dirs to be identical.
 async function checkRules() {
@@ -173,7 +173,7 @@ async function checkRules() {
       if (!file.endsWith(".md")) continue;
       const text = await readFile(join(dir, file), "utf8");
       if (text.startsWith("---"))
-        err(`Rule has frontmatter: ${prefix || ".claude/"}rules/${file} — rules MUST be plain markdown (no description/globs; they load unconditionally)`);
+        err(`Rule has frontmatter: ${prefix || ".claude/"}rules/${file}: rules MUST be plain markdown (no description/globs; they load unconditionally)`);
     }
   }
 

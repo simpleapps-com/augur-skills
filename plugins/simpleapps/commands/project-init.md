@@ -26,7 +26,7 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    - `mkdir -p repo/.claude/commands` (if missing)
    - `mkdir -p repo/.claude/prompts` (if missing)
    - `mkdir -p repo/.claude/hooks` (if missing)
-   - For `repo/.claude/settings.json`: run `ls repo/.claude/settings.json`. If missing, create it with the Write tool as an empty stub: `{}`. Report it as created (stub). Do NOT touch `.claude/settings.local.json` — that file is machine-local and handled separately in step 8.
+   - For `repo/.claude/settings.json`: run `ls repo/.claude/settings.json`. If missing, create it with the Write tool as an empty stub: `{}`. Report it as created (stub). Do NOT touch `.claude/settings.local.json`. That file is machine-local and handled separately in step 8.
    - For `repo/.claude/CLAUDE.md`: run `ls repo/.claude/CLAUDE.md`. If missing, create it with the Write tool using this minimal stub (substitute `<repo-name>` from the git remote or the command argument):
      ```markdown
      # <repo-name>
@@ -60,11 +60,11 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    c. For client projects: if `.simpleapps/site.json` does not exist, suggest creating it. Do NOT create it automatically. The user needs to provide the site data.
 8. Check if `.claude/settings.local.json` exists using Read. If missing or missing deny rules, create/update it with the standard settings from the `project-defaults` skill, including the `env` block with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`, `CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY`, `CLAUDE_CODE_NO_FLICKER`, and the full allow/deny lists. If the file exists but is missing the `env` block or any env vars, add them. `CLAUDE_CODE_NO_FLICKER` MUST be set to `"1"`. This enables fullscreen rendering that eliminates terminal flicker.
 
-   **Stale-deny migration (Claude Code 2.1.117+):** the dedicated Grep and Glob tools were removed in Claude Code 2.1.117. Settings written before that release deny `Bash(grep:*)`, `Bash(find:*)`, and `Bash(rg:*)` — those denies now strand the agent (no dedicated alternative exists). When updating an existing `.claude/settings.local.json`:
+   **Stale-deny migration (Claude Code 2.1.117+):** the dedicated Grep and Glob tools were removed in Claude Code 2.1.117. Settings written before that release deny `Bash(grep:*)`, `Bash(find:*)`, and `Bash(rg:*)`. Those denies now strand the agent (no dedicated alternative exists). When updating an existing `.claude/settings.local.json`:
    - If `Bash(grep:*)` appears in `permissions.deny`, remove it from `deny` and add it to `allow` (alphabetical position).
    - Same for `Bash(find:*)` and `Bash(rg:*)`.
    - Report each migration: e.g., "Migrated `Bash(grep:*)` from deny to allow (Claude Code 2.1.117 removed the Grep tool)."
-   - Leave the other denies (`cat`, `sed`, `awk`, `head`, `tail`, `cd`, `for`, `kill`, `pkill`, `sleep`) intact — those still have dedicated-tool replacements (Read, Edit, etc.).
+   - Leave the other denies (`cat`, `sed`, `awk`, `head`, `tail`, `cd`, `for`, `kill`, `pkill`, `sleep`) intact: those still have dedicated-tool replacements (Read, Edit, etc.).
 
    **`autoMode` MUST NOT be written here.** Claude Code reads `autoMode` from user settings, the `--settings` flag, and managed settings only; it is ignored in `.claude/settings.json` and `.claude/settings.local.json`. If an `autoMode` block is found in either project file, report it as non-functional and move it to `~/.claude/settings.json` (step 8a).
 

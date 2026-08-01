@@ -34,15 +34,15 @@ When debugging in the browser, MUST check for error overlays (red error pill/bad
 
 Every file read, command output, and subagent response sits in context for the rest of the session. The agent behaviors that matter:
 
-- Broad exploration ("where is X wired up", "how does Y work") → delegate to an Explore subagent with a word cap. The entire exploration happens outside your context; only the returned summary costs you tokens. This is the single biggest lever for keeping the main thread slim. The trick is asking for everything you will need up front — file paths, line numbers, surrounding context, edge cases — in one specific request. A complete request yields a complete answer; a vague one forces a second round-trip that erases the saving. See `subagent-briefing.md` for the required briefing elements.
+- Broad exploration ("where is X wired up", "how does Y work") → delegate to an Explore subagent with a word cap. The entire exploration happens outside your context; only the returned summary costs you tokens. This is the single biggest lever for keeping the main thread slim. The trick is asking for everything you will need up front (file paths, line numbers, surrounding context, edge cases) in one specific request. A complete request yields a complete answer; a vague one forces a second round-trip that erases the saving. See `subagent-briefing.md` for the required briefing elements.
 - Do not re-read files already loaded in this session. Trust the earlier Read.
-- After a search (`rg`/`grep`) gives you a line number, Read with offset/limit — not the whole file.
+- After a search (`rg`/`grep`) gives you a line number, Read with offset/limit, not the whole file.
 - Commands with large output (test runs, build logs, long search results): redirect to a `tmp/` file, then `rg` or targeted-Read the parts you need.
-- Do not duplicate subagent work. If you delegated the search, use the answer — do not re-run the greps inline to verify.
+- Do not duplicate subagent work. If you delegated the search, use the answer. Do not re-run the greps inline to verify.
 
 ## Response length
 
-Aim for the **Goldilocks zone — not too long, not too short.** Match the response length to the question: scale to its complexity and give the shortest answer that is still complete. A factual lookup is a sentence; a "how does X work" is a few scannable, labeled lines — not a one-liner, not a wall of text. The failure mode is oscillating between the two extremes; when unsure, land in the middle.
+Aim for the **Goldilocks zone: not too long, not too short.** Match the response length to the question: scale to its complexity and give the shortest answer that is still complete. A factual lookup is a sentence; a "how does X work" is a few scannable, labeled lines, not a one-liner and not a wall of text. The failure mode is oscillating between the two extremes; when unsure, land in the middle.
 
 Be complete and concise. Accuracy and completeness come first. Do not truncate a real answer to look terse. But verbosity is not thoroughness. Every token sent to the user is a token they are expected to read; too many tokens raise cognitive load and annoy them. Output tokens are also billed at a multiple of input tokens on every current model, so the waste compounds. Multi-option writeups, draft code blocks, and "here are my thoughts" bullets are the default failure mode when a paragraph would cover it. Say what's needed, then stop.
 
@@ -115,26 +115,26 @@ When invoked for issue `#N`:
 
 | `B` | `T` | Action |
 |-----|-----|--------|
-| Contains `N` | any | Proceed — continuing in-flight work for this issue |
+| Contains `N` | any | Proceed: continuing in-flight work for this issue |
 | `main` / `master` | clean | For `/wip` and `/investigate` (read/scaffold only): proceed on `main`. For `/implement` (code changes): create the branch yourself with `git -C repo switch -c <type>/<N>-<slug>`, then proceed. Derive `<type>` from the issue title prefix (`feat:`, `fix:`, `chore:`, `docs:`). Derive `<slug>` from the issue title (lowercase-hyphenated, ≤40 chars). |
 | Different issue branch (`feat/M-…`, `M ≠ N`) | clean | Nudge in your reply: "you're on `<branch>` for issue M; switching to main first." For `/wip`/`/investigate`: switch to main and proceed. For `/implement`: switch to main, create the new branch yourself, proceed. The user's work is already committed on `M`'s branch; they can return to it later. |
-| any | dirty | **Pause and ask once.** Uncommitted work could be mixed or lost by proceeding. Surface the modified files, propose one path (commit on a branch, stash, discard), and let the user choose. Proceed on their answer — do not refuse further engagement. MUST NOT touch their changes without instruction. |
+| any | dirty | **Pause and ask once.** Uncommitted work could be mixed or lost by proceeding. Surface the modified files, propose one path (commit on a branch, stash, discard), and let the user choose. Proceed on their answer. Do not refuse further engagement. MUST NOT touch their changes without instruction. |
 
-The only pause condition is a dirty tree, because proceeding could destroy work the agent didn't make. Clean main + known issue is not a stop condition; neither is being on someone else's clean feature branch — the agent switches and proceeds.
+The only pause condition is a dirty tree, because proceeding could destroy work the agent didn't make. Clean main + known issue is not a stop condition; neither is being on someone else's clean feature branch. The agent switches and proceeds.
 
 ## Branch hygiene at end-of-turn
 
-The mirror of "before starting work" (above): the agent leaves the checkout clean, not just finds it clean. After completing work that left the checkout on any branch other than `main`/`master`, switch back to `main` before ending the turn — after `/submit` lands, after an admin-merge leaves you on the source branch, after a cleanup PR, or whenever the user moves on to a new task.
+The mirror of "before starting work" (above): the agent leaves the checkout clean, not just finds it clean. After completing work that left the checkout on any branch other than `main`/`master`, switch back to `main` before ending the turn: after `/submit` lands, after an admin-merge leaves you on the source branch, after a cleanup PR, or whenever the user moves on to a new task.
 
-Do it **silently** — not as an announced step, just leave the checkout in the right state:
+Do it **silently**, not as an announced step. Just leave the checkout in the right state:
 
 1. `git -C repo branch --show-current`
 2. `git -C repo switch main` (if not already there)
 3. `git -C repo fetch origin main`
 
-The only pause condition is a dirty tree on a branch unrelated to the next task (same rule as start-of-work — MUST NOT touch uncommitted work the agent didn't make). A clean tree on any branch transitions cleanly.
+The only pause condition is a dirty tree on a branch unrelated to the next task (same rule as start-of-work: MUST NOT touch uncommitted work the agent didn't make). A clean tree on any branch transitions cleanly.
 
-Branching mistakes compound silently and the cost of recovery scales with how many commands later they are caught — but the answer is the agent doing the safe transition autonomously, not screaming the sky is falling at the user every time the workflow requires a routine `git switch`.
+Branching mistakes compound silently and the cost of recovery scales with how many commands later they are caught. But the answer is the agent doing the safe transition autonomously, not screaming the sky is falling at the user every time the workflow requires a routine `git switch`.
 
 ## Track progress
 

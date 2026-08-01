@@ -48,7 +48,7 @@ git -C repo add path/to/file.md
 # → tmp/commit-msg.txt
 
 # Commit. NOTE: `git -C repo` resolves -F relative to repo/, so reference
-# the project-level file as ../tmp/ — NOT tmp/ (that would be repo/tmp/):
+# the project-level file as ../tmp/, NOT tmp/ (that would be repo/tmp/):
 git -C repo commit -F ../tmp/commit-msg.txt
 
 # Clean up

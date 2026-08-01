@@ -171,7 +171,7 @@ All projects follow the same directory layout (see `simpleapps:project-defaults`
 **Before reading another project's wiki, pull the latest:**
 `git -C {path-to-project}/wiki pull`
 
-**Cross-project access — the paths are known, so target them directly:**
+**Cross-project access. The paths are known, so target them directly:**
 - Read files: `Read("{path-to-project}/wiki/Page.md")`
 - Search code: `rg <pattern> {path-to-project}/repo` (preferred) or `grep -rn <pattern> {path-to-project}/repo`
 - Find files: `rg --files {path-to-project}/repo` or `find {path-to-project}/repo -name <pattern>`
@@ -277,7 +277,7 @@ Large monorepos often have subsystems with many sibling items (helpers, componen
 One-paragraph summary.
 
 **Entry point:** `repo/src/helpers/README.md`
-**Load when:** working in the attribute system — adding, editing, or debugging attributes, or extending the schema. The README indexes per-helper detail docs for complex items.
+**Load when:** working in the attribute system: adding, editing, or debugging attributes, or extending the schema. The README indexes per-helper detail docs for complex items.
 ```
 
 Keywords in the page heading and the Load-when clause (subsystem name, adjacent terms, verbs that match what the agent is likely doing) help the agent recognize the subsystem on sight. The signpost points at the README, not at every leaf: the README is the hub, and the agent follows it to individual item docs as needed.

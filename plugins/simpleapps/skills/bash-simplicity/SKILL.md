@@ -61,7 +61,7 @@ Dedicated tools are faster, require no permission, and produce better output. MU
 
 Reserve Bash for these and for commands that never had a dedicated tool: build tools, test runners, git, package managers, system commands.
 
-**JSON: prefer `jq`.** For JSON files, default to `jq` for field extraction rather than Read or `grep`. Reading a large JSON file with the Read tool dumps the whole structure — base64 blobs, embedding vectors, inlined doc strings — into context for the rest of the session; `grep` can't navigate JSON structure.
+**JSON: prefer `jq`.** For JSON files, default to `jq` for field extraction rather than Read or `grep`. Reading a large JSON file with the Read tool dumps the whole structure (base64 blobs, embedding vectors, inlined doc strings) into context for the rest of the session; `grep` can't navigate JSON structure.
 
 | Use case | Bash command |
 |----------|--------------|
@@ -69,7 +69,7 @@ Reserve Bash for these and for commands that never had a dedicated tool: build t
 | Strip a noisy field | `jq 'del(.bigField)' file.json` |
 | Pull values from an array | `jq '.[].itemId' file.json` |
 
-Each is one command with no operators — the one-command-per-call rule still holds. `Read` and `grep` remain right for small JSON where the structure is unknown, malformed JSON, and cross-file string search.
+Each is one command with no operators. The one-command-per-call rule still holds. `Read` and `grep` remain right for small JSON where the structure is unknown, malformed JSON, and cross-file string search.
 
 These commands are **denied** in project settings and will always be rejected. Do not attempt them:
 `cd`, `cat`, `sed`, `awk`, `head`, `tail`, `sleep`, `kill`, `pkill`
@@ -88,7 +88,7 @@ If a Bash call is denied, do NOT retry the same command and do NOT ask the user 
 - `sed`/`awk` → Edit tool
 - `|`, `2>&1`, `&&`, `;`, `$()` → split into separate calls; the Bash tool already captures stdout, stderr, and exit code
 
-Worked example: `pnpm --filter <package> typecheck 2>&1 | grep -c "error TS"` is denied because of the pipe and redirection. The fix is to run `pnpm --filter <package> typecheck` alone — the Bash tool returns the full output and exit code — then count "error TS" occurrences in the returned output yourself. No pipe, no redirection, no retry. (`grep` itself is allowed; the deny is on the shell plumbing around it.)
+Worked example: `pnpm --filter <package> typecheck 2>&1 | grep -c "error TS"` is denied because of the pipe and redirection. The fix is to run `pnpm --filter <package> typecheck` alone (the Bash tool returns the full output and exit code), then count "error TS" occurrences in the returned output yourself. No pipe, no redirection, no retry. (`grep` itself is allowed; the deny is on the shell plumbing around it.)
 
 ## Background Tasks
 
@@ -114,7 +114,7 @@ Do not retry the server start until the user confirms the port is free.
 
 ## Cross-Project Searching
 
-When looking at another project's code, search with Bash directly using the project path. MUST keep it to one simple command per call — no pipes, no `-exec`, no `2>&1 | head`.
+When looking at another project's code, search with Bash directly using the project path. MUST keep it to one simple command per call: no pipes, no `-exec`, no `2>&1 | head`.
 
 Wrong: `find {path}/repo -name "*.ts" -exec grep -l "pattern" {} \; 2>/dev/null | head -10`
 Right: `grep -rln --include="*.ts" "pattern" {path}/repo`

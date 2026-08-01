@@ -13,7 +13,7 @@ Input: `$ARGUMENTS` is a Basecamp URL or GitHub issue reference.
 
 ## 0. Branch hygiene check
 
-Apply the "Branch hygiene before starting work" rule from `simpleapps:work-habits`. `/wip` is read/scaffold only — it does not write code, so the bar is low: nudge the user about the branch state, do the safe transition if needed, and proceed. The only pause condition is a dirty tree on a branch unrelated to this issue.
+Apply the "Branch hygiene before starting work" rule from `simpleapps:work-habits`. `/wip` is read/scaffold only. It does not write code, so the bar is low: nudge the user about the branch state, do the safe transition if needed, and proceed. The only pause condition is a dirty tree on a branch unrelated to this issue.
 
 1. Parse `$ARGUMENTS` to extract the issue number `N` (GitHub `#N` or Basecamp item id)
 2. Run `git -C repo branch --show-current` → branch `B`
@@ -59,17 +59,17 @@ The MCP response includes comments inline. Extract:
 
 ### 2a. Download and summarize every attachment (REQUIRED)
 
-Attachments hold load-bearing context — screenshots of bugs, mockups, error overlays, design specs. The WIP MUST contain that context in-line so `/investigate` and `/implement` do not have to re-fetch it.
+Attachments hold load-bearing context: screenshots of bugs, mockups, error overlays, design specs. The WIP MUST contain that context in-line so `/investigate` and `/implement` do not have to re-fetch it.
 
 For **every** attachment found on the todo/message and on every comment:
 
-1. Call `download_attachment(project_id, attachment_id)` — saves to `~/.simpleapps/downloads/{project_id}/`
+1. Call `download_attachment(project_id, attachment_id)`, which saves to `~/.simpleapps/downloads/{project_id}/`
 2. Use the `Read` tool on the local file path. Read works multimodally on images (PNG, JPG, etc.) and on PDFs, Excel, and text
-3. Write a summary into the WIP's Attachments section that captures what the agent saw — for images, describe what is visible (UI state, error text, highlighted region, before/after); for PDFs/docs, capture the key facts; for spreadsheets, capture the columns and a sample of rows. The goal is that a future agent reading only the WIP has enough context to act without re-downloading
+3. Write a summary into the WIP's Attachments section that captures what the agent saw: for images, describe what is visible (UI state, error text, highlighted region, before/after); for PDFs/docs, capture the key facts; for spreadsheets, capture the columns and a sample of rows. The goal is that a future agent reading only the WIP has enough context to act without re-downloading
 
-MUST NOT skip attachments because they "look unimportant" — the user posted them for a reason. MUST NOT just list filenames; the WIP needs the contents.
+MUST NOT skip attachments because they "look unimportant". The user posted them for a reason. MUST NOT just list filenames; the WIP needs the contents.
 
-If `download_attachment` fails, retry once. If it still fails, note the failure in the Attachments section with the attachment ID so the user can intervene — do not silently drop it.
+If `download_attachment` fails, retry once. If it still fails, note the failure in the Attachments section with the attachment ID so the user can intervene. Do not silently drop it.
 
 ### GitHub
 
@@ -135,7 +135,7 @@ Read the existing WIP file. Compare against freshly fetched content:
 
 1. **Frontmatter**: if the GH issue is closed and frontmatter `status` is still `open`/`in-progress`, flip to `shipped` and set `shipped_at` to the issue's `closed_at`. Bump `last_reviewed` to today.
 2. **Problem**: update if the issue body was edited
-3. **Attachments**: for any attachment ID not already present in the section, download it and write a Summary per step 2a. MUST NOT just append the filename — the WIP needs the contents
+3. **Attachments**: for any attachment ID not already present in the section, download it and write a Summary per step 2a. MUST NOT just append the filename: the WIP needs the contents
 4. **Comments**: compare comment lists by author + date. Append any new comments after the existing ones. MUST NOT duplicate or remove existing comments.
 5. **Cross-refs**: add any newly detected cross-references
 6. **Preserve user work**: MUST NOT modify Research, Analysis, Files to modify, or any other sections the user has edited
@@ -148,7 +148,7 @@ Tell the user what was updated (e.g., "Added 2 new comments, status unchanged").
 
 Write to `wip/{prefix}{#}-{slug}.md` where prefix is `GH` or `BC`.
 
-Prepend YAML frontmatter per the `simpleapps:wip` schema. Get today's date with `date +%Y-%m-%d`. Leave `shipped_at`, `pr`, `disposition`, and `wiki_candidates` empty — later lifecycle commands fill them in.
+Prepend YAML frontmatter per the `simpleapps:wip` schema. Get today's date with `date +%Y-%m-%d`. Leave `shipped_at`, `pr`, `disposition`, and `wiki_candidates` empty. Later lifecycle commands fill them in.
 
 Template:
 
@@ -178,7 +178,7 @@ wiki_candidates:
 
 ## Attachments
 
-{For each attachment: name, type, ID, local path under `~/.simpleapps/downloads/{project_id}/`, and a **Summary** that describes what was seen. For images, describe the visible UI state, error text, highlighted regions, and any before/after framing. For PDFs/docs, capture the key facts. For spreadsheets, capture columns and a sample of rows. The summary MUST be written from a Read of the downloaded file — never inferred from the filename alone. Omit this section only if no attachments exist.}
+{For each attachment: name, type, ID, local path under `~/.simpleapps/downloads/{project_id}/`, and a **Summary** that describes what was seen. For images, describe the visible UI state, error text, highlighted regions, and any before/after framing. For PDFs/docs, capture the key facts. For spreadsheets, capture columns and a sample of rows. The summary MUST be written from a Read of the downloaded file, never inferred from the filename alone. Omit this section only if no attachments exist.}
 
 Format each entry as:
 
@@ -186,7 +186,7 @@ Format each entry as:
 
 - ID: {attachment_id}
 - Local path: `~/.simpleapps/downloads/{project_id}/{filename}`
-- Summary: {what the agent saw — multi-paragraph if needed}
+- Summary: {what the agent saw, multi-paragraph if needed}
 
 ## Comments
 

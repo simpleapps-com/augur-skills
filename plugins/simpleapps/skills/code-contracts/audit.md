@@ -1,4 +1,4 @@
-# Code Contracts — Audit
+# Code Contracts: Audit
 
 The audit modes invoked by `/contract-audit`. Two modes; pick by argument:
 
@@ -11,7 +11,7 @@ The session-aware mode is the high-leverage one: it surfaces contract candidates
 
 ## Frame the audit as bug discovery, not documentation
 
-The exercise's value is the discipline of writing contracts forcing real bugs to surface. The annotations themselves are a secondary artifact. Every audit MUST produce a *report*, not auto-applied annotations — the human stays in the loop on what to annotate vs. fix.
+The exercise's value is the discipline of writing contracts forcing real bugs to surface. The annotations themselves are a secondary artifact. Every audit MUST produce a *report*, not auto-applied annotations. The human stays in the loop on what to annotate vs. fix.
 
 ## Per-file audit
 
@@ -21,12 +21,12 @@ For a given file, walk these four questions in order:
 
 Look for:
 
-- `string` parameters inlined into SQL, HTML, shell, or other security-sensitive sinks — trusted vs. untrusted origin is invisible
+- `string` parameters inlined into SQL, HTML, shell, or other security-sensitive sinks; trusted vs. untrusted origin is invisible
 - Coupled optional fields (e.g. `afterKey` requires `afterKeyColumn`)
 - Non-null assertions (`!`) load-bearing on a runtime guard
 - Sentinel values (`-1`, `0`, `999`, empty string) carrying domain meaning the type cannot express
 - Number that should be ℕ, ℤ⁺, or a refinement (e.g. percentage in `[0, 100]`)
-- Loops over inputs of unknown size — implicit `O(n)` or `O(n²)` claims with no contract to make the cost visible
+- Loops over inputs of unknown size, carrying implicit `O(n)` or `O(n²)` claims with no contract to make the cost visible
 
 For each finding, propose a contract clause AND the type-level fix that would make the clause unnecessary (the order-of-preference rule from `SKILL.md`). For complexity findings, propose `@time` / `@space` clauses *and* flag the function as a refactor candidate if the asymptotic class is plausibly improvable (e.g., nested-loop O(n²) where a hash-keyed O(n) is reachable).
 
@@ -43,7 +43,7 @@ For each finding, decide: rename the function OR rewrite the body. Drift between
 
 ### 3. Does this file produce values consumed elsewhere with implicit contracts?
 
-This is the **highest-value finding** and the hardest to surface. Walk every value the file emits — return values, exported constants, structures pushed into shared state, strings written to global queries, fields assigned on shared objects.
+This is the **highest-value finding** and the hardest to surface. Walk every value the file emits: return values, exported constants, structures pushed into shared state, strings written to global queries, fields assigned on shared objects.
 
 For each emitted value, ask:
 
@@ -64,7 +64,7 @@ This is the test-gap report. For each clause from questions 1–3:
 - `@time O(...)` / `@time Θ(...)` → list missing scaling benchmarks (assert the bound holds at n=10, n=100, n=1000)
 - `@space O(...)` / `@space Θ(...)` → list missing memory-stability tests across input sizes
 
-The test-gap pass turns the audit from "find bugs" into "find bugs *and* find the test that would have caught them next time." Complexity-claim gaps are especially load-bearing — without scaling tests, the claim is unfalsifiable and an `O(n²)` regression slips into an `O(n)`-claimed function unchecked.
+The test-gap pass turns the audit from "find bugs" into "find bugs *and* find the test that would have caught them next time." Complexity-claim gaps are especially load-bearing: without scaling tests, the claim is unfalsifiable and an `O(n²)` regression slips into an `O(n)`-claimed function unchecked.
 
 ## When NOT to annotate
 
@@ -72,7 +72,7 @@ This section MUST appear in every audit report, before the per-section findings.
 
 Skip annotations on:
 
-- **Pure transforms whose contract is fully expressed in the type signature.** A function `(n: NonZero) => number` already says `@requires n !== 0` in the type — no comment needed.
+- **Pure transforms whose contract is fully expressed in the type signature.** A function `(n: NonZero) => number` already says `@requires n !== 0` in the type, so no comment is needed.
 - **Test files.** The test name is the spec. Annotating tests adds noise.
 - **Generated code.** Don't annotate; the generator is the spec.
 - **One-off scripts and throwaway code.** Not load-bearing; not worth the context cost.
@@ -91,7 +91,7 @@ Every audit produces a markdown report with this structure:
 <file paths audited; load-bearing assessment per file>
 
 ## When NOT to annotate (carryover)
-<note any patterns in this audit that fall in the skip list — pure transforms whose type already says it, tests, generated, etc.>
+<note any patterns in this audit that fall in the skip list: pure transforms whose type already says it, tests, generated, etc.>
 
 ## Findings
 
@@ -108,7 +108,7 @@ Every audit produces a markdown report with this structure:
 <list per-finding tests that the proposed contracts demand and the suite does not have>
 
 ## Suggested next steps
-<ordered list — usually: fix bugs found in section 1, address drift in 2, harden boundaries in 3, write missing tests in 4>
+<ordered list, usually: fix bugs found in section 1, address drift in 2, harden boundaries in 3, write missing tests in 4>
 ```
 
 The audit is **read-only**. MUST NOT auto-apply contracts or modify code or tests. The human reviews the report and decides what to act on.
@@ -135,25 +135,25 @@ For each candidate, evaluate:
 | Existing contracts | Are there already `@requires` / `@ensures` / `@invariant` / `@trusted` clauses? |
 | Worth adding | If no contracts present, would adding them surface a bug or fill a test gap? |
 
-The agent has been in the file's context this session — use that. Don't re-derive load-bearing-ness from cold.
+The agent has been in the file's context this session, so use that. Don't re-derive load-bearing-ness from cold.
 
 ### Output: ranked recommendations
 
 Produce a ranked list:
 
 ```markdown
-# Session-aware contract audit — N candidates
+# Session-aware contract audit: N candidates
 
 ## Recommended (highest leverage)
 
-1. **`<path>`** — <one-line rationale: load-bearing reason + observed gap>
+1. **`<path>`**: <one-line rationale: load-bearing reason + observed gap>
    Suggested action: <add contracts to function X; harden the boundary at line Y; etc.>
 
-2. **`<path>`** — ...
+2. **`<path>`**: ...
 
 ## Already covered
 
-<files with contracts already in place — note any drift the agent observed during the session>
+<files with contracts already in place; note any drift the agent observed during the session>
 
 ## Skip (not load-bearing)
 
@@ -164,10 +164,10 @@ Keep the rationale short. The user picks the top item and runs `/contract-audit 
 
 ### Why this mode pays off
 
-The user does not have to remember to run an audit. The agent surfaces candidates while the context is fresh. Mechanism #3 (agent-reported value) operationalizes here — the agent saw the file in this session and can score it; a cold audit cannot.
+The user does not have to remember to run an audit. The agent surfaces candidates while the context is fresh. Mechanism #3 (agent-reported value) operationalizes here: the agent saw the file in this session and can score it; a cold audit cannot.
 
 ## Reference
 
-- `SKILL.md` — the writing skill (auto-triggered on load-bearing edits)
-- `vocabulary.md` — full glyph palette + clause-first derivation table + per-language examples
-- `apply.md` — six-phase loop for adding contracts to existing code (when this audit recommends "add contracts to function X")
+- `SKILL.md`: the writing skill (auto-triggered on load-bearing edits)
+- `vocabulary.md`: full glyph palette + clause-first derivation table + per-language examples
+- `apply.md`: six-phase loop for adding contracts to existing code (when this audit recommends "add contracts to function X")

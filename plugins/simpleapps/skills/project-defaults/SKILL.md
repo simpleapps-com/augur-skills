@@ -64,18 +64,18 @@ The parent `{project}/` is NOT a git repo. It keeps code and wiki side-by-side. 
 | Temporary files | `tmp/` | Scratch space: commit msgs, PR bodies, intermediate output. Full access. |
 | SimpleApps config | `.simpleapps/` | Settings, site profile, credentials (see below) |
 
-**goals/**: Project-level scratch space (sibling of `repo/`) for the goals/objectives currently being worked. Short-lived: reviewed regularly, archived or deleted when the goal is met — like `wip/`, but goal-scoped rather than task-scoped. Not in git; lives on one machine. MUST NOT hold durable team-shared goals (those go in `wiki/`) or secrets.
+**goals/**: Project-level scratch space (sibling of `repo/`) for the goals/objectives currently being worked. Short-lived: reviewed regularly, archived or deleted when the goal is met, like `wip/` but goal-scoped rather than task-scoped. Not in git; lives on one machine. MUST NOT hold durable team-shared goals (those go in `wiki/`) or secrets.
 
 **WIP**: Research, plans, decisions, test results. MUST NOT contain secrets, final docs, or code. See `simpleapps:wip` for the frontmatter schema, status lifecycle, retention rule, and daily processing via `/process-wips`.
 
 **tmp/**: Project-level scratch space (sibling of `repo/`) for commit messages, PR/issue bodies, intermediate output, and throwaway files. Read, write, and delete freely without asking; create the folder if missing; clean up after use.
 
-MUST keep scratch files in the **project-level** `tmp/` — NEVER `repo/tmp/` (or `wiki/tmp/`). Files inside a git tree get swept into commits by `git add -A`/`git add .`; a real incident put `tmp/commit-msg.txt` onto a project's main branch this way. Add `tmp/` to each repo's `.gitignore` as a safety net, but the convention is to stay outside the tree entirely so the accident cannot recur.
+MUST keep scratch files in the **project-level** `tmp/`, NEVER `repo/tmp/` (or `wiki/tmp/`). Files inside a git tree get swept into commits by `git add -A`/`git add .`; a real incident put `tmp/commit-msg.txt` onto a project's main branch this way. Add `tmp/` to each repo's `.gitignore` as a safety net, but the convention is to stay outside the tree entirely so the accident cannot recur.
 
-Standard patterns — note the `../tmp/` indirection: `git -C repo` / `git -C wiki` resolves `-F` and other paths relative to that subdir, so a plain `tmp/` would wrongly mean `repo/tmp/`:
+Standard patterns. Note the `../tmp/` indirection: `git -C repo` / `git -C wiki` resolves `-F` and other paths relative to that subdir, so a plain `tmp/` would wrongly mean `repo/tmp/`:
 - Commit message → Write `tmp/commit-msg.txt`, then `git -C repo commit -F ../tmp/commit-msg.txt`
 - Wiki commit → Write `tmp/commit-msg.txt`, then `git -C wiki commit -F ../tmp/commit-msg.txt`
-- PR body → Write `tmp/pr-body.txt`, then `gh pr create ... --body-file tmp/pr-body.txt` (gh runs from the project root, so plain `tmp/` is correct — no `../`)
+- PR body → Write `tmp/pr-body.txt`, then `gh pr create ... --body-file tmp/pr-body.txt` (gh runs from the project root, so plain `tmp/` is correct, no `../`)
 - Issue body/comment → Write `tmp/issue-*.txt`, then `gh issue ... --body-file tmp/issue-*.txt`
 - Clean up with `rm tmp/<file>` after each op
 
@@ -166,7 +166,7 @@ Six symlinks let you run Claude Code from `{project}/` and still get the repo's 
 
 The canonical files live in `repo/.claude/` so they travel with the repo and are version-controlled. The symlinks make them visible from the parent `{project}/` working directory. `CLAUDE.md` symlinks to the project root (not inside `.claude/`) because Claude Code loads project memory from `{project}/CLAUDE.md`.
 
-`.claude/settings.local.json` is NOT symlinked — it is machine-local, gitignored, and stays directly in `{project}/.claude/`. See [.claude/settings.local.json](#claudesettingslocaljson) below.
+`.claude/settings.local.json` is NOT symlinked. It is machine-local, gitignored, and stays directly in `{project}/.claude/`. See [.claude/settings.local.json](#claudesettingslocaljson) below.
 
 `/project-init` creates and repairs all six.
 

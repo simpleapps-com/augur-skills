@@ -17,7 +17,7 @@ List `wip/` with `ls wip/`. If `wip/` does not exist or contains no `*.md` files
 For each WIP:
 
 1. Read the file
-2. Parse YAML frontmatter (if present). If absent, this is a legacy file — handle in step 3 (migrate).
+2. Parse YAML frontmatter (if present). If absent, this is a legacy file. Handle in step 3 (migrate).
 3. Extract `issue`, `branch`, `status`, `created`, `last_reviewed`, `shipped_at`, `pr`, `disposition`, `wiki_candidates`.
 
 ## 3. Migrate legacy files (frontmatter-less)
@@ -27,7 +27,7 @@ If the file has no frontmatter, infer initial values:
 - `issue`: from filename prefix (`GH<N>-…` → GitHub issue URL; `BC<N>-…` → Basecamp URL if identifiable) or from the `## Source` section body; leave empty if freeform
 - `status`: read the prose `## Status:` line. Map: `WIP` → `in-progress`, `Implemented`/`Shipped` → `shipped`, `Closed` → `abandoned`
 - `created`: file mtime (`wip/` is gitignored, so git history is not available for it). Today if mtime is unreadable.
-- `last_reviewed`: file mtime. Imperfect — mtime can be touched by unrelated operations — but it is the only signal available for legacy files since `wip/` is gitignored. Lifecycle commands write accurate dates from their invocation forward, so post-migration data is reliable.
+- `last_reviewed`: file mtime. Imperfect (mtime can be touched by unrelated operations), but it is the only signal available for legacy files since `wip/` is gitignored. Lifecycle commands write accurate dates from their invocation forward, so post-migration data is reliable.
 - `shipped_at`: if `status: shipped`, try issue `closed_at` via `gh issue view --json closedAt`; otherwise leave empty
 - `branch`, `pr`, `disposition`, `wiki_candidates`: empty
 
@@ -52,26 +52,26 @@ Skip reconciliation for freeform WIPs (no issue, no branch).
 
 For each WIP, compute a bucket:
 
-**auto-delete** — all of:
+**auto-delete** requires all of:
 - `status` in (`shipped`, `abandoned`)
 - `shipped_at` (or date abandoned) > 7 days ago
 - `disposition: delete`
 
-**confirm-promote** — all of:
+**confirm-promote** requires all of:
 - `status` in (`shipped`, `abandoned`)
 - `shipped_at` > 7 days ago
 - `disposition: promote`
 
-**needs-decision** — all of:
+**needs-decision** requires all of:
 - `status` in (`shipped`, `abandoned`)
 - `shipped_at` > 7 days ago
 - `disposition` empty
 
-**stale-active** — all of:
+**stale-active** requires all of:
 - `status` in (`open`, `in-progress`)
 - `last_reviewed` > 30 days ago
 
-**leave-alone** — everything else
+**leave-alone**: everything else
 
 ## 6. Present the table
 

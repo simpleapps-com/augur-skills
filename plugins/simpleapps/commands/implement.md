@@ -5,7 +5,7 @@ argument-hint: "[wip/GH30-slug.md]"
 allowed-tools: Bash(git -C:*), Bash(pnpm:*), Bash(npm:*), Bash(npx:*), Bash(python:*), Bash(pip:*), Bash(composer:*), Bash(php:*), Bash(rm:*), Bash(date:*), Skill(wiki), Skill(project-defaults), Skill(github), Skill(git-safety), Skill(bash-simplicity), Skill(writing-style), Skill(wip), Skill(work-habits), Skill(code-contracts), Read, Write, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*), Edit, Agent
 ---
 
-First, use Skill("wiki") to load project context, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions, then Skill("writing-style") for variable naming and code style standards, then Skill("wip") for the WIP frontmatter schema, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance, then Skill("code-contracts") for the formal-contract discipline on load-bearing code (apply only when scope is load-bearing per the skill's "When to use it" section — money math, auth, concurrency, state machines, security boundaries, non-trivial algorithms).
+First, use Skill("wiki") to load project context, then Skill("project-defaults") for layout, then Skill("git-safety") for git guardrails, then Skill("bash-simplicity") for Bash conventions, then Skill("writing-style") for variable naming and code style standards, then Skill("wip") for the WIP frontmatter schema, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance, then Skill("code-contracts") for the formal-contract discipline on load-bearing code (apply only when scope is load-bearing per the skill's "When to use it" section: money math, auth, concurrency, state machines, security boundaries, non-trivial algorithms).
 
 Execute an implementation plan. Work autonomously. Only stop for user input when stuck or when a decision has no clear answer.
 
@@ -23,12 +23,12 @@ Decision matrix:
 
 | `B` | `T` | Action |
 |-----|-----|--------|
-| Contains `N` (e.g., `feat/N-slug`) | any | Proceed — continuing in-flight work for this issue |
+| Contains `N` (e.g., `feat/N-slug`) | any | Proceed: continuing in-flight work for this issue |
 | `main` / `master` | clean | Create the branch yourself: `git -C repo switch -c <type>/<N>-<slug>`, then proceed. Derive `<type>` from the issue title prefix (`feat:` → `feat`, `fix:` → `fix`, `chore:` → `chore`, `docs:` → `docs`, etc.). Derive `<slug>` from the issue title (lowercase, hyphenated, ≤40 chars). |
 | Different issue branch (`feat/M-…` where `M ≠ N`) | clean | Nudge: tell the user you're switching off `<branch>` to main. Run `git -C repo switch main`, create the new branch, and proceed. The user's prior work is already committed on `M`'s branch and can be resumed later. |
 | any | dirty | **Pause and ask once.** Uncommitted work would be mixed or lost. Surface the modified files, propose one path (commit on a branch, stash, discard), and let the user choose. Proceed on their answer. Do NOT touch their changes without instruction. |
 
-The only pause condition is a dirty tree, because proceeding could destroy work the agent didn't make. Clean state — even on someone else's feature branch — is never a stop; transition and continue.
+The only pause condition is a dirty tree, because proceeding could destroy work the agent didn't make. Clean state (even on someone else's feature branch) is never a stop; transition and continue.
 
 ## 1. Determine the plan
 
@@ -74,7 +74,7 @@ If a WIP file was used, update it. If no WIP exists, create an implementation re
 
 ### Frontmatter
 
-Per `simpleapps:wip`, set `status: in-progress`, bump `last_reviewed` to today (`date +%Y-%m-%d`), and set `branch` to the current branch name if not already set (`git -C repo branch --show-current`). Do NOT set `status: shipped` here — that belongs to `/submit` after the push + CI green.
+Per `simpleapps:wip`, set `status: in-progress`, bump `last_reviewed` to today (`date +%Y-%m-%d`), and set `branch` to the current branch name if not already set (`git -C repo branch --show-current`). Do NOT set `status: shipped` here. That belongs to `/submit` after the push + CI green.
 
 If the file has no frontmatter (legacy), add the full block per the schema before editing sections.
 

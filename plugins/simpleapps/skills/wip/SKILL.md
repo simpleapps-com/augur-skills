@@ -52,7 +52,7 @@ open ──┬─▶ in-progress ──▶ shipped ──▶ (retained 7d) ─�
 
 | Status | Set when | Set by |
 |--------|----------|--------|
-| `open` | Scaffold — issue exists, no work started | `/wip` |
+| `open` | Scaffold: issue exists, no work started | `/wip` |
 | `in-progress` | Research or code work is underway | `/investigate`, `/implement` |
 | `shipped` | Work is on main and CI is green | `/submit` (after push + CI pass) |
 | `abandoned` | User decides not to pursue | User edits manually, or `/process-wips` on request |
@@ -113,9 +113,9 @@ They follow the same retention rule once `status` is terminal. `/process-wips` l
 
 ## Attachments
 
-When a WIP is scaffolded from a Basecamp todo, message, or upload, every attachment on the source item AND on every comment MUST be downloaded via `download_attachment` and summarized inline in the WIP's Attachments section. Images are read multimodally with the `Read` tool and described — UI state, error text, highlighted regions, before/after framing. PDFs, spreadsheets, and docs are read and their key facts captured. The bar is that a future agent reading only the WIP has enough context to act without re-downloading.
+When a WIP is scaffolded from a Basecamp todo, message, or upload, every attachment on the source item AND on every comment MUST be downloaded via `download_attachment` and summarized inline in the WIP's Attachments section. Images are read multimodally with the `Read` tool and described: UI state, error text, highlighted regions, before/after framing. PDFs, spreadsheets, and docs are read and their key facts captured. The bar is that a future agent reading only the WIP has enough context to act without re-downloading.
 
-MUST NOT list attachments by filename alone. MUST NOT skip an attachment because it "looks unimportant" — the user posted it for a reason. If a download fails, note the failure with the attachment ID so the user can intervene; do not silently drop it.
+MUST NOT list attachments by filename alone. MUST NOT skip an attachment because it "looks unimportant". The user posted it for a reason. If a download fails, note the failure with the attachment ID so the user can intervene; do not silently drop it.
 
 The same rule applies on `/wip` updates: new attachments added to the source since last fetch get downloaded and summarized, not just appended as filenames.
 
@@ -128,8 +128,8 @@ The same rule applies on `/wip` updates: new attachments added to the source sin
 
 ## Related
 
-- `/wip` — scaffold a WIP from an issue or URL; writes frontmatter
-- `/investigate` — research; bumps `last_reviewed`, sets `status: in-progress`
-- `/implement` — build; bumps `last_reviewed`, keeps `status: in-progress`
-- `/submit` — commit and push; after CI green, flips `status: shipped` and fills `shipped_at` / `pr`
-- `/process-wips` — daily reconciliation and retention pass
+- `/wip`: scaffold a WIP from an issue or URL; writes frontmatter
+- `/investigate`: research; bumps `last_reviewed`, sets `status: in-progress`
+- `/implement`: build; bumps `last_reviewed`, keeps `status: in-progress`
+- `/submit`: commit and push; after CI green, flips `status: shipped` and fills `shipped_at` / `pr`
+- `/process-wips`: daily reconciliation and retention pass

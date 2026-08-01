@@ -1,35 +1,35 @@
 ---
 name: code-contracts
-description: When working in load-bearing code (the 5-10% where correctness matters most — money math, auth, concurrency, state machines, security boundaries), tighten the type system first, then add formal contracts (@requires/@ensures/@invariant/@trusted) in the host language's native comment syntax. Use Unicode glyphs (∀, ∈, ≥, ℕ) for AI priming, paired with ASCII gloss for human readers. The contracts pay off through three independent mechanisms: priming agent reasoning, surfacing tests, and adding context-window value that agents themselves report. Drift between contract and code is a defect.
+description: When working in load-bearing code (the 5-10% where correctness matters most: money math, auth, concurrency, state machines, security boundaries), tighten the type system first, then add formal contracts (@requires/@ensures/@invariant/@trusted) in the host language's native comment syntax. Use Unicode glyphs (∀, ∈, ≥, ℕ) for AI priming, paired with ASCII gloss for human readers. The contracts pay off through three independent mechanisms: priming agent reasoning, surfacing tests, and adding context-window value that agents themselves report. Drift between contract and code is a defect.
 ---
 
 # Code Contracts
 
-> **Status: EXPERIMENTAL** for the priming hypothesis (mechanism #1). The test-surfacing (#2) and agent-reported-value (#3) mechanisms are observed in practice. Apply selectively to load-bearing code; treat as a defensible bet across three channels — pays off if any one of them lands.
+> **Status: EXPERIMENTAL** for the priming hypothesis (mechanism #1). The test-surfacing (#2) and agent-reported-value (#3) mechanisms are observed in practice. Apply selectively to load-bearing code; treat as a defensible bet across three channels that pays off if any one of them lands.
 
 Persistent prompt engineering encoded in source code. Formal contracts on load-bearing functions pay off through three independent mechanisms.
 
-## Three mechanisms — why this is worth the context cost
+## Three mechanisms: why this is worth the context cost
 
 | # | Mechanism | What it does | Status |
 |---|-----------|--------------|--------|
-| 1 | Latent-space priming | Unicode glyph rarity pulls hidden state toward the formal-methods neighborhood — sharper reasoning on the *next edit* | Hypothesis (defensible bet) |
-| 2 | Test surfacing | Explicit clauses make intent legible — agents generate *new and better tests* using each clause as an oracle | **Observed in practice** |
+| 1 | Latent-space priming | Unicode glyph rarity pulls hidden state toward the formal-methods neighborhood, giving sharper reasoning on the *next edit* | Hypothesis (defensible bet) |
+| 2 | Test surfacing | Explicit clauses make intent legible, so agents generate *new and better tests* using each clause as an oracle | **Observed in practice** |
 | 3 | Agent-reported value | Agents themselves report that contracts add useful context for complex / load-bearing methods | **Observed in practice** |
 
 The contracts are the artifact. The three mechanisms are *consequences*. Even if mechanism #1 is weaker than hoped, mechanisms #2 and #3 are already paying off.
 
-## What this is — and is not
+## What this is, and is not
 
 This is **not** documentation. It is **not** a parallel comment style for human readers alone. It is a cognitive switch that targets future agents reading the file, paired with an ASCII gloss that bridges human readers.
 
-Models trained on F\*/Lean/Dafny/Coq corpora develop a "spec-then-implement" reasoning policy — slower, more rigorous, explicit about pre/postconditions and effects. Plain TS/PHP/Python does not activate that policy because the surface form does not match. Unicode-heavy contract prose in the same file *does* match — the model upshifts into the more rigorous mode for the function it precedes.
+Models trained on F\*/Lean/Dafny/Coq corpora develop a "spec-then-implement" reasoning policy that is slower, more rigorous, and explicit about pre/postconditions and effects. Plain TS/PHP/Python does not activate that policy because the surface form does not match. Unicode-heavy contract prose in the same file *does* match, so the model upshifts into the more rigorous mode for the function it precedes.
 
-The annotations do not add information the model could not infer. They change the *mode* the model reasons in. Same idea as "let's reason step by step" or "you are an expert at X" — moved out of the system prompt and into the artifact, where it primes every future agent that touches the code, not just the current session.
+The annotations do not add information the model could not infer. They change the *mode* the model reasons in. Same idea as "let's reason step by step" or "you are an expert at X", moved out of the system prompt and into the artifact, where it primes every future agent that touches the code, not just the current session.
 
 ## When to use it
 
-MUST apply ONLY in **load-bearing code** — the 5-10% of functions where a subtle bug compounds:
+MUST apply ONLY in **load-bearing code**, the 5-10% of functions where a subtle bug compounds:
 
 - Money math (pricing, tax, fees, totals, currency conversion, rounding)
 - Auth and permission decisions
@@ -61,7 +61,7 @@ These are not redundant translations. **The prose surface carries assumptions, n
 
 ### The gloss MUST name assumptions
 
-When a clause depends on something the formal notation does not make explicit — a precondition the caller is presumed to satisfy, a sentinel value the contract treats as out-of-scope, a side condition the body relies on — the gloss MUST name it. Naming what is *not* part of the contract is as important as naming what is.
+When a clause depends on something the formal notation does not make explicit (a precondition the caller is presumed to satisfy, a sentinel value the contract treats as out-of-scope, a side condition the body relies on), the gloss MUST name it. Naming what is *not* part of the contract is as important as naming what is.
 
 The formal notation cannot say "and X is assumed to hold." The gloss can. Examples:
 
@@ -69,11 +69,11 @@ The formal notation cannot say "and X is assumed to hold." The gloss can. Exampl
 - `@ensures result ∈ ℕ  // result is a non-negative integer; overflow is caller's responsibility`
 - `@invariant balance ≥ 0  // balance never negative; assumes no concurrent mutators outside this lock`
 
-Without explicit assumption-naming, a reader must derive the assumptions from negative space — by inspecting callers, the implementation, related tests. That derivation is the parsing tax that costs careful reasoning capacity. The gloss eliminates the tax by naming it directly.
+Without explicit assumption-naming, a reader must derive the assumptions from negative space, by inspecting callers, the implementation, and related tests. That derivation is the parsing tax that costs careful reasoning capacity. The gloss eliminates the tax by naming it directly.
 
 ### Why both surfaces
 
-Dense formal notation can crowd out attention to factual claims when parsing it costs the reader most of their bandwidth — the cognitive cost of parsing symbols leaves less capacity for engaging with what the contract actually says. Pairing the formal surface with prose-and-assumptions means:
+Dense formal notation can crowd out attention to factual claims when parsing it costs the reader most of their bandwidth: the cognitive cost of parsing symbols leaves less capacity for engaging with what the contract actually says. Pairing the formal surface with prose-and-assumptions means:
 
 - Readers with high parsing bandwidth get the formal surface activating careful reasoning **plus** the gloss catching what the formal notation leaves implicit
 - Readers with less parsing bandwidth derive the same conclusions from the prose alone, no tax paid
@@ -86,13 +86,13 @@ This is also why the gloss helps human readers: a junior dev seeing `∀ x ∈ x
 Pick one and apply consistently within a file.
 
 ```ts
-// Pattern A — inline assumption-naming gloss after the formal clause
+// Pattern A: inline assumption-naming gloss after the formal clause
 @requires q ≥ 0           // q is non-negative; assumes caller validated input
 @ensures  result ∈ ℕ       // result is a natural number; overflow is caller's responsibility
 ```
 
 ```ts
-// Pattern B — bracketed gloss on the same line
+// Pattern B: bracketed gloss on the same line
 @requires q ≥ 0  (q is non-negative; assumes caller validated input)
 @ensures  ∀ x ∈ items. x.qty ≥ 0  (every item has non-negative qty; empty array is allowed)
 ```
@@ -121,9 +121,9 @@ function divide(x: number, y: NonZero): number { return x / y; }
 
 Tools by language:
 
-- **TypeScript** — branded types, narrow union types, `readonly`, template literal types, exhaustive `switch` over discriminated unions
-- **PHP** — typed properties, `readonly`, enums (8.1+), Psalm template types
-- **Python** — `Literal`, `Final`, `NewType`, `Annotated`, `Protocol`, `assert_never`
+- **TypeScript**: branded types, narrow union types, `readonly`, template literal types, exhaustive `switch` over discriminated unions
+- **PHP**: typed properties, `readonly`, enums (8.1+), Psalm template types
+- **Python**: `Literal`, `Final`, `NewType`, `Annotated`, `Protocol`, `assert_never`
 
 ### 2. Use the language's checker-enforced annotation
 
@@ -138,28 +138,28 @@ When the type system cannot express the property, reach for an annotation a real
 
 ### 3. Formal contract for the residual
 
-For properties no checker can express — algebraic laws, multi-step protocol invariants, invariants over external state — leave a contract in the host language's native comment syntax with Unicode + ASCII gloss.
+For properties no checker can express (algebraic laws, multi-step protocol invariants, invariants over external state), leave a contract in the host language's native comment syntax with Unicode + ASCII gloss.
 
 Annotation forms:
 
-- `@requires <precondition>` — must hold of inputs at call time
-- `@ensures <postcondition>` — guaranteed of result / observable state
-- `@invariant <property>` — holds at loop head, between method calls, across state transitions
-- `@trusted <param>` — value inlined into a security-sensitive sink; origin must be trusted code, never user input
-- `@pure` / `@mutates X` / `@throws Y` / `@io` — effect declaration
-- `@property <law>` — algebraic law (idempotence, associativity, commutativity, monotonicity)
-- `@time <bound>` / `@space <bound>` — asymptotic complexity. Use `Θ(...)` for tight bound, `O(...)` for upper bound only, `Ω(...)` for lower bound. Most contracts write `O(...)`; SHOULD prefer `Θ(...)` when the bound is actually tight, because `O(n²)` is technically true of an `O(n)` function and that looseness primes the wrong reasoning.
+- `@requires <precondition>`: must hold of inputs at call time
+- `@ensures <postcondition>`: guaranteed of result / observable state
+- `@invariant <property>`: holds at loop head, between method calls, across state transitions
+- `@trusted <param>`: value inlined into a security-sensitive sink; origin must be trusted code, never user input
+- `@pure` / `@mutates X` / `@throws Y` / `@io`: effect declaration
+- `@property <law>`: algebraic law (idempotence, associativity, commutativity, monotonicity)
+- `@time <bound>` / `@space <bound>`: asymptotic complexity. Use `Θ(...)` for tight bound, `O(...)` for upper bound only, `Ω(...)` for lower bound. Most contracts write `O(...)`; SHOULD prefer `Θ(...)` when the bound is actually tight, because `O(n²)` is technically true of an `O(n)` function and that looseness primes the wrong reasoning.
 
 See `vocabulary.md` for the clause-first derivation table (clause shape → encoding tier), the full glyph palette, and the complexity-notation glossary.
 
-## Style rule — form is the activation
+## Style rule: form is the activation
 
 The form MUST match formal-language conventions. Informal prose does not switch the reasoning mode. Four tiers, with the strongest pairing Unicode formal + assumption-naming gloss:
 
-- ✗ informal English: `// always positive` — neither activation nor assumptions
-- ✗ ASCII formal alone: `@ensures result >= 0` — weak priming, no assumption-naming
-- ◐ Unicode formal + translation gloss: `@ensures result ≥ 0  // result >= 0` — primes the formal surface, gloss is redundant translation
-- ✓ Unicode formal + assumption-naming gloss: `@ensures result ≥ 0  // result is non-negative; overflow is caller's responsibility` — primes high-bandwidth readers AND gives low-bandwidth readers the same content as prose with assumptions explicit
+- ✗ informal English: `// always positive`. Neither activation nor assumptions
+- ✗ ASCII formal alone: `@ensures result >= 0`. Weak priming, no assumption-naming
+- ◐ Unicode formal + translation gloss: `@ensures result ≥ 0  // result >= 0`. Primes the formal surface, gloss is redundant translation
+- ✓ Unicode formal + assumption-naming gloss: `@ensures result ≥ 0  // result is non-negative; overflow is caller's responsibility`. Primes high-bandwidth readers AND gives low-bandwidth readers the same content as prose with assumptions explicit
 
 The shape signals "this is a function to reason about formally," not "this is a function to skim and pattern-match." The gloss makes the contract robust across reader capacities.
 
@@ -167,7 +167,7 @@ The shape signals "this is a function to reason about formally," not "this is a 
 
 After writing range and type constraints, ask: **does any constant or sentinel in this function carry more than one meaning?**
 
-Formal annotations bias toward easy formal targets — range, type, sign. They miss *semantic overloading*: a single value standing for two distinct domain states. The blind spot is structural — `@requires x ≥ 0` cannot express "and `0` is distinct from `null`."
+Formal annotations bias toward easy formal targets: range, type, sign. They miss *semantic overloading*: a single value standing for two distinct domain states. The blind spot is structural: `@requires x ≥ 0` cannot express "and `0` is distinct from `null`."
 
 Common patterns to flag:
 
@@ -176,7 +176,7 @@ Common patterns to flag:
 - Empty string vs missing string
 - `0` returned from a counter that also legitimately returns `0`
 
-When you find one, lift the sentinel into the type — `null | { kind: 'loaded'; price: PositiveAmount } | { kind: 'call-for-price' }` — so the two states are unrepresentable as the same value. Then the formal annotation regains coverage.
+When you find one, lift the sentinel into the type (`null | { kind: 'loaded'; price: PositiveAmount } | { kind: 'call-for-price' }`) so the two states are unrepresentable as the same value. Then the formal annotation regains coverage.
 
 ### Real example
 
@@ -187,37 +187,37 @@ const unitPrice = priceData.unitPrice ?? 0;  // null collapses to 0
 isCallForPrice: unitPrice === 0,             // 0 means "call for price"
 ```
 
-The contract correctly enforces `unitPrice ≥ 0 ∧ Number.isFinite(unitPrice)` — but cannot say "and `null` is distinct from `0`," because `null` was already coalesced away. The fix is to handle `priceData.unitPrice === null` *before* the coalesce, lifting the two states into the type.
+The contract correctly enforces `unitPrice ≥ 0 ∧ Number.isFinite(unitPrice)`, but cannot say "and `null` is distinct from `0`," because `null` was already coalesced away. The fix is to handle `priceData.unitPrice === null` *before* the coalesce, lifting the two states into the type.
 
-## Drift is a defect — not a sync target
+## Drift is a defect, not a sync target
 
 If the code contradicts an annotation, that is a bug. MUST decide which is wrong and fix it. MUST NOT silently rewrite the annotation to match incorrect code.
 
-Unenforced annotations that drift do active harm — they prime future agents toward the wrong invariant. A wrong contract is worse than no contract.
+Unenforced annotations that drift do active harm: they prime future agents toward the wrong invariant. A wrong contract is worse than no contract.
 
 When you find drift while editing:
 
 1. Read the contract carefully
 2. Read the code carefully
-3. Decide which one captures the intended behavior — look at call sites, tests, related code
+3. Decide which one captures the intended behavior by looking at call sites, tests, and related code
 4. Fix whichever is wrong
 5. If you cannot tell which is intended, MUST stop and ask the user. MUST NOT guess.
 
 ### Tautological postconditions
 
-A related anti-pattern: postconditions that mirror the constructor. `@ensures result.kind === 'loaded'` on `function loaded(item) { return { kind: 'loaded', item } }` adds nothing — the constructor already guarantees it. Useful postconditions assert properties the *reader of the call* would not derive from the constructor alone (algebraic laws, conservation invariants, observable state changes). Restating the constructor adds bookkeeping without adding reasoning, and is a sign the contract was back-fitted rather than written clause-first.
+A related anti-pattern: postconditions that mirror the constructor. `@ensures result.kind === 'loaded'` on `function loaded(item) { return { kind: 'loaded', item } }` adds nothing, because the constructor already guarantees it. Useful postconditions assert properties the *reader of the call* would not derive from the constructor alone (algebraic laws, conservation invariants, observable state changes). Restating the constructor adds bookkeeping without adding reasoning, and is a sign the contract was back-fitted rather than written clause-first.
 
 ## Why mechanism #1 works (priming hypothesis)
 
-LLM behavior is conditional on context shape. Models trained on verified-language corpora develop latent circuits for spec-then-implementation reasoning. Native-syntax contracts in the F\*/Lean/Dafny shape *plausibly* activate those circuits during code generation, review, and refactoring — even though the host language has no formal semantics.
+LLM behavior is conditional on context shape. Models trained on verified-language corpora develop latent circuits for spec-then-implementation reasoning. Native-syntax contracts in the F\*/Lean/Dafny shape *plausibly* activate those circuits during code generation, review, and refactoring, even though the host language has no formal semantics.
 
-**Rarity is the activation.** The Unicode glyphs (∀, ∃, ⟨⟩, ↦, ⊑, ≥, ≤, ≠, ⇒, ∧, ∨, ¬, ℕ, ℝ, ∈, ∉) co-occur in training data with theorem-prover output, type-theory papers, and formal-methods source. Sampling tokens with those glyphs pulls hidden state toward that neighborhood. ASCII transliterations (`forall`, `>=`, `=>`) live in commoner code-review text — for AI priming, that familiarity dampens the shift.
+**Rarity is the activation.** The Unicode glyphs (∀, ∃, ⟨⟩, ↦, ⊑, ≥, ≤, ≠, ⇒, ∧, ∨, ¬, ℕ, ℝ, ∈, ∉) co-occur in training data with theorem-prover output, type-theory papers, and formal-methods source. Sampling tokens with those glyphs pulls hidden state toward that neighborhood. ASCII transliterations (`forall`, `>=`, `=>`) live in commoner code-review text, and for AI priming that familiarity dampens the shift.
 
 The asymmetry: if the priming hypothesis works, as proof-trained model capability improves over time, annotations added today retroactively become more valuable. Zero extra work from the developer; the priming benefit grows with each model upgrade.
 
 ## Why mechanism #2 works (test surfacing)
 
-Distinct from priming. **Observed in practice:** when a function carries explicit clauses, the agent generates *new and better tests* on subsequent edits — tests it would not have surfaced reading the implementation alone.
+Distinct from priming. **Observed in practice:** when a function carries explicit clauses, the agent generates *new and better tests* on subsequent edits, tests it would not have surfaced reading the implementation alone.
 
 Contracts make intent legible. Each clause is an oracle for at least one test class:
 
@@ -229,7 +229,7 @@ Contracts make intent legible. Each clause is an oracle for at least one test cl
 - Each `@space O(...)` → memory-stability test (assert the bound holds across input sizes)
 - Clauses also expose edge cases by negation: `@requires q ≥ 0` makes the agent ask "what about q < 0? what about NaN?"
 
-Without the contract, the agent has only the function body to inspect — and the body rarely announces its boundaries explicitly. With the contract, every clause is a test-case oracle. This effect is observable session-by-session — test count, edge-case coverage, mutation-test kill rate.
+Without the contract, the agent has only the function body to inspect, and the body rarely announces its boundaries explicitly. With the contract, every clause is a test-case oracle. This effect is observable session-by-session: test count, edge-case coverage, mutation-test kill rate.
 
 ### Close cousin: improvement-opportunity surfacing
 
@@ -245,10 +245,10 @@ Agents themselves report, in active session use, that the contract content adds 
 
 Mechanism #1 is **plausible but not directly measured for in-source contracts**. Cite-able adjacent evidence:
 
-- **ContractEval** (arXiv 2510.12047) — LLM contract-satisfaction rises from 0% (vanilla) to ~50% when contracts are stated in the prompt. Demonstrates the mechanism works for *prompt-supplied* contracts.
-- **Specification-Guided Repair of Dafny Programs with LLMs** (arXiv 2507.03659) — LLMs reason measurably better when Dafny pre/postconditions are present.
-- **Type-Constrained Code Generation** (arXiv 2504.09246) — type annotations cut hallucinated APIs and compilation errors >50%. Supports "tighten the type system first."
-- **CoT mech-interp** (arXiv 2402.18312, arXiv 2507.22928) — surface cues like "let's think step by step" route through identifiable internal circuits in larger models. Supports "surface form conditions reasoning mode."
+- **ContractEval** (arXiv 2510.12047): LLM contract-satisfaction rises from 0% (vanilla) to ~50% when contracts are stated in the prompt. Demonstrates the mechanism works for *prompt-supplied* contracts.
+- **Specification-Guided Repair of Dafny Programs with LLMs** (arXiv 2507.03659): LLMs reason measurably better when Dafny pre/postconditions are present.
+- **Type-Constrained Code Generation** (arXiv 2504.09246): type annotations cut hallucinated APIs and compilation errors >50%. Supports "tighten the type system first."
+- **CoT mech-interp** (arXiv 2402.18312, arXiv 2507.22928): surface cues like "let's think step by step" route through identifiable internal circuits in larger models. Supports "surface form conditions reasoning mode."
 
 **Falsifiable prediction:** annotating a load-bearing function with these contracts produces, on the next agent edit, fewer correctness regressions and/or more rigorous reasoning traces than the same function un-annotated.
 
@@ -265,6 +265,6 @@ Until then, treat this skill as a defensible bet across three independent mechan
 
 ## See also
 
-- **`vocabulary.md`** — full Unicode glyph palette, ASCII gloss patterns, clause-first derivation table, per-language examples
-- **`audit.md`** — the audit modes (per-file + session-aware), invoked by `/contract-audit`
-- **`apply.md`** — six-phase loop (Orient → Read → Draft → Trim → Discover → Verify) for adding contracts to existing code
+- **`vocabulary.md`**: full Unicode glyph palette, ASCII gloss patterns, clause-first derivation table, per-language examples
+- **`audit.md`**: the audit modes (per-file + session-aware), invoked by `/contract-audit`
+- **`apply.md`**: six-phase loop (Orient → Read → Draft → Trim → Discover → Verify) for adding contracts to existing code

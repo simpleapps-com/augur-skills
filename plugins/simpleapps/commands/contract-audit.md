@@ -5,11 +5,11 @@ argument-hint: "[file path] (omit for session-aware mode)"
 allowed-tools: Read, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*), Skill(code-contracts), Skill(bash-simplicity)
 ---
 
-First, use `Skill("code-contracts")` to load the contract-writing core, then read `${CLAUDE_PLUGIN_ROOT}/skills/code-contracts/audit.md` for the audit-mode instructions. (`CLAUDE_PLUGIN_ROOT` is the plugin's install path — the same env var `/project-init` uses; `CLAUDE_SKILL_DIR` is NOT set in command context.)
+First, use `Skill("code-contracts")` to load the contract-writing core, then read `${CLAUDE_PLUGIN_ROOT}/skills/code-contracts/audit.md` for the audit-mode instructions. (`CLAUDE_PLUGIN_ROOT` is the plugin's install path, the same env var `/project-init` uses; `CLAUDE_SKILL_DIR` is NOT set in command context.)
 
 # Contract Audit
 
-Two modes — pick by argument:
+Two modes, pick by argument:
 
 ## Mode selection
 
@@ -22,7 +22,7 @@ The detailed instructions for both modes live in `code-contracts/audit.md` (load
 
 The audit MUST produce a markdown report. MUST NOT auto-apply contracts, modify code, or write tests. The human reviews the report and decides what to act on. See `code-contracts/audit.md` § "Output format" for the report structure.
 
-If a finding warrants applying contracts to a specific function, point the user at `apply.md` (the six-phase loop) — running that loop is a separate task.
+If a finding warrants applying contracts to a specific function, point the user at `apply.md` (the six-phase loop). Running that loop is a separate task.
 
 ## When NOT to annotate
 
@@ -31,7 +31,7 @@ The audit report MUST include the "When NOT to annotate" section before per-sect
 ## Session-aware mode rules
 
 - Filter the candidate set to source files in `repo/` (skip tests, configs, generated)
-- Score each candidate using session context (the agent has been in the file's context — use that)
+- Score each candidate using session context (the agent has been in the file's context; use that)
 - Output a ranked list with one-line rationales, not a deep dive per file
 - The user picks the top item and runs `/contract-audit <path>` to do the per-file deep dive
 
@@ -41,7 +41,7 @@ Walk the four audit questions in order:
 
 1. Where do types not capture a runtime constraint?
 2. Does the function's name and docstring match its actual behavior?
-3. Does this file produce values consumed elsewhere with implicit contracts? (Highest-value finding — cross-file trust boundaries.)
+3. Does this file produce values consumed elsewhere with implicit contracts? (Highest-value finding: cross-file trust boundaries.)
 4. For each contract this audit produces, what tests does the contract demand that the suite does not yet have?
 
 See `code-contracts/audit.md` for full per-question guidance and the report format.
