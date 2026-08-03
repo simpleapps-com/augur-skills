@@ -5,6 +5,6 @@
   },
   "augur-api": {
     "command": "uvx",
-    "args": ["simpleapps-com-augur-mcp"]
+    "args": ["--with", "mcp[cli]<2", "simpleapps-com-augur-mcp"]
   }
 }

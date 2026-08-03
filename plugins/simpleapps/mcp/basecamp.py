@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # /// script
 # requires-python = ">=3.10"
-# dependencies = ["mcp[cli]"]
+# dependencies = ["mcp[cli]>=1.2,<2"]  # mcp 2.x dropped mcp.server.fastmcp
 # ///
 """
 Basecamp 2 MCP Server: read access to Basecamp 2 (BCX API)
