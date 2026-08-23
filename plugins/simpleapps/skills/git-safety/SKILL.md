@@ -1,6 +1,6 @@
 ---
 name: git-safety
-description: This skill should be used when the user asks to "commit", "push", "tag", "merge", "rebase", "branch -D", "stash", or invokes /submit, /stage, /publish. Also load when editing git safety rules or reviewing git workflow. Provides comprehensive guardrails for safe git operations.
+description: This skill should be used when the user asks to "commit", "push", "tag", "merge", "rebase", "branch -D", "stash", or invokes /submit, /stage, /publish, /wiki-sync. Also load when editing git safety rules or reviewing git workflow. Provides comprehensive guardrails for safe git operations.
 user-invocable: false
 ---
 
@@ -23,7 +23,7 @@ Every git push, every PR, every wiki edit that hits GitHub is done under the use
 The user gives approval in one of two ways:
 
 1. **Direct instruction**: the user says "commit", "push", "tag", or equivalent
-2. **Shipping commands**: the user invokes `/submit`, `/stage`, or `/publish`. Invoking the command IS the approval for the git operations defined in that command's workflow.
+2. **Shipping commands**: the user invokes `/submit`, `/stage`, `/publish`, or `/wiki-sync`. Invoking the command IS the approval for the git operations defined in that command's workflow.
 
 ### Approval is scoped, not blanket
 
@@ -32,6 +32,7 @@ Each approval covers ONE specific operation. Examples:
 - The user says "commit" → you may commit the current staged changes. You may NOT also push.
 - The user runs `/submit` → you may execute the Submit steps (commit + push or PR). You may NOT also tag or publish.
 - The user runs `/publish` → you may execute the Publish steps (bump, commit, tag, push). This does NOT carry forward to future commits.
+- The user runs `/wiki-sync` → you may commit, pull, and push in the **wiki** repo. This grants nothing in the main repo, even when it has uncommitted changes of its own.
 
 Approval for one repo does NOT extend to another. Approval to commit/push the wiki does NOT grant approval to commit/push the main repo, and vice versa. Each repo requires its own explicit approval.
 

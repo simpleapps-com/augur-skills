@@ -97,6 +97,8 @@ The three shipping commands (`/submit`, `/stage`, `/publish`) read project-speci
 
 Commands like `/research` and `/discuss` can be used at any stage. `/quality`, `/verify`, `/curate-wiki`, and `/wiki-audit` can run independently.
 
+`/wiki-sync` commits, pulls, and pushes the wiki repo. It is the wiki's counterpart to `/submit` and carries its own approval, so the user does not have to say "commit" and then "push" after every `/curate-wiki` run. It grants nothing in the main repo.
+
 `/process-wips` runs daily (outside the lifecycle above) to reconcile WIP frontmatter with ground truth, auto-delete shipped WIPs older than 7 days, and confirm wiki promotions. See `simpleapps:wip` for the frontmatter schema and retention rule.
 
 ## References
