@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Start Claude Code with Opus model.
+# Start Claude Code with Fable model.
 # Delegates to cld for the update step and full argument pass-through.
 set -euo pipefail
 
-exec cld --model opus "$@"
+exec cld --model fable "$@"

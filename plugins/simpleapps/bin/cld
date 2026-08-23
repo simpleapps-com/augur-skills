@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
-# Update and start Claude Code
+# Update and start Claude Code.
+#
+# All arguments pass through to `claude`, so anything the CLI accepts works:
+#   cld                    # fresh session
+#   cld -c                 # continue the most recent conversation here
+#   cld -r                 # resume via the interactive picker
+#   cld "fix the tests"    # start with a prompt
 set -euo pipefail
 
-claude update
-claude "$@"
+# A failed update (offline, locked binary, rate limit) MUST NOT block the
+# session. Report it and start anyway.
+if ! claude update; then
+  echo "cld: 'claude update' failed; starting the existing version." >&2
+fi
+
+exec claude "$@"

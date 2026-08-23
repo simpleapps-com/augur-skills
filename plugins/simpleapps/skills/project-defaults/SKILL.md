@@ -236,7 +236,7 @@ Every project SHOULD configure `.claude/settings.local.json` with these rules. `
 
 ## Bin Scripts (PATH)
 
-The augur-skills plugin includes shell scripts (`cld`, `cldo`, `tmcld`, etc.) in `plugins/simpleapps/bin/`. When installed via the Claude Code marketplace, these live at:
+The augur-skills plugin includes shell scripts in `plugins/simpleapps/bin/`. `cld` updates Claude Code and starts a session, passing every argument through to `claude` (`cld -c` continues, `cld -r` resumes). `cldf`, `cldh`, `cldo`, and `clds` delegate to `cld` with `--model fable|haiku|opus|sonnet` prepended, so they inherit the same behaviour. `upcld` updates without starting a session. When installed via the Claude Code marketplace, these live at:
 
 ```
 ~/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/bin/

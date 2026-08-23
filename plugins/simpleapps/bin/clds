@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Start Claude Code with Sonnet model
+# Start Claude Code with Sonnet model.
+# Delegates to cld for the update step and full argument pass-through.
 set -euo pipefail
 
-claude --model sonnet "$@"
+exec cld --model sonnet "$@"

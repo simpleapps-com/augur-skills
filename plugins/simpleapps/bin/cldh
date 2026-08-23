@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Start Claude Code with Haiku model
+# Start Claude Code with Haiku model.
+# Delegates to cld for the update step and full argument pass-through.
 set -euo pipefail
 
-claude --model haiku "$@"
+exec cld --model haiku "$@"
