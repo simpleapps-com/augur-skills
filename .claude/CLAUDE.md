@@ -1,6 +1,6 @@
 # augur-skills
 
-Monorepo: Claude Code plugin marketplace + npm CLI (`augur-skills`).
+Claude Code plugin marketplace. No build step. Content is static markdown; the executable exceptions are `scripts/validate.mjs`, the plugin's `mcp/` server, and the `bin/` helper scripts.
 
 ## Wiki (Source of Truth for Dev Docs)
 
@@ -14,6 +14,7 @@ The wiki is cloned at `../../wiki/` relative to this file. Read it locally:
 - [Marketplace](../../wiki/Marketplace.md)
 - [Versioning](../../wiki/Versioning.md)
 - [Development](../../wiki/Development.md)
+- [Testing](../../wiki/Testing.md)
 - [Deployment](../../wiki/Deployment.md)
 
 ## Rules
@@ -23,11 +24,11 @@ The wiki is cloned at `../../wiki/` relative to this file. Read it locally:
 ## Quick Reference
 
 ```bash
-pnpm build          # Build CLI
-pnpm test           # Run tests
-pnpm test:coverage  # Coverage
-pnpm typecheck      # TypeScript check
+pnpm validate       # Plugin validator: frontmatter, naming, token budgets,
+                    # Skill() references, version sync, rule drift
 ```
+
+`pnpm validate` is the only check in this repo. The lefthook pre-push hook runs it, and CI runs it on every push and PR.
 
 ## Deploy
 
