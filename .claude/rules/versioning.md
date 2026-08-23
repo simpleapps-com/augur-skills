@@ -8,7 +8,7 @@ Format: `2026.03.1` = first release of March 2026. Versions signal knowledge fre
 
 ## Source of truth
 
-`VERSION` file. All `version` fields in `marketplace.json` (top-level AND each plugin entry), `plugin.json`, and `packages/cli/package.json` MUST match.
+`VERSION` file. All `version` fields in `marketplace.json` (top-level AND each plugin entry) and `plugin.json` MUST match.
 
 ## Deployment
 

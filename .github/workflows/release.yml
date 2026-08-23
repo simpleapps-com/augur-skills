@@ -6,12 +6,11 @@ on:
       - "v*"
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
 
     permissions:
       contents: write
-      id-token: write
 
     steps:
       - uses: actions/checkout@v6
@@ -24,23 +23,10 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          registry-url: https://registry.npmjs.org
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm typecheck
-
-      - run: pnpm test:coverage
-
-      - run: pnpm build
-
-      - name: Prepare skills for publish
-        run: pnpm prepare-publish
-
-      - name: Publish to npm
-        run: pnpm --filter @simpleapps-com/augur-skills publish --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: pnpm validate
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

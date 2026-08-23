@@ -7,11 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [24]
 
     steps:
       - uses: actions/checkout@v6
@@ -22,15 +19,9 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 24
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm typecheck
-
-      - run: pnpm lint
-
-      - run: pnpm test:coverage
-
-      - run: pnpm build
+      - run: pnpm validate

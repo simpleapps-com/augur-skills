@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Plugin validator. Catches drift before it ships:
-//   - version strings across VERSION, plugin.json, marketplace.json, cli package.json
+//   - version strings across VERSION, plugin.json, and marketplace.json
 //   - SKILL.md frontmatter, name/directory match, kebab-case, 5K-token budget
 //   - Skill("X") references in commands and skills resolve to a real skill
 //   - command frontmatter (name, description) present and name matches file
@@ -52,9 +52,6 @@ async function checkVersions() {
   }
 
   const checks = [];
-
-  const cliPkg = await readJson("packages/cli/package.json");
-  if (cliPkg) checks.push(["packages/cli/package.json", cliPkg.version]);
 
   const marketplace = await readJson(".claude-plugin/marketplace.json");
   if (marketplace) {
