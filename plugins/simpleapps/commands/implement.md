@@ -38,7 +38,7 @@ If `$ARGUMENTS` is provided, read it directly as a relative path.
 
 If no argument, run `ls wip/` (Bash) to check for WIP files. If one exists, use it. If multiple exist, list them and ask which to implement.
 
-If a WIP is found, check that Research, Analysis, and Files to modify are populated. If they're empty, tell the user the WIP isn't ready and suggest `/investigate` and `/discuss` first.
+If a WIP is found, check that Acceptance criteria, Research, Analysis, and Files to modify are populated. If they're empty, tell the user the WIP isn't ready and suggest `/investigate` and `/discuss` first. A missing or empty Acceptance criteria section is a stop on its own: there is nothing to build against and nothing for `/sanity-check` to audit afterwards.
 
 ### Without a WIP file
 
@@ -78,6 +78,14 @@ Per `simpleapps:wip`, set `status: in-progress`, bump `last_reviewed` to today (
 
 If the file has no frontmatter (legacy), add the full block per the schema before editing sections.
 
+### Acceptance criteria
+
+Tick each `- [ ]` as you satisfy it, not in a batch at the end.
+
+- Tick only what you can point to in the diff. If you cannot name the file and the change that satisfies it, it is not done.
+- MUST NOT tick, reword, or delete a criterion you did not satisfy. An unticked box is as much a deliverable of this step as the code is.
+- Every criterion still unticked MUST be copied into Open questions below with one line on why: out of scope, blocked, needs a decision, or deferred to another issue.
+
 ### Implementation section
 
 Add an **Implementation** section (after Analysis, before Files to modify):
@@ -111,6 +119,7 @@ Leave frontmatter `status: in-progress` at this point. `/submit` is responsible 
 Tell the user:
 - What was implemented (brief summary)
 - Files changed (count and list)
+- **Acceptance criteria**: ticked count out of total, then each unticked criterion by name with its reason. MUST NOT report completion without this line. A criterion that silently stays unticked is precisely the omission the section exists to surface.
 - Any assumptions or deviations from the plan
 - Any open questions
 - Suggest next step: `/quality` to run checks, then `/verify` to confirm in the browser

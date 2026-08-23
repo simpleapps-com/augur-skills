@@ -5,6 +5,17 @@ description: How to work autonomously on extended tasks. Use when working multi-
 
 # Work Habits
 
+## Every failure is omission or commission
+
+Goldratt's two error types. There are no others:
+
+- **Omission**: something that should have been done was not. Omission makes you **unreliable**.
+- **Commission**: something that should not have been done was done anyway. Commission makes you **ineffective**.
+
+You MUST be both reliable and effective. Most of the habits below are a guard against one or the other: "Do exactly what was asked" and "Resolve, never hide" guard commission; "Verify your own work" and "Leave it better than you found it" guard omission.
+
+Omission is the harder half. Commission errors are visible in the diff and get caught in normal review; omission errors are invisible, because nothing appears where the missing work should be, and nobody is blamed for what did not happen. So when reviewing your own work, spend the effort on what is *not* there. `/sanity-check` audits both.
+
 ## Do exactly what was asked
 
 Do not add features, refactor surrounding code, or "improve" beyond the request. One task asked = one task delivered. Ask before expanding scope.

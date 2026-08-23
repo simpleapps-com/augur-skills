@@ -135,10 +135,11 @@ Read the existing WIP file. Compare against freshly fetched content:
 
 1. **Frontmatter**: if the GH issue is closed and frontmatter `status` is still `open`/`in-progress`, flip to `shipped` and set `shipped_at` to the issue's `closed_at`. Bump `last_reviewed` to today.
 2. **Problem**: update if the issue body was edited
-3. **Attachments**: for any attachment ID not already present in the section, download it and write a Summary per step 2a. MUST NOT just append the filename: the WIP needs the contents
-4. **Comments**: compare comment lists by author + date. Append any new comments after the existing ones. MUST NOT duplicate or remove existing comments.
-5. **Cross-refs**: add any newly detected cross-references
-6. **Preserve user work**: MUST NOT modify Research, Analysis, Files to modify, or any other sections the user has edited
+3. **Acceptance criteria**: append a `- [ ]` for any explicit ask in a new comment or an edited body that is not already covered. MUST NOT reword, reorder, delete, or untick an existing criterion. The user may have edited them, and a criterion that quietly disappears is exactly the omission this section exists to prevent. If the section is missing entirely (WIP predates it), build it from the source now.
+4. **Attachments**: for any attachment ID not already present in the section, download it and write a Summary per step 2a. MUST NOT just append the filename: the WIP needs the contents
+5. **Comments**: compare comment lists by author + date. Append any new comments after the existing ones. MUST NOT duplicate or remove existing comments.
+6. **Cross-refs**: add any newly detected cross-references
+7. **Preserve user work**: MUST NOT modify Research, Analysis, Files to modify, criteria beyond the append in rule 3, or any other sections the user has edited
 
 If the existing file has no frontmatter (legacy format), add it per the schema in step 7b. Migrate the prose `## Status:` line into frontmatter `status` (`WIP` → `open`, `Implemented`/`Shipped` → `shipped`) and remove the prose line.
 
@@ -175,6 +176,12 @@ wiki_candidates:
 ## Problem
 
 {Body content. The full description from the issue or Basecamp item.}
+
+## Acceptance criteria
+
+{One `- [ ]` per explicit ask, extracted from the title, body, and comments. Extract only what the source states: inferred criteria are `/investigate`'s job, not this step's. Keep them proportional; a one-line todo gets one criterion, not five. Format each as:}
+
+- [ ] {Observable outcome, phrased so someone can check it} _(source: body | title | comment {Author} {Date})_
 
 ## Attachments
 

@@ -111,6 +111,29 @@ Not every WIP has an issue. Investigation notes, spike results, meeting takeaway
 
 They follow the same retention rule once `status` is terminal. `/process-wips` leaves them alone while `status` is `open` or `in-progress`.
 
+## Acceptance criteria
+
+Every WIP scaffolded from an issue or Basecamp item MUST have an Acceptance criteria section, written as `- [ ]` checkboxes, directly after Problem. Freeform WIPs SHOULD have one, derived from the user's stated goal.
+
+Ownership splits by what evidence each command actually has:
+
+| Written by | What it adds | Marking |
+|------------|--------------|---------|
+| `/wip` | Explicit asks extracted from the title, body, and comments | `_(source: …)_` |
+| `/investigate` | Implied requirements, once the wiki and codebase are loaded | `_(inferred)_` |
+| `/implement` | Ticks boxes as they are satisfied; leaves the rest unticked | |
+| `/sanity-check` | Audits the list against the diff; never edits it | |
+
+Rules:
+
+- Each criterion MUST be an observable outcome someone can check, not a task. "Contact page phone reads 555-1234", not "update the phone number".
+- Each MUST cite its source or be marked `_(inferred)_`. Inferred means what the request clearly entails, not gold-plating.
+- Proportional. A one-line todo gets one criterion.
+- MUST NOT delete, reword, or untick a criterion once written. If it turns out to be wrong, impossible, or out of scope, leave it and note why under Analysis > Risks.
+- An unticked box at `/submit` time is not a blocker, it is a disclosure. Say so in the report rather than ticking it.
+
+**Why checkboxes.** An omission is invisible: nothing appears where the missing work should be, so there is no artifact to notice and nobody is blamed for what did not happen. An unticked box is a visible representation of absence. It converts an error nobody catches into one anybody can see. Ticking a box you did not earn is a false statement in a file the user reads, which is also catchable. That conversion is the entire point of the section, and it is why the criteria MUST be written before the work rather than reconstructed after it: an agent looking at a finished diff will reverse-engineer criteria the diff already satisfies.
+
 ## Attachments
 
 When a WIP is scaffolded from a Basecamp todo, message, or upload, every attachment on the source item AND on every comment MUST be downloaded via `download_attachment` and summarized inline in the WIP's Attachments section. Images are read multimodally with the `Read` tool and described: UI state, error text, highlighted regions, before/after framing. PDFs, spreadsheets, and docs are read and their key facts captured. The bar is that a future agent reading only the WIP has enough context to act without re-downloading.

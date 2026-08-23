@@ -9,10 +9,12 @@ First, use Skill("wiki") for project conventions, then Skill("basecamp") for MCP
 
 ## Why this exists
 
-Eliyahu Goldratt identified two types of mistakes that undermine any process:
+Eliyahu Goldratt identified two types of mistakes that undermine any process. Every failure is one of the two:
 
-1. **Errors of commission**: doing something that should not have been done
-2. **Errors of omission**: not doing something that should have been done
+1. **Errors of commission**: doing something that should not have been done. Commission makes you **ineffective**.
+2. **Errors of omission**: not doing something that should have been done. Omission makes you **unreliable**.
+
+You MUST be both reliable and effective, so both halves get audited.
 
 His key insight: organizations over-police commission errors because they are visible and blameable. Omission errors are invisible. No one gets blamed for what did not happen. So omissions slip through repeatedly while commissions get caught in normal review. This command exists to catch both, but its real value is on the omission side.
 
@@ -29,7 +31,7 @@ If `$ARGUMENTS` contains a file path, use it. Otherwise, check `wip/` for `.md` 
 From the WIP file, extract:
 - **Source**: the original issue or Basecamp URL
 - **Problem statement**: what was requested
-- **Acceptance criteria**: if present
+- **Acceptance criteria**: the `- [ ]` list, and which boxes are ticked. `/wip` populates it from the source and `/investigate` adds the inferred entries. If the section is missing or empty, report that as a finding in its own right: the omission check in step 6 has nothing to compare against, and you are back to asking yourself whether you feel finished.
 - **Research/Analysis**: any decisions, approach notes, or trade-offs documented
 
 ## 2. Re-fetch the original request
@@ -73,7 +75,7 @@ For each finding, cite the specific file/change and explain why it qualifies.
 
 Did we miss something we SHOULD have done? Lean into this section. Omission errors are what slip through normal review.
 
-- **Acceptance criteria gaps**: criteria listed in the issue that are not addressed in the diff
+- **Acceptance criteria gaps**: walk the WIP's `- [ ]` list first. Every unticked box is a candidate omission. Then verify the ticked ones against the diff rather than trusting the tick: a box ticked with nothing in the diff behind it is a worse finding than an honest unticked one. Also check for criteria listed in the issue that never made it into the list.
 - **Implied requirements**: things the request clearly implies but does not spell out (e.g., "add a field" implies it should be visible, saveable, and validated). "Implied" means what a reasonable developer would expect, not gold-plating or speculative features.
 - **Edge cases**: obvious failure modes not handled (empty states, error states, missing data)
 - **Cross-repo work**: does this change require a corresponding change in another repo (augur, augur-packages, augur-api) that was not filed as an issue?

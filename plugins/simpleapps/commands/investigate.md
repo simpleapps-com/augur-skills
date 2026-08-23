@@ -59,6 +59,16 @@ Use Edit to update the WIP file with findings.
 
 Per `simpleapps:wip`, bump `last_reviewed` to today (`date +%Y-%m-%d`) and, if `status` is `open`, flip to `in-progress`. If the file has no frontmatter (legacy), add the full block per the schema before editing sections. Keep `shipped_at`, `pr`, and `disposition` untouched unless the ground truth has changed (e.g., issue is already closed, then reconcile per the wip skill).
 
+### Acceptance criteria section
+
+`/wip` extracted the explicit asks from the source. Add the **implied** ones now, since this is the first step with the wiki and the codebase loaded: what a reasonable developer on this project would expect but the source did not spell out (e.g. "add a field" implies visible, saveable, and validated).
+
+- Mark every criterion you add `_(inferred)_` so it gets the scrutiny it deserves
+- Implied means what the request clearly entails, NOT gold-plating or speculative features
+- MUST NOT reword or remove the criteria `/wip` extracted from the source
+- If research proves a criterion impossible, wrong, or out of scope, leave it in place and note why under Analysis > Risks. Deleting it hides the gap instead of resolving it.
+- If the WIP has no Acceptance criteria section (scaffolded before it existed, or freeform), build one from the Problem section first, then add the inferred entries
+
 ### Research section
 
 Replace `_Investigation notes go here._` with structured findings:
