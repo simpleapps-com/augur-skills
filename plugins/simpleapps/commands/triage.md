@@ -1,10 +1,10 @@
 ---
 name: triage
 description: Show triage status for the current site repo. Open PRs, linked issues, and unlinked issues.
-allowed-tools: Bash(gh pr list:*), Bash(gh issue list:*), Bash(gh pr view:*), Bash(git remote:*), Bash(git -C:*), Bash(git stash:*), Bash(basename:*), Bash(pwd:*), Skill(project-defaults), Skill(github), Skill(bash-simplicity)
+allowed-tools: Bash(gh pr list:*), Bash(gh issue list:*), Bash(gh pr view:*), Bash(git remote:*), Bash(git -C:*), Bash(git stash:*), Bash(basename:*), Bash(pwd:*), Bash(ls:*), Bash(mkdir:*), Bash(date:*), Read, Write, Skill(project-defaults), Skill(github), Skill(bash-simplicity), Skill(wip-conventions)
 ---
 
-First, use Skill("project-defaults") to load the project layout, Skill("github") to load GitHub conventions, and Skill("bash-simplicity") to load Bash conventions.
+First, use Skill("project-defaults") to load the project layout, Skill("github") to load GitHub conventions, Skill("bash-simplicity") to load Bash conventions, and Skill("wip-conventions") for the `wip/README.md` index format.
 
 Show the triage status for the current site repo.
 
@@ -23,12 +23,22 @@ MUST run each command as a separate, simple call. MUST NOT combine commands with
 1. List all open PRs: `gh pr list --repo <org>/<repo> --state open --json number,title,body --limit 100`
 2. List all open issues: `gh issue list --repo <org>/<repo> --state open --json number,title,labels --limit 100`
 3. List stashes: `git -C repo stash list`
+4. List WIP files: `ls wip/` (skip if `wip/` does not exist). Read each `*.md` except `README.md` for its frontmatter, H1, Source cross-refs, and Problem section (for the one-line summary).
 
 ## Cross-reference
 
 For each PR, scan the title and body for issue references (`#<number>`, `fixes #<number>`, `closes #<number>`, `resolves #<number>`). Build a map of which issues are linked to PRs.
 
 Identify blocked issues: any issue with a `blocked` label or "Blocked by" text in its body is a cross-repo dependency. Extract the upstream reference (e.g., `simpleapps-com/augur-packages#42`).
+
+## Update wip/README.md
+
+Rewrite `wip/README.md` per the Index format in `simpleapps:wip-conventions` (create `wip/` with `mkdir wip` if missing; get today with `date +%Y-%m-%d`):
+
+- **Open issues without a WIP** (top of the file): every open issue, linked to a PR or not, that has no WIP (per the matching rule in `simpleapps:wip-conventions`), with its PR from the cross-reference map.
+- **WIP files** (below it): one row per WIP file from step 4 of Gather data, with its PR and a one-line summary.
+
+Write the whole file with the Write tool. Do not ask first: the file is a generated, gitignored index.
 
 ## Output
 
@@ -74,6 +84,6 @@ Stashes are orphaned work. They should be popped, dropped, or turned into commit
 
 ### Summary
 
-One line: `X PRs, Y unlinked issues, Z unlabeled, B blocked, S stashes`
+One line: `X PRs, Y unlinked issues, Z unlabeled, B blocked, S stashes, W WIPs`. Then note `wip/README.md updated`.
 
 Suggest next step: `/wip <url>` to pick a task and scaffold a WIP file.

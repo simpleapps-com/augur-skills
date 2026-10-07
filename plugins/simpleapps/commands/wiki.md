@@ -1,10 +1,10 @@
 ---
 name: wiki
 description: Load the project wiki into context for reference and assistance
-allowed-tools: Read, Bash(ls:*), Bash(find:*), Bash(gh repo clone:*), Bash(rm -rf tmp/:*), Skill(wiki), Skill(bash-simplicity)
+allowed-tools: Read, Bash(ls:*), Bash(find:*), Bash(gh repo clone:*), Bash(rm -rf tmp/:*), Skill(wiki-conventions), Skill(bash-simplicity)
 ---
 
-First, use Skill("wiki") to load wiki conventions.
+First, use Skill("wiki-conventions") to load wiki conventions.
 
 Load a wiki into your context so you can answer questions and assist with the project.
 

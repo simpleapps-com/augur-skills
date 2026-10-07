@@ -1,16 +1,16 @@
 ---
 name: process-wips
 description: Daily WIP reconciliation. Walks wip/*.md, reconciles frontmatter vs ground truth, auto-deletes shipped WIPs older than 7 days, and confirms wiki promotions interactively.
-allowed-tools: Bash(gh issue:*), Bash(gh pr:*), Bash(git -C:*), Bash(rm:*), Bash(ls:*), Skill(wip), Skill(wiki), Skill(github), Skill(bash-simplicity), Skill(work-habits), Read, Write, Edit
+allowed-tools: Bash(gh issue:*), Bash(gh pr:*), Bash(git -C:*), Bash(rm:*), Bash(ls:*), Skill(wip-conventions), Skill(wiki-conventions), Skill(github), Skill(bash-simplicity), Skill(work-habits), Read, Write, Edit
 ---
 
-First, use Skill("wip") to load the frontmatter schema and retention rules, then Skill("wiki") for the project wiki, then Skill("github") for gh CLI conventions, then Skill("bash-simplicity") for Bash conventions, then Skill("work-habits") for autonomous execution rules.
+First, use Skill("wip-conventions") to load the frontmatter schema and retention rules, then Skill("wiki-conventions") for the project wiki, then Skill("github") for gh CLI conventions, then Skill("bash-simplicity") for Bash conventions, then Skill("work-habits") for autonomous execution rules.
 
 Reconcile and retire WIP files. Runs daily. Most of the work is silent; the only interactive step is confirming wiki promotions.
 
 ## 1. Enumerate WIPs
 
-List `wip/` with `ls wip/`. If `wip/` does not exist or contains no `*.md` files, report nothing to do and stop.
+List `wip/` with `ls wip/`. Skip `README.md` (the index, not a WIP). If `wip/` does not exist or contains no other `*.md` files, report nothing to do and stop.
 
 ## 2. Parse each file
 
@@ -146,6 +146,8 @@ For each file in `stale-active`, ask: "still active? [y / abandon / delete]?"
 ## 11. Update last_reviewed
 
 For every WIP that remains after the run (not deleted, not promoted away), bump `last_reviewed` to today. This keeps the "30-day stale" check honest.
+
+Then rewrite the WIP files table in `wip/README.md` per the Index format in `simpleapps:wip-conventions`, copying the Open issues without a WIP section forward, minus any row whose issue now has a WIP.
 
 ## 12. Report
 

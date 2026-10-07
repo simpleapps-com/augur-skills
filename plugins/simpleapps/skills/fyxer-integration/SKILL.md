@@ -1,5 +1,5 @@
 ---
-name: fyxer
+name: fyxer-integration
 description: Fyxer AI meeting recording integration. Covers extraction, local caching, posting to Basecamp, and Fyxer Index management. Use when processing Fyxer recordings or meeting transcripts.
 ---
 

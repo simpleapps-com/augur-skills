@@ -1,10 +1,10 @@
 ---
-name: curate-wiki
+name: wiki-curate
 description: Continuously improve the project wiki. Better content, context, organization, and usability within the wiki's active token budget (default 20K, overridable via HTML comment in wiki/Home.md).
-allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Bash(ls:*), Bash(grep:*), Bash(find:*), Skill(wiki), Skill(writing-style), Skill(work-habits), Skill(git-safety), Skill(bash-simplicity), Skill(context-efficiency), Read, Write, Edit, Agent
+allowed-tools: Bash(git -C:*), Bash(wc:*), Bash(rm:*), Bash(ls:*), Bash(grep:*), Bash(find:*), Skill(wiki-conventions), Skill(writing-style), Skill(work-habits), Skill(git-safety), Skill(bash-simplicity), Skill(context-efficiency), Read, Write, Edit, Agent
 ---
 
-First, use Skill("wiki") to load wiki conventions, Skill("writing-style") for RFC 2119 directive language and token-efficient prose, Skill("work-habits") for RFC 2119 reading compliance, Skill("git-safety") to load git guardrails, Skill("bash-simplicity") for Bash conventions, and Skill("context-efficiency") for always-loaded content guidelines.
+First, use Skill("wiki-conventions") to load wiki conventions, Skill("writing-style") for RFC 2119 directive language and token-efficient prose, Skill("work-habits") for RFC 2119 reading compliance, Skill("git-safety") to load git guardrails, Skill("bash-simplicity") for Bash conventions, and Skill("context-efficiency") for always-loaded content guidelines.
 
 Curate the project wiki. Each run targets the highest-value gaps, not exhaustive improvement. The wiki MUST stay within its active token budget (default 20K, or the override recorded as an HTML comment in `wiki/Home.md`) so it can be loaded into context without consuming the working window.
 
@@ -43,7 +43,7 @@ List `wiki/` with `ls wiki/` to enumerate all `*.md` files. Read every page usin
 
 ## 3. Assess the wiki
 
-Evaluate each page against the wiki conventions (from the wiki skill) and the current codebase. Look for improvement opportunities in six areas:
+Evaluate each page against the wiki conventions (from the `wiki-conventions` skill) and the current codebase. Look for improvement opportunities in six areas:
 
 ### Content quality
 - Are statements accurate? Verify claims against the actual code using `grep`/`find` (Bash), Read, or Agent with subagent_type=Explore.
@@ -56,7 +56,7 @@ Evaluate each page against the wiki conventions (from the wiki skill) and the cu
 - Does each page explain *why*, not just *what*?
 - Are decisions documented with rationale?
 - Can an AI agent reading this page act on it without ambiguity?
-- Would someone on a different project find this useful? Tag platform patterns vs site-specific content (see wiki skill's Learning Organization section).
+- Would someone on a different project find this useful? Tag platform patterns vs site-specific content (see the `wiki-conventions` skill's Learning Organization section).
 
 ### Organization
 - Is information in the right place? Would readers find it where they expect?
@@ -88,7 +88,7 @@ Every directive sentence MUST use MUST / MUST NOT / SHOULD / SHOULD NOT / MAY. S
 
 ### Relocation (progressive disclosure)
 
-Before compressing or deleting a detail-heavy page, consider relocating it. If a wiki page carries deep detail that is only needed when actively working on a specific code path, that page is a candidate for the colocated-markdown pattern: move the detail into a markdown file next to the code, leave a summary + signpost in the wiki. See `simpleapps:wiki` "Progressive Disclosure via Colocated Markdown" for the location conventions, signpost format, and keep-current invariant.
+Before compressing or deleting a detail-heavy page, consider relocating it. If a wiki page carries deep detail that is only needed when actively working on a specific code path, that page is a candidate for the colocated-markdown pattern: move the detail into a markdown file next to the code, leave a summary + signpost in the wiki. See `simpleapps:wiki-conventions` "Progressive Disclosure via Colocated Markdown" for the location conventions, signpost format, and keep-current invariant.
 
 Flag relocation candidates during assessment using these cues:
 
@@ -98,11 +98,11 @@ Flag relocation candidates during assessment using these cues:
 
 Relocation is a stronger move than pruning: it preserves detail for agents who need it while cutting the always-loaded wiki cost. Prefer it over aggressive compression when the detail is genuinely valuable and tied to specific code.
 
-If a stale colocated file already exists for the topic, follow the migration procedure in the wiki skill: reconcile the two versions against current code, land the reconciled version in the colocated file as source of truth, then reduce the wiki page to summary + signpost. Do not point the wiki at a stale file.
+If a stale colocated file already exists for the topic, follow the migration procedure in the `wiki-conventions` skill: reconcile the two versions against current code, land the reconciled version in the colocated file as source of truth, then reduce the wiki page to summary + signpost. Do not point the wiki at a stale file.
 
 ## 3b. Generate Deployment page (if missing)
 
-**This step is MANDATORY if `wiki/Deployment.md` does not exist.** The `/submit`, `/stage`, and `/publish` commands refuse to run without it. Generating this page is the highest-priority action in any curate-wiki run when it is missing.
+**This step is MANDATORY if `wiki/Deployment.md` does not exist.** The `/submit`, `/stage`, and `/publish` commands refuse to run without it. Generating this page is the highest-priority action in any wiki-curate run when it is missing.
 
 1. **Scan** the codebase for deployment artifacts:
    - CI workflows (`.github/workflows/`, Jenkinsfile, etc.)
@@ -179,7 +179,7 @@ Run `wc -w wiki/*.md` again. Compare against the starting count and the active b
 
 ### Budget increase prompt
 
-**Running `/curate-wiki` is NOT approval to raise the wiki token budget.** The budget is a long-term cost paid by every agent in every session across every teammate. Raising it MUST be its own separate, explicit approval from the user, outside the blanket approval that lets `/curate-wiki` edit wiki content.
+**Running `/wiki-curate` is NOT approval to raise the wiki token budget.** The budget is a long-term cost paid by every agent in every session across every teammate. Raising it MUST be its own separate, explicit approval from the user, outside the blanket approval that lets `/wiki-curate` edit wiki content.
 
 When further pruning would remove content the user needs, surface this prompt verbatim AND STOP:
 
@@ -199,9 +199,9 @@ If the user approves with a specific number:
    <!-- wiki-token-budget-reason: <the user's one-sentence reason> -->
    ```
    If the markers already exist, update in place. Otherwise insert them directly after the top-level `# <title>` heading so they travel with the wiki but stay invisible in the rendered view.
-4. Report the new budget and reason. Both will surface at the top of every future `/curate-wiki` and `/wiki-audit` run so the exception stays visible and re-negotiable.
+4. Report the new budget and reason. Both will surface at the top of every future `/wiki-curate` and `/wiki-audit` run so the exception stays visible and re-negotiable.
 
-Never silently raise the budget. Never raise the budget under the umbrella of `/curate-wiki` approval. Every increase MUST be a separate, explicit, numbered approval from the user, paired with a reason they authored.
+Never silently raise the budget. Never raise the budget under the umbrella of `/wiki-curate` approval. Every increase MUST be a separate, explicit, numbered approval from the user, paired with a reason they authored.
 
 ## 8. Report and stop
 

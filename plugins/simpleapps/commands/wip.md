@@ -2,10 +2,10 @@
 name: wip
 description: Fetch a Basecamp URL or GitHub issue with full comments, scaffold a WIP file, and load the wiki
 argument-hint: "<basecamp-url or github-issue>"
-allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(basename:*), Bash(date:*), Bash(gh label:*), Skill(basecamp), Skill(workflow), Skill(github), Skill(wip), Skill(bash-simplicity), Skill(work-habits), mcp__plugin_simpleapps_basecamp__*, Read, Write, Edit, Bash(find:*), Bash(ls:*)
+allowed-tools: Bash(gh issue:*), Bash(git -C:*), Bash(git remote:*), Bash(basename:*), Bash(date:*), Bash(gh label:*), Skill(basecamp), Skill(workflow), Skill(github), Skill(wip-conventions), Skill(bash-simplicity), Skill(work-habits), mcp__plugin_simpleapps_basecamp__*, Read, Write, Edit, Bash(find:*), Bash(ls:*)
 ---
 
-First, use Skill("basecamp") to load the Basecamp MCP reference, then Skill("workflow") for the Basecamp-to-GitHub flow, then Skill("github") for GH CLI conventions, then Skill("wip") for the WIP frontmatter schema and lifecycle, then Skill("bash-simplicity") for Bash conventions, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
+First, use Skill("basecamp") to load the Basecamp MCP reference, then Skill("workflow") for the Basecamp-to-GitHub flow, then Skill("github") for GH CLI conventions, then Skill("wip-conventions") for the WIP frontmatter schema and lifecycle, then Skill("bash-simplicity") for Bash conventions, then Skill("work-habits") for autonomous execution rules and RFC 2119 compliance.
 
 Fetch a Basecamp URL or GitHub issue and scaffold a WIP file.
 
@@ -149,7 +149,7 @@ Tell the user what was updated (e.g., "Added 2 new comments, status unchanged").
 
 Write to `wip/{prefix}{#}-{slug}.md` where prefix is `GH` or `BC`.
 
-Prepend YAML frontmatter per the `simpleapps:wip` schema. Get today's date with `date +%Y-%m-%d`. Leave `shipped_at`, `pr`, `disposition`, and `wiki_candidates` empty. Later lifecycle commands fill them in.
+Prepend YAML frontmatter per the `simpleapps:wip-conventions` schema. Get today's date with `date +%Y-%m-%d`. Leave `shipped_at`, `pr`, `disposition`, and `wiki_candidates` empty. Later lifecycle commands fill them in.
 
 Template:
 
@@ -221,6 +221,10 @@ _Investigation notes go here._
 ```
 
 For freeform WIPs (no issue, user-provided scaffold), leave `issue` and `branch` empty in the frontmatter and use a descriptive filename with no `GH`/`BC` prefix.
+
+## 7c. Refresh wip/README.md
+
+After 7a or 7b, rewrite the WIP files table in `wip/README.md` per the Index format in `simpleapps:wip-conventions`. Copy the Open issues without a WIP section forward, removing this issue's row if present (or write `_Run /triage to populate._` if the README is new).
 
 ## 8. Load the wiki
 

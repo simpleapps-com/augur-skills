@@ -75,7 +75,7 @@ Do not classify issues as "pre-existing" to justify skipping them. Context compa
 
 **Colocated detail files are first-class code artifacts.** When code has a colocated markdown file (a `README.md`, `helpers/<topic>.md`, `docs/<topic>.md`, or whatever convention the codebase uses) MUST read it before making changes, not after. If your change affects the behavior it describes, update the file in the same commit as the code change. If the file is already stale on arrival (contradicts current behavior before your change), fix or flag it; do not compound the drift. Touching code with a colocated detail file and not keeping the file current is the same category of bug as leaving a test broken.
 
-**Subsystem READMEs count the same way.** When a subsystem uses the index-and-leaves pattern (`<subsystem>/README.md` as entry point, plus per-item `<subsystem>/<item>.md` for complex items), read the README first when landing in the subsystem, then any item doc for the specific thing you are touching. Edits that change the subsystem's shape (add, remove, or significantly alter an item) MUST update the README index, not just the item doc. See `simpleapps:wiki` "Progressive Disclosure via Colocated Markdown" for the wiki-side signpost pattern and the subsystem-hierarchy conventions.
+**Subsystem READMEs count the same way.** When a subsystem uses the index-and-leaves pattern (`<subsystem>/README.md` as entry point, plus per-item `<subsystem>/<item>.md` for complex items), read the README first when landing in the subsystem, then any item doc for the specific thing you are touching. Edits that change the subsystem's shape (add, remove, or significantly alter an item) MUST update the README index, not just the item doc. See `simpleapps:wiki-conventions` "Progressive Disclosure via Colocated Markdown" for the wiki-side signpost pattern and the subsystem-hierarchy conventions.
 
 ## Versioned sources win over memory
 
@@ -85,7 +85,7 @@ Anything checked into git is the contract. Memory is at most a personal hint. "M
 
 When you detect a conflict: follow the versioned source, remove the offending memory file (and its `MEMORY.md` entry), and report the conflict so the user knows.
 
-See `simpleapps:wiki` "Wiki Over Memory" for the full priority rules.
+See `simpleapps:wiki-conventions` "Wiki Over Memory" for the full priority rules.
 
 ## RFC 2119 keywords are binding
 

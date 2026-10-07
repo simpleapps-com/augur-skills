@@ -19,7 +19,7 @@ Before doing ANYTHING else, read `wiki/Deployment.md` and find the **Deploy** se
 
 **If `wiki/Deployment.md` does not exist or has no Deploy section, YOU MUST STOP IMMEDIATELY.** Do not guess, do not improvise, do not infer steps from the codebase. Tell the user:
 
-> "Cannot run /stage: no Deployment page found at wiki/Deployment.md. Run /curate-wiki to generate it from the codebase."
+> "Cannot run /stage: no Deployment page found at wiki/Deployment.md. Run /wiki-curate to generate it from the codebase."
 
 Then stop. Do nothing else. MUST NOT attempt to merge PRs, trigger builds, or figure out the steps on your own.
 

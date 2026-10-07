@@ -1,10 +1,10 @@
 ---
 name: wiki-audit
 description: Check wiki health. Token budget, cross-links, llms.txt sync, and orphan pages.
-allowed-tools: Bash(wc:*), Bash(ls:*), Bash(grep:*), Bash(find:*), Read, Skill(wiki), Skill(bash-simplicity)
+allowed-tools: Bash(wc:*), Bash(ls:*), Bash(grep:*), Bash(find:*), Read, Skill(wiki-conventions), Skill(bash-simplicity)
 ---
 
-First, use Skill("wiki") to load wiki conventions.
+First, use Skill("wiki-conventions") to load wiki conventions.
 
 Audit the project wiki at `wiki/` and report any issues.
 

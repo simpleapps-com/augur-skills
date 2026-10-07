@@ -6,4 +6,4 @@ MUST NOT use memory for conventions, patterns, decisions, or learnings that othe
 
 **Reading priority:** when memory conflicts with the wiki, a rule, CLAUDE.md, or a skill, the versioned source wins. YOU MUST NOT use memory to override a MUST from a versioned source. Remove the stale memory and report the conflict.
 
-Load Skill("wiki") for full conventions on what belongs where and how to handle conflicts.
+Load Skill("wiki-conventions") for full conventions on what belongs where and how to handle conflicts.

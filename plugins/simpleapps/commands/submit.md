@@ -1,7 +1,7 @@
 ---
 name: submit
 description: Submit work for review. Commit and create a PR as defined in the project wiki Deployment page.
-allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Bash(date:*), Bash(ls:*), Skill(deployment), Skill(git-safety), Skill(conventional-commits), Skill(github), Skill(bash-simplicity), Skill(wip), Skill(work-habits), Read, Write, Edit
+allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Bash(date:*), Bash(ls:*), Skill(deployment), Skill(git-safety), Skill(conventional-commits), Skill(github), Skill(bash-simplicity), Skill(wip-conventions), Skill(work-habits), Read, Write, Edit
 ---
 
 First, load these skills:
@@ -9,7 +9,7 @@ First, load these skills:
 2. Skill("conventional-commits"): commit message format
 3. Skill("github"): PR conventions and gh CLI
 4. Skill("bash-simplicity"): Bash conventions
-5. Skill("wip"): WIP frontmatter schema, for updating the WIP after push
+5. Skill("wip-conventions"): WIP frontmatter schema, for updating the WIP after push
 6. Skill("work-habits"): autonomous execution rules and RFC 2119 compliance
 
 ## What This Command Does
@@ -22,7 +22,7 @@ Before doing ANYTHING else, read `wiki/Deployment.md` and find the **Submit** se
 
 **If `wiki/Deployment.md` does not exist or has no Submit section, YOU MUST STOP IMMEDIATELY.** Do not guess, do not improvise, do not use defaults. Tell the user:
 
-> "Cannot run /submit: no Deployment page found at wiki/Deployment.md. Run /curate-wiki to generate it from the codebase."
+> "Cannot run /submit: no Deployment page found at wiki/Deployment.md. Run /wiki-curate to generate it from the codebase."
 
 Then stop. Do nothing else. MUST NOT attempt to commit, create PRs, or figure out the steps on your own.
 
@@ -61,13 +61,13 @@ If the commit message includes `Closes #N` or `Fixes #N`, the issue will auto-cl
 
 ## Update the WIP frontmatter
 
-After the push succeeds and CI is green (or the PR is open if the project uses PRs), find the WIP for this work and mark it shipped per `simpleapps:wip`:
+After the push succeeds and CI is green (or the PR is open if the project uses PRs), find the WIP for this work and mark it shipped per `simpleapps:wip-conventions`:
 
 1. Derive the issue number from the branch name (e.g., `fix/42-description` → `N=42`) or from `Closes #N`/`Fixes #N` in the commit message.
 2. List `wip/` with `ls wip/` and look for a file named `GH{N}-*.md` or `BC{N}-*.md`. If no match, skip this step: the work was not tracked through the WIP flow.
 3. Edit the frontmatter: set `status: shipped`, `shipped_at: <today>` (`date +%Y-%m-%d`), and `pr` to the PR URL if one exists, otherwise the commit SHA. Bump `last_reviewed` to today.
 4. Leave `disposition` empty. The user or `/process-wips` decides later whether to promote or delete.
 
-If the WIP has no frontmatter (legacy), add the full block per the `simpleapps:wip` schema before setting the fields above.
+If the WIP has no frontmatter (legacy), add the full block per the `simpleapps:wip-conventions` schema before setting the fields above.
 
 If CI fails after the push, do NOT update `status` or `shipped_at`. Leave the WIP at `in-progress` so the user can fix and re-run /submit.

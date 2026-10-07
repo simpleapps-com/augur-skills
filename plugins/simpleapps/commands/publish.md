@@ -19,7 +19,7 @@ Before doing ANYTHING else, read `wiki/Deployment.md` and find the **Publish** s
 
 **If `wiki/Deployment.md` does not exist or has no Publish section, YOU MUST STOP IMMEDIATELY.** Do not guess, do not improvise, do not infer steps from the codebase or version files. Tell the user:
 
-> "Cannot run /publish: no Deployment page found at wiki/Deployment.md. Run /curate-wiki to generate it from the codebase."
+> "Cannot run /publish: no Deployment page found at wiki/Deployment.md. Run /wiki-curate to generate it from the codebase."
 
 Then stop. Do nothing else. MUST NOT attempt to bump versions, tag, or push on your own.
 

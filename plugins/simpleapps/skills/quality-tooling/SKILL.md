@@ -1,5 +1,5 @@
 ---
-name: quality
+name: quality-tooling
 description: Quality tooling awareness for projects. Covers linting, formatting, type checking, testing, dead code detection, and pre-commit hooks. Use when reviewing code, setting up projects, or noticing missing quality tooling.
 ---
 

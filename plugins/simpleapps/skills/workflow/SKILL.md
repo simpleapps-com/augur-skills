@@ -93,16 +93,16 @@ The full workflow from task to delivery, each step feeding the next:
 
 Not every task uses all steps. Most daily work ends at `/submit`. `/stage` and `/publish` are used less frequently. `/publish` is intentionally rare and requires explicit verification of the exact version going to production.
 
-The three shipping commands (`/submit`, `/stage`, `/publish`) read project-specific steps from `wiki/Deployment.md`. They refuse to operate if the Deployment page is missing. Run `/curate-wiki` to generate it from the codebase.
+The three shipping commands (`/submit`, `/stage`, `/publish`) read project-specific steps from `wiki/Deployment.md`. They refuse to operate if the Deployment page is missing. Run `/wiki-curate` to generate it from the codebase.
 
-Commands like `/research` and `/discuss` can be used at any stage. `/quality`, `/verify`, `/curate-wiki`, and `/wiki-audit` can run independently.
+Commands like `/research` and `/discuss` can be used at any stage. `/quality`, `/verify`, `/wiki-curate`, and `/wiki-audit` can run independently.
 
-`/wiki-sync` commits, pulls, and pushes the wiki repo. It is the wiki's counterpart to `/submit` and carries its own approval, so the user does not have to say "commit" and then "push" after every `/curate-wiki` run. It grants nothing in the main repo.
+`/wiki-sync` commits, pulls, and pushes the wiki repo. It is the wiki's counterpart to `/submit` and carries its own approval, so the user does not have to say "commit" and then "push" after every `/wiki-curate` run. It grants nothing in the main repo.
 
-`/process-wips` runs daily (outside the lifecycle above) to reconcile WIP frontmatter with ground truth, auto-delete shipped WIPs older than 7 days, and confirm wiki promotions. See `simpleapps:wip` for the frontmatter schema and retention rule.
+`/process-wips` runs daily (outside the lifecycle above) to reconcile WIP frontmatter with ground truth, auto-delete shipped WIPs older than 7 days, and confirm wiki promotions. See `simpleapps:wip-conventions` for the frontmatter schema and retention rule.
 
 ## References
 
 - See `simpleapps:basecamp` skill for MCP tools, Chrome fallback, and Basecamp navigation
 - See `simpleapps:github` skill for GitHub org conventions and `gh` CLI usage
-- See `simpleapps:fyxer` skill for Fyxer meeting transcript processing and Basecamp posting
+- See `simpleapps:fyxer-integration` skill for Fyxer meeting transcript processing and Basecamp posting

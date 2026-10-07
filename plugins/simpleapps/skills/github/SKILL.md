@@ -29,7 +29,7 @@ See `simpleapps:project-defaults` for the full directory layout, symlink setup, 
 
 ## Wiki
 
-See `simpleapps:wiki` for wiki conventions, token budget, and maintenance rules.
+See `simpleapps:wiki-conventions` for wiki conventions, token budget, and maintenance rules.
 
 ## Git Safety
 

@@ -101,7 +101,7 @@ The goal is to grow the packages over time so sites write less custom code.
 
 ## augur-doctor
 
-`augur-doctor` ships with `@simpleapps-com/augur-config`. It checks version alignment, latest versions, and platform standard conformance. Run via `pnpm augur-doctor .` from the site directory (pre-approved, no permission prompt). For full documentation, see the augur-packages wiki page `guide-site-assessment.md` (use the cross-project wiki path from `simpleapps:wiki`).
+`augur-doctor` ships with `@simpleapps-com/augur-config`. It checks version alignment, latest versions, and platform standard conformance. Run via `pnpm augur-doctor .` from the site directory (pre-approved, no permission prompt). For full documentation, see the augur-packages wiki page `guide-site-assessment.md` (use the cross-project wiki path from `simpleapps:wiki-conventions`).
 
 ## Platform Standards
 

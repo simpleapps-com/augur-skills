@@ -1,16 +1,16 @@
 ---
 name: verify
 description: Run the E2E verification checklist from the wiki's Testing page using Chrome automation
-allowed-tools: Skill(wiki), Skill(work-habits), Skill(bash-simplicity), Skill(git-safety), Read, Write, Edit, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*), mcp__claude-in-chrome__*, Bash(pnpm:*)
+allowed-tools: Skill(wiki-conventions), Skill(work-habits), Skill(bash-simplicity), Skill(git-safety), Read, Write, Edit, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*), mcp__claude-in-chrome__*, Bash(pnpm:*)
 ---
 
-First, use Skill("wiki") to load wiki conventions and Skill("work-habits") for error overlay guidance.
+First, use Skill("wiki-conventions") to load wiki conventions and Skill("work-habits") for error overlay guidance.
 
 Run the project's E2E verification checklist using Chrome automation.
 
 ## 1. Find the checklist
 
-Read the project wiki's Testing page (check for `wiki/Testing.md`). If it does not exist, tell the user this project needs a Testing page in the wiki and suggest running `/curate-wiki` to create one. Stop here if no Testing page exists.
+Read the project wiki's Testing page (check for `wiki/Testing.md`). If it does not exist, tell the user this project needs a Testing page in the wiki and suggest running `/wiki-curate` to create one. Stop here if no Testing page exists.
 
 ## 2. Parse the checklist
 

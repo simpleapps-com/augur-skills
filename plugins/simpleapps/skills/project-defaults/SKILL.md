@@ -66,7 +66,7 @@ The parent `{project}/` is NOT a git repo. It keeps code and wiki side-by-side. 
 
 **goals/**: Project-level scratch space (sibling of `repo/`) for the goals/objectives currently being worked. Short-lived: reviewed regularly, archived or deleted when the goal is met, like `wip/` but goal-scoped rather than task-scoped. Not in git; lives on one machine. MUST NOT hold durable team-shared goals (those go in `wiki/`) or secrets.
 
-**WIP**: Research, plans, decisions, test results. MUST NOT contain secrets, final docs, or code. See `simpleapps:wip` for the frontmatter schema, status lifecycle, retention rule, and daily processing via `/process-wips`.
+**WIP**: Research, plans, decisions, test results. MUST NOT contain secrets, final docs, or code. See `simpleapps:wip-conventions` for the frontmatter schema, status lifecycle, retention rule, and daily processing via `/process-wips`.
 
 **tmp/**: Project-level scratch space (sibling of `repo/`) for commit messages, PR/issue bodies, intermediate output, and throwaway files. Read, write, and delete freely without asking; create the folder if missing; clean up after use.
 

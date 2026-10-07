@@ -41,7 +41,7 @@ List `repo/plugins/simpleapps/commands/` with `ls repo/plugins/simpleapps/comman
 `/triage` -> `/wip` -> `/investigate` -> `/discuss` -> `/implement` -> `/quality` -> `/sanity-check` -> `/verify` -> `/submit` -> `/stage` -> `/publish`
 
 **Supporting** (alphabetical):
-`/audit-augur-packages`, `/commit-message`, `/context-audit`, `/curate-wiki`, `/file-issue`, `/fyxer`, `/guide`, `/project-init`, `/research`, `/wiki`, `/wiki-audit`
+`/audit-augur-packages`, `/commit-message`, `/context-audit`, `/wiki-curate`, `/file-issue`, `/fyxer`, `/guide`, `/project-init`, `/research`, `/wiki`, `/wiki-audit`
 
 For each command, show the name and its frontmatter description in a table.
 
@@ -69,11 +69,11 @@ Find all `SKILL.md` files under `repo/plugins/simpleapps/skills/` with `find rep
 
 Several names exist as both a skill AND a command (and sometimes a rule too): `wiki`, `fyxer`, `quality`, `wip`. (`workflow` and `git-safety` are a skill + a rule, but have no command.) They are different things:
 
-- **Skill**: reference material loaded into context (`Skill("wiki")` loads conventions)
+- **Skill**: reference material loaded into context (`Skill("wiki-conventions")` loads conventions)
 - **Command**: a workflow you invoke (`/wiki` reads every wiki page into context)
 - **Rule**: always-loaded one-liner that points to the skill (`rules/wiki-over-memory.md`)
 
-When the user says "the wiki skill" they mean the conventions doc. "The wiki command" means `/wiki`. "The wiki" by itself usually means the project wiki (`wiki/*.md`). If ambiguous, ask.
+When the user says "the wiki skill" they mean the conventions doc (`wiki-conventions`). "The wiki command" means `/wiki`. "The wiki" by itself usually means the project wiki (`wiki/*.md`). If ambiguous, ask.
 
 ## 6. Plugin rules
 
@@ -115,7 +115,7 @@ Highlight the most important rules:
 - **Conventional commits**: `feat:`, `fix:`, `chore:`, etc.
 - **RFC 2119**: MUST/SHOULD/MAY in ALL CAPS for requirements
 - **Token efficiency**: be concise, action verbs first, no filler
-- **WIP files**: named `{BC|GH}{#}-{slug}.md` in `wip/`
+- **WIP files**: named `{BC|GH}{#}-{slug}.md` in `wip/`; `wip/README.md` indexes them plus open issues without a WIP (refreshed by `/triage`)
 
 ## 9. Ask
 

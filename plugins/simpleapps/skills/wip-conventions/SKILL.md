@@ -1,5 +1,5 @@
 ---
-name: wip
+name: wip-conventions
 description: WIP file conventions. Frontmatter schema, status lifecycle, retention, promotion to wiki, and daily processing rules. Use when creating, updating, or retiring files in wip/.
 ---
 
@@ -42,6 +42,40 @@ Fields:
 At scaffold time `/wip` writes `issue`, `branch`, `status: open`, `created`, and `last_reviewed`; it leaves `shipped_at`, `pr`, `disposition`, and `wiki_candidates` empty for later lifecycle commands to fill. Do not invent values for those at scaffold.
 
 Freeform WIPs (no issue) leave `issue`, `branch`, and `pr` empty. Everything else still applies.
+
+## Index (`wip/README.md`)
+
+`wip/README.md` is the folder index: a summary of every WIP file plus the repo's open issues. It is NOT a WIP. Every command that enumerates `wip/*.md` (`/investigate`, `/implement`, `/discuss`, `/process-wips`, `/research`, `/sanity-check`, `/submit`) MUST skip it.
+
+Format (regenerated in full on each write; no hand edits survive):
+
+```markdown
+# WIP
+
+_Updated {today} by /{command}_
+
+## Open issues without a WIP
+
+_From /triage on {date}_
+
+| Issue | Title | Labels | PR |
+|-------|-------|--------|----|
+| [#43](https://github.com/<org>/<repo>/issues/43) | Add sitemap | SEO | |
+
+## WIP files
+
+| File | Status | Issue | PR | Summary |
+|------|--------|-------|----|---------|
+| [GH42-fix-cart.md](GH42-fix-cart.md) | in-progress | [#42](https://github.com/<org>/<repo>/issues/42) | #57 | Cart total ignores tax on edit |
+```
+
+Rules:
+
+- **Open issues without a WIP** comes first: every open issue with no WIP. An issue has a WIP when a `GH{N}-*.md` file exists, or any WIP's frontmatter `issue` or Source cross-refs point to GitHub #N (e.g., a `BC…` WIP tracking that issue). Issues that have a WIP MUST NOT appear here; they appear in the WIP files table instead.
+- **WIP files** table: one row per `wip/*.md` (excluding README.md), sorted by status (`in-progress`, `open`, `shipped`, `abandoned`) then filename. Status comes from frontmatter. PR comes from frontmatter `pr` or, during `/triage`, the PR cross-reference map. Summary is one line from the Problem section, not just the title.
+- Only `/triage` adds rows to the Open issues section and sets its date. Other commands MUST copy it forward unchanged, except that they MUST remove the row for an issue that now has a WIP. A stale list keeps its old date so it shows its age. If `/triage` has never run, the section reads `_Run /triage to populate._`
+- Who writes: `/triage` (both sections), `/wip` (WIP files table after create/update), `/process-wips` (WIP files table after deletes and status flips).
+- If `wip/` does not exist, `/triage` creates it. `wip/` is gitignored, so the README is local too.
 
 ## Status lifecycle
 
@@ -155,4 +189,5 @@ The same rule applies on `/wip` updates: new attachments added to the source sin
 - `/investigate`: research; bumps `last_reviewed`, sets `status: in-progress`
 - `/implement`: build; bumps `last_reviewed`, keeps `status: in-progress`
 - `/submit`: commit and push; after CI green, flips `status: shipped` and fills `shipped_at` / `pr`
-- `/process-wips`: daily reconciliation and retention pass
+- `/process-wips`: daily reconciliation and retention pass; refreshes `wip/README.md`
+- `/triage`: refreshes `wip/README.md`, including the Open issues section

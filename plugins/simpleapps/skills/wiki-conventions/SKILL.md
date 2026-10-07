@@ -1,11 +1,12 @@
 ---
-name: wiki
+name: wiki-conventions
 description: Wiki conventions for SimpleApps projects. Covers token budget, writing for three audiences, page conventions, maintenance rules, and git workflow. Use when reading, writing, or auditing wiki content.
 allowed-tools:
   - Read
   - Edit
   - Write
   - Bash
+user-invocable: false
 ---
 
 # Wiki
@@ -37,7 +38,7 @@ Projects MAY raise the budget by adding two HTML comment markers near the top of
 
 HTML comments are invisible in the rendered wiki but parseable by agents. Storing the override in the wiki itself means it travels with the repo across machines and teammates; `.simpleapps/` and other gitignored local config are NOT acceptable locations because they do not sync.
 
-Raising the budget is its own decision, separate from any other command. MUST NOT raise the budget under the blanket approval of `/curate-wiki`, `/wiki-audit`, or any other command. The user MUST explicitly approve both the **specific new number** and author the **reason** in their own words. `/curate-wiki` surfaces the prompt and performs the edit only after the user names the number and provides the reason. Never raise the budget silently. Never infer a number the user did not state.
+Raising the budget is its own decision, separate from any other command. MUST NOT raise the budget under the blanket approval of `/wiki-curate`, `/wiki-audit`, or any other command. The user MUST explicitly approve both the **specific new number** and author the **reason** in their own words. `/wiki-curate` surfaces the prompt and performs the edit only after the user names the number and provides the reason. Never raise the budget silently. Never infer a number the user did not state.
 
 Check size: `wc -w wiki/*.md` (multiply by ~1.3 for token estimate)
 
@@ -193,17 +194,17 @@ Every wiki on the machine is a local knowledge base. When looking for how someth
 
 Discover which projects have wikis with Bash `ls`: `ls -d {projectRoot}/clients/*/wiki` and `ls -d {projectRoot}/simpleapps/*/wiki`.
 
-The wikis are kept fresh by `/curate-wiki` runs across projects. Searching locally is instant and requires no internet access; the knowledge is already on the machine.
+The wikis are kept fresh by `/wiki-curate` runs across projects. Searching locally is instant and requires no internet access; the knowledge is already on the machine.
 
 **What to search for:** testing patterns and checklists, architecture decisions, coding conventions, deployment procedures, and how specific features were implemented. Other sites have already solved many of the same problems; search before building from scratch.
 
 ## Deployment Page
 
-Every project wiki MUST have a `Deployment.md` page with up to three sections: Submit, Deploy, and Publish. This page defines the project-specific steps that `/submit`, `/stage`, and `/publish` commands execute. Run `/curate-wiki` to generate it from the codebase. The command scans CI workflows, package.json, deploy scripts, and asks the user about anything it cannot determine. See the `deployment` skill for the expected format.
+Every project wiki MUST have a `Deployment.md` page with up to three sections: Submit, Deploy, and Publish. This page defines the project-specific steps that `/submit`, `/stage`, and `/publish` commands execute. Run `/wiki-curate` to generate it from the codebase. The command scans CI workflows, package.json, deploy scripts, and asks the user about anything it cannot determine. See the `deployment` skill for the expected format.
 
 ## Testing Page
 
-Every project wiki MUST have a `Testing.md` page. This is the E2E verification checklist that `/verify` uses to walk through the site in Chrome. The page grows over time. `/curate-wiki` MUST add testing knowledge learned during the session (new edge cases, failure patterns, test data) to the Testing page.
+Every project wiki MUST have a `Testing.md` page. This is the E2E verification checklist that `/verify` uses to walk through the site in Chrome. The page grows over time. `/wiki-curate` MUST add testing knowledge learned during the session (new edge cases, failure patterns, test data) to the Testing page.
 
 A good Testing page covers: test tiers (automated vs manual), test data (items, accounts, cards), and an E2E checklist organized by page area (homepage, listing, detail, cart, checkout, etc.). Each checklist item is a concrete, verifiable condition, not vague ("works") but specific ("price shows $9.26").
 

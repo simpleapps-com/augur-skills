@@ -2,10 +2,10 @@
 name: research
 description: Deep web research on best practices. Verify assumptions, find long-term solutions, document findings with sources. Use anytime the agent is guessing instead of knowing.
 argument-hint: "[topic or question]"
-allowed-tools: Bash(git -C:*), Bash(ls:*), Bash(find:*), Bash(grep:*), Skill(wiki), Skill(project-defaults), Skill(augur-packages), Read, Write, Edit, Agent, WebSearch, WebFetch
+allowed-tools: Bash(git -C:*), Bash(ls:*), Bash(find:*), Bash(grep:*), Skill(wiki-conventions), Skill(project-defaults), Skill(augur-packages), Read, Write, Edit, Agent, WebSearch, WebFetch
 ---
 
-First, use Skill("wiki") to load project context, then Skill("project-defaults") for directory layout.
+First, use Skill("wiki-conventions") to load project context, then Skill("project-defaults") for directory layout.
 
 Research the current problem deeply using web sources. This is not about quick answers. It's about finding the best long-term solution backed by verified best practices, official documentation, and community patterns.
 
@@ -18,7 +18,7 @@ If `$ARGUMENTS` is provided, use it as the research topic or question.
 ### Without an argument
 
 Check for context in this order:
-1. List `wip/` with `ls wip/` to find recent WIP files. If one exists, extract the problem and suggested approach as the research focus.
+1. List `wip/` with `ls wip/` to find recent WIP files (skip the `README.md` index). If one exists, extract the problem and suggested approach as the research focus.
 2. Use the current session context: what was discussed, what problem is being solved
 3. If neither provides enough context, ask the user what to research
 

@@ -1,10 +1,10 @@
 ---
 name: discuss
 description: Understand the current work better through conversational alignment, wiki context, and session awareness. Use instead of plan mode.
-allowed-tools: Bash(git -C:*), Bash(ls:*), Bash(grep:*), Bash(find:*), Skill(wiki), Read, Agent
+allowed-tools: Bash(git -C:*), Bash(ls:*), Bash(grep:*), Bash(find:*), Skill(wiki-conventions), Read, Agent
 ---
 
-First, use Skill("wiki") to load wiki conventions.
+First, use Skill("wiki-conventions") to load wiki conventions.
 
 Understand the current work better through conversation. This replaces plan mode. Alignment happens through discussion, not formal plans.
 
@@ -12,7 +12,7 @@ Understand the current work better through conversation. This replaces plan mode
 
 Check what context is available:
 
-1. List `wip/` with `ls wip/` for any WIP files
+1. List `wip/` with `ls wip/` for any WIP files (`README.md` is the index, not a WIP)
 2. If WIP files exist, read the most recently modified one
 3. Review the current session: what has been discussed, changed, or learned so far
 

@@ -2,10 +2,10 @@
 name: sanity-check
 description: Check that we solved the right problem without errors of commission or omission. Goldratt's two types of mistakes.
 argument-hint: "[wip-file]"
-allowed-tools: Bash(git -C:*), Bash(gh issue:*), Bash(git remote:*), Skill(wiki), Skill(basecamp), mcp__plugin_simpleapps_basecamp__*, Read, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*)
+allowed-tools: Bash(git -C:*), Bash(gh issue:*), Bash(git remote:*), Skill(wiki-conventions), Skill(basecamp), mcp__plugin_simpleapps_basecamp__*, Read, Bash(rg:*), Bash(grep:*), Bash(find:*), Bash(ls:*)
 ---
 
-First, use Skill("wiki") for project conventions, then Skill("basecamp") for MCP tools.
+First, use Skill("wiki-conventions") for project conventions, then Skill("basecamp") for MCP tools.
 
 ## Why this exists
 
@@ -26,7 +26,7 @@ This command compares what was asked (the WIP and original request) against what
 
 ## 1. Find the WIP
 
-If `$ARGUMENTS` contains a file path, use it. Otherwise, check `wip/` for `.md` files. If there is exactly one, use it. If there are multiple, pick the most recently modified, but tell the user which one you chose so they can correct you. If no WIP file exists, stop and tell the user this command needs a WIP file.
+If `$ARGUMENTS` contains a file path, use it. Otherwise, check `wip/` for `.md` files, skipping `README.md` (the index, not a WIP). If there is exactly one, use it. If there are multiple, pick the most recently modified, but tell the user which one you chose so they can correct you. If no WIP file exists, stop and tell the user this command needs a WIP file.
 
 From the WIP file, extract:
 - **Source**: the original issue or Basecamp URL

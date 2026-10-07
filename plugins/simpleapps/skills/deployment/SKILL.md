@@ -35,7 +35,7 @@ Not all projects need all three. Client sites may only have Submit and Deploy. P
 
 1. Read `wiki/Deployment.md`
 2. Find the section matching the requested action. Command→section map: `/submit`→`## Submit`, `/stage`→`## Deploy`, `/publish`→`## Publish`. Note `/stage` maps to the `## Deploy` heading.
-3. If the page or section is missing, **refuse to operate**. Tell the user to run `/curate-wiki` to generate it.
+3. If the page or section is missing, **refuse to operate**. Tell the user to run `/wiki-curate` to generate it.
 4. Execute the steps in that section
 
 ## Command approval model
@@ -48,7 +48,7 @@ The user invoking a command IS the approval to execute all its steps, including 
 
 ## Guard Rails
 
-- **If `wiki/Deployment.md` does not exist, STOP IMMEDIATELY.** Do not guess, do not improvise, do not infer steps from the codebase. Tell the user to run `/curate-wiki` to generate it. Then do nothing else.
+- **If `wiki/Deployment.md` does not exist, STOP IMMEDIATELY.** Do not guess, do not improvise, do not infer steps from the codebase. Tell the user to run `/wiki-curate` to generate it. Then do nothing else.
 - **If the relevant section (Submit, Deploy, or Publish) is missing from the page, STOP IMMEDIATELY.** Same rule: do not guess the steps.
 - MUST NOT guess deployment steps. Only execute what the wiki defines.
 

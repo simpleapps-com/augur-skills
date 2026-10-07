@@ -122,7 +122,7 @@ Right: `grep -rln --include="*.ts" "pattern" {path}/repo`
 Wrong: `ls {path}/repo/src/components/ | head`
 Right: `ls {path}/repo/src/components/`
 
-All project paths are known and predictable (see `simpleapps:wiki` Cross-Project Wiki Access). Use the known path; do not search the entire filesystem.
+All project paths are known and predictable (see `simpleapps:wiki-conventions` Cross-Project Wiki Access). Use the known path; do not search the entire filesystem.
 
 ## Subagent Responsibility
 
