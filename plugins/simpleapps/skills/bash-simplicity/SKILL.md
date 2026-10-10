@@ -112,17 +112,17 @@ When a dev server fails with EADDRINUSE, a process from a previous session is oc
 
 Do not retry the server start until the user confirms the port is free.
 
-## Cross-Project Searching
+## Searching Other Repos
 
-When looking at another project's code, search with Bash directly using the project path. MUST keep it to one simple command per call: no pipes, no `-exec`, no `2>&1 | head`.
+Other repos are read through `clones/<name>` inside the current project, NEVER by a path into another project folder (see `simpleapps:project-defaults` "clones/"). MUST keep it to one simple command per call: no pipes, no `-exec`, no `2>&1 | head`.
 
-Wrong: `find {path}/repo -name "*.ts" -exec grep -l "pattern" {} \; 2>/dev/null | head -10`
-Right: `grep -rln --include="*.ts" "pattern" {path}/repo`
+Wrong: `find clones/<name> -name "*.ts" -exec grep -l "pattern" {} \; 2>/dev/null | head -10`
+Right: `grep -rln --include="*.ts" "pattern" clones/<name>`
 
-Wrong: `ls {path}/repo/src/components/ | head`
-Right: `ls {path}/repo/src/components/`
+Wrong: `ls ~/projects/simpleapps/<name>/repo/src/components/`
+Right: `ls clones/<name>/src/components/`
 
-All project paths are known and predictable (see `simpleapps:wiki-conventions` Cross-Project Wiki Access). Use the known path; do not search the entire filesystem.
+MUST NOT search the entire filesystem. If the clone is missing, ask the user before cloning.
 
 ## Subagent Responsibility
 

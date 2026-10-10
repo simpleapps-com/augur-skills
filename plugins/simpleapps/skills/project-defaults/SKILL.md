@@ -36,20 +36,24 @@ Every project MUST use this layout:
 ```
 {project}/
 ├── CLAUDE.md           # → repo/.claude/CLAUDE.md
-├── .claude/            # Claude Code config (symlinks to repo/.claude/)
-│   ├── settings.json   # → repo/.claude/settings.json
-│   ├── settings.local.json  # Machine-local, gitignored, NOT symlinked
-│   ├── rules/          # → repo/.claude/rules/
-│   ├── commands/       # → repo/.claude/commands/
-│   ├── prompts/        # → repo/.claude/prompts/
-│   └── hooks/          # → repo/.claude/hooks/
+├── .claude             # → repo/.claude (whole folder, one symlink)
+├── .mcp.json           # → repo/.mcp.json (only when the repo has one)
 ├── repo/               # Git repo (simpleapps-com/<name>.git)
+│   └── .claude/
+│       ├── CLAUDE.md
+│       ├── settings.json            # Shared, committed
+│       ├── settings.<login>.json    # Per-user, committed (<login> = GitHub login)
+│       ├── settings.local.json      # → settings.<login>.json, gitignored
+│       └── rules/ commands/ prompts/ hooks/
 ├── wiki/               # Wiki repo (simpleapps-com/<name>.wiki.git)
+├── clones/             # Read-only clones of other repos and wikis (not in git)
 ├── goals/              # Active goal tracking (not in git)
 ├── wip/                # Work-in-progress files (not in git)
 ├── tmp/                # Temporary files (not in git)
 └── .simpleapps/        # Config, credentials, site profile (not in git)
 ```
+
+Repo-specific folders (e.g. a `work/` folder for per-person data) MUST NOT be added to this standard layout. The repo's own onboarding procedure creates them (see `/project-init`).
 
 The parent `{project}/` is NOT a git repo. It keeps code and wiki side-by-side. The git repo is always at `repo/`. Use `git -C repo` for git operations from the project root.
 
@@ -59,12 +63,19 @@ The parent `{project}/` is NOT a git repo. It keeps code and wiki side-by-side. 
 | Dev documentation | `wiki/` | Architecture, guides, specs, conventions |
 | Repo `.claude/rules/` | `repo/` | Minimal summaries referencing wiki |
 | Repo `.claude/CLAUDE.md` | `repo/` | Quick reference + wiki links |
+| Other repos and wikis | `clones/` | `clones/augur`, `clones/augur.wiki` (read-only) |
 | Active goals | `goals/` | Current cycle/sprint objectives being tracked |
 | Active task context | `wip/` | `{issue-number}-{short-desc}.md` files |
 | Temporary files | `tmp/` | Scratch space: commit msgs, PR bodies, intermediate output. Full access. |
 | SimpleApps config | `.simpleapps/` | Settings, site profile, credentials (see below) |
 
 **goals/**: Project-level scratch space (sibling of `repo/`) for the goals/objectives currently being worked. Short-lived: reviewed regularly, archived or deleted when the goal is met, like `wip/` but goal-scoped rather than task-scoped. Not in git; lives on one machine. MUST NOT hold durable team-shared goals (those go in `wiki/`) or secrets.
+
+**clones/**: The project boundary. Agents MUST stay inside the current `{project}/` folder. Another repo or wiki MUST be read through `clones/<name>` or `clones/<name>.wiki`, NEVER by a path into another project folder (`~/projects/<group>/<other>/`). A Read blocked by `blockReadsOutsideWorkingDirectories` is the boundary working; MUST NOT route around it with `ls`, `rg`, or `git -C`.
+- Pull before reading: `git -C clones/<name> pull`
+- Missing clone: ask the user, then `gh repo clone simpleapps-com/<name> clones/<name>` (wiki: `gh repo clone simpleapps-com/<name>.wiki clones/<name>.wiki`)
+- Read-only: MUST NOT edit, commit, or push in `clones/`. To change another repo, file an issue there (`/file-issue`)
+- Not in git; lives on one machine
 
 **WIP**: Research, plans, decisions, test results. MUST NOT contain secrets, final docs, or code. See `simpleapps:wip-conventions` for the frontmatter schema, status lifecycle, retention rule, and daily processing via `/process-wips`.
 
@@ -147,32 +158,30 @@ One per client project. Consistent structure across all sites: same fields, diff
 
 `{project}/.simpleapps/settings.json` is read first, then falls back to `~/.simpleapps/settings.json`. Project-level fields override user-level ones.
 
-## .claude/settings.local.json
+## settings.local.json and settings.<login>.json
 
-This file SHOULD be gitignored. It contains project-specific settings that are machine-local and should not be committed.
+Each user's local settings live in `repo/.claude/settings.<login>.json`, committed, so they carry over to a new machine or clone. `<login>` MUST come from `gh api user --jq .login` (e.g. `settings.simpleapps-io.json`).
+
+`repo/.claude/settings.local.json` is a symlink to `settings.<login>.json` (relative target, same folder). The symlink differs per user, so `repo/.gitignore` MUST contain `.claude/settings.local.json`.
 
 ## Symlink Setup
 
-Six symlinks let you run Claude Code from `{project}/` and still get the repo's memory, settings, rules, commands, prompts, and hooks loaded automatically:
+These symlinks let you run Claude Code from `{project}/` while everything it loads lives in the repo:
 
 | Symlink | Target | Purpose |
 |---------|--------|---------|
 | `{project}/CLAUDE.md` | `repo/.claude/CLAUDE.md` | Project memory loaded at session start |
-| `{project}/.claude/settings.json` | `repo/.claude/settings.json` | Shared, committed project settings |
-| `{project}/.claude/rules` | `repo/.claude/rules` | Always-loaded rule files |
-| `{project}/.claude/commands` | `repo/.claude/commands` | Slash commands |
-| `{project}/.claude/prompts` | `repo/.claude/prompts` | Reusable prompt files |
-| `{project}/.claude/hooks` | `repo/.claude/hooks` | Hook scripts |
+| `{project}/.claude` | `repo/.claude` | Settings, rules, commands, prompts, hooks. Anything added to `repo/.claude/` later appears automatically |
+| `{project}/.mcp.json` | `repo/.mcp.json` | The team's shared MCP servers. Only when `repo/.mcp.json` exists |
+| `repo/.claude/settings.local.json` | `settings.<login>.json` | Per-user settings (see above). Gitignored |
 
-The canonical files live in `repo/.claude/` so they travel with the repo and are version-controlled. The symlinks make them visible from the parent `{project}/` working directory. `CLAUDE.md` symlinks to the project root (not inside `.claude/`) because Claude Code loads project memory from `{project}/CLAUDE.md`.
+`CLAUDE.md` and `.mcp.json` link at the project root because Claude Code reads both from `{project}/`, outside `.claude/`.
 
-`.claude/settings.local.json` is NOT symlinked. It is machine-local, gitignored, and stays directly in `{project}/.claude/`. See [.claude/settings.local.json](#claudesettingslocaljson) below.
-
-`/project-init` creates and repairs all six.
+`/project-init` creates and repairs all of them, and migrates a project whose `{project}/.claude/` is still a real folder of per-item symlinks.
 
 ## Permission Defaults
 
-Every project SHOULD configure `.claude/settings.local.json` with these rules. `env` and `permissions` are honoured at project scope; `autoMode` is NOT (see below):
+Every project SHOULD configure `repo/.claude/settings.<login>.json` (loaded as `settings.local.json`) with these rules. `env` and `permissions` are honoured at project scope; `autoMode` is NOT (see below):
 
 ```json
 {

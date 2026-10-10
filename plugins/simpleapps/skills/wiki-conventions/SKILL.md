@@ -165,36 +165,28 @@ When you detect a conflict:
 
 "The memory told me otherwise" is never a valid reason to deviate from the wiki, a rule, or a skill. If you catch yourself reaching for that reasoning, stop. The memory is the problem, not the directive.
 
-## Cross-Project Wiki Access
+## Other Projects' Wikis and Repos
 
-All projects follow the same directory layout (see `simpleapps:project-defaults`). Every project's wiki is at a predictable path relative to the project root: `{project}/wiki/`. When the user asks you to check another project's wiki or code, use the project-defaults layout to find it.
+Agents MUST stay inside the current project folder. Another project's wiki or code MUST be read through `clones/` (see `simpleapps:project-defaults` "clones/"), NEVER by a path into another project folder.
 
-**Before reading another project's wiki, pull the latest:**
-`git -C {path-to-project}/wiki pull`
+- Wiki: `clones/<name>.wiki/`. Code: `clones/<name>/`
+- Pull first: `git -C clones/<name>.wiki pull`
+- Read files: `Read("clones/<name>.wiki/Page.md")`
+- Search: `rg <pattern> clones/<name>` (preferred) or `grep -rn <pattern> clones/<name>`
+- Missing clone: ask the user, then `gh repo clone simpleapps-com/<name>.wiki clones/<name>.wiki`
 
-**Cross-project access. The paths are known, so target them directly:**
-- Read files: `Read("{path-to-project}/wiki/Page.md")`
-- Search code: `rg <pattern> {path-to-project}/repo` (preferred) or `grep -rn <pattern> {path-to-project}/repo`
-- Find files: `rg --files {path-to-project}/repo` or `find {path-to-project}/repo -name <pattern>`
+One command per call, no operators.
 
-Use Read for known files; search with `rg`/`grep`/`find`/`ls` via Bash. Claude Code has no built-in Grep/Glob tools. One command per call, no operators.
+### Search other wikis
 
-### Search all wikis
+Other teams have already solved many of the same problems. When looking for how something was solved, search the cloned wikis as well as the current one:
 
-Every wiki on the machine is a local knowledge base. When looking for how something was solved, search across ALL wikis, not just the current project:
+1. List them: `ls -d clones/*.wiki`
+2. Pull each before searching: `git -C clones/<name>.wiki pull` (one call per wiki)
+3. Search: `rg --glob "*.md" "<pattern>" clones/` (or `grep -rn --include="*.md" "<pattern>" clones/`)
+4. Read the matching pages for full context
 
-1. Read `~/.simpleapps/settings.json` to get `projectRoot`
-2. Pull the latest for all wikis before searching:
-   - `git -C {projectRoot}/clients/*/wiki pull` (one call per wiki, not a glob)
-   - `git -C {projectRoot}/simpleapps/*/wiki pull`
-3. Search across all wikis with Bash `grep`:
-   - `grep -rn --include="*.md" "<pattern>" {projectRoot}/clients/*/wiki/`
-   - `grep -rn --include="*.md" "<pattern>" {projectRoot}/simpleapps/*/wiki/`
-4. Read the matching pages to get the full context
-
-Discover which projects have wikis with Bash `ls`: `ls -d {projectRoot}/clients/*/wiki` and `ls -d {projectRoot}/simpleapps/*/wiki`.
-
-The wikis are kept fresh by `/wiki-curate` runs across projects. Searching locally is instant and requires no internet access; the knowledge is already on the machine.
+If the wiki you need is not cloned, ask the user before cloning it.
 
 **What to search for:** testing patterns and checklists, architecture decisions, coding conventions, deployment procedures, and how specific features were implemented. Other sites have already solved many of the same problems; search before building from scratch.
 
