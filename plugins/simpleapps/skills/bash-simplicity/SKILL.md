@@ -51,13 +51,15 @@ Dedicated tools are faster, require no permission, and produce better output. MU
 | `sed`, `awk` | Edit tool |
 | `echo >`, `cat <<EOF` | Write tool |
 
-**Search is Bash-only.** Claude Code has no built-in Grep or Glob tools; it relies on the OS (they were removed in 2.1.117). Prefer `rg` (faster, respects `.gitignore`). Search files with one of:
+**Search depends on your tool list.** If Grep and Glob are in it (the Windows default), MUST use them. Claude Code leaves them out by default on macOS, Linux, and WSL; there, `grep` and `find` in Claude's shell run embedded `ugrep` and `bfs`, so they always work. `rg` is faster and respects `.gitignore`, but it is not embedded and MAY be missing. Search files with one of:
 
 | Use case | Bash command |
 |----------|--------------|
-| Search file contents | `rg <pattern> <path>` (preferred) or `grep -rn <pattern> <path>` |
-| Find files by name | `rg --files <path>` or `find <path> -name <pattern>` |
+| Search file contents | `grep -rn <pattern> <path>`, or `rg <pattern> <path>` if installed |
+| Find files by name | `find <path> -name <pattern>`, or `rg --files <path>` if installed |
 | List directory entries | `ls <path>` |
+
+MUST NOT state tool availability as a version fact ("removed in 2.1.N") in rules or skills: it depends on platform and launch flags, and a pinned claim goes stale silently.
 
 Reserve Bash for these and for commands that never had a dedicated tool: build tools, test runners, git, package managers, system commands.
 
@@ -128,7 +130,7 @@ MUST NOT search the entire filesystem. If the clone is missing, ask the user bef
 
 Subagents do NOT inherit this skill. They see only the prompt you give them. The primary agent MUST brief every subagent on bash-simplicity before delegating shell work, and owns the output that comes back.
 
-Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Use dedicated tools (Read, Edit, Write) over their shell equivalents (`cat`, `sed`, `awk`, `echo >`). Search with Bash directly, preferring `rg` (then `grep -rn`, `find`, `ls`); there are no built-in Grep/Glob tools."
+Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Use dedicated tools (Read, Edit, Write) over their shell equivalents (`cat`, `sed`, `awk`, `echo >`). Search with the Grep/Glob tools if you have them; otherwise Bash `grep -rn`, `find`, `ls` (or `rg` if installed)."
 
 If a subagent returns a command containing any forbidden operator (see the table above), that is the primary agent's failure. Reject and ask for a re-plan, or translate into separate simple calls. Do not execute it. A subagent violating this is running on a stale prompt; fix the prompt.
 

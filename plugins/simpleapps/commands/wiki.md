@@ -35,7 +35,7 @@ The argument is a repo name. If it contains `/`, use it as `org/repo`. Otherwise
 ## Important
 
 - Use the Read tool, NOT `cat`, to load file contents
-- Use `ls` (Bash) to enumerate files. Claude Code 2.1.117 removed the dedicated Glob tool; `ls` is the replacement.
+- Use `ls` (Bash) to enumerate files, or the Glob tool if it is in your tool list.
 - Do NOT skip any wiki files. Load them all.
 - If `llms.txt` does not exist, skip it and proceed with the listing
 - Remote wikis are read-only. All content lives in agent context after loading, nothing persists on disk.

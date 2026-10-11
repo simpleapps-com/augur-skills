@@ -27,7 +27,7 @@ Prefer dedicated tools over Bash equivalents when one exists. They are faster, n
 - Edit not `sed`/`awk`
 - Write not `echo >`/`cat <<EOF`
 
-Search is Bash-only. Claude Code has no built-in Grep or Glob tools; it relies on the OS. Use `rg` (preferred), then `grep -rn`, `find`, and `ls` directly via Bash, one command per call (no `-exec`, no piping to `head`).
+Search with the Grep/Glob tools when they are in your tool list. Claude Code leaves them out by default on macOS, Linux, and WSL; there, use Bash `grep -rn`, `find`, and `ls` (or `rg` if installed), one command per call (no `-exec`, no piping to `head`). See `simpleapps:bash-simplicity`.
 
 Reserve Bash for searches above and for commands that never had a dedicated tool.
 

@@ -164,6 +164,8 @@ Each user's local settings live in `repo/.claude/settings.<login>.json`, committ
 
 `repo/.claude/settings.local.json` is a symlink to `settings.<login>.json` (relative target, same folder). The symlink differs per user, so `repo/.gitignore` MUST contain `.claude/settings.local.json`.
 
+Because `settings.<login>.json` is committed, it MUST NOT contain secrets (tokens, API keys, passwords, `apiKeyHelper`). Those belong in `~/.claude/settings.json`, which is never committed.
+
 ## Symlink Setup
 
 These symlinks let you run Claude Code from `{project}/` while everything it loads lives in the repo:

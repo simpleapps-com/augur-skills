@@ -2,7 +2,7 @@
 name: project-init
 description: Check and fix the project directory structure. Create missing folders, set up symlinks, clone repos, verify layout.
 argument-hint: "[repo-name]"
-allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(ln:*), Bash(readlink:*), Bash(unlink:*), Bash(rmdir:*), Bash(gh repo clone:*), Bash(gh label:*), Bash(gh api user:*), Bash(pnpm --dir repo install:*), Bash(grep:*), Bash(cp:*), Bash(md5sum:*), Bash(md5:*), Read, Write, Edit, Skill(project-defaults), Skill(bash-simplicity), Skill(context-efficiency)
+allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(ln:*), Bash(readlink:*), Bash(unlink:*), Bash(rmdir:*), Bash(gh repo clone:*), Bash(gh label:*), Bash(gh api user:*), Bash(git -C repo ls-files:*), Bash(pnpm --dir repo install:*), Bash(grep:*), Bash(cp:*), Bash(md5sum:*), Bash(md5:*), Read, Write, Edit, Skill(project-defaults), Skill(bash-simplicity), Skill(context-efficiency)
 ---
 
 First, use Skill("project-defaults") to load project conventions.
@@ -44,7 +44,7 @@ Run each command as a separate, simple call. MUST NOT combine commands.
 5. Create or fix symlinks:
    a. **Migrate an old `.claude/` folder.** If step 3 showed `.claude` is a real directory (old per-item layout), run `ls -la .claude`. For each entry:
       - A symlink into `repo/.claude/` (`settings.json`, `rules`, `commands`, `prompts`, `hooks`): `unlink .claude/<name>`
-      - A real `settings.local.json`: Read it, merge its content into `repo/.claude/settings.<login>.json` (resolve `<login>` per step 8), then `unlink .claude/settings.local.json`
+      - A real `settings.local.json`: run `ls repo/.claude/settings.local.json`. If that exists too, STOP and ask the user which to keep. Otherwise Read `.claude/settings.local.json`, Write its content unchanged to `repo/.claude/settings.local.json`, then `unlink .claude/settings.local.json`. Step 8c screens it for secrets and merges it into `settings.<login>.json`; MUST NOT merge it here
       - Anything else: STOP and ask the user. MUST NOT delete files the migration does not recognise
 
       Then `rmdir .claude`.
@@ -65,21 +65,25 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    c. For client projects: if `.simpleapps/site.json` does not exist, suggest creating it. Do NOT create it automatically. The user needs to provide the site data.
 8. Set up per-user settings (see `project-defaults` "settings.local.json and settings.<login>.json"):
    a. Resolve `<login>`: `gh api user --jq .login`. If `gh` is not authenticated, ask the user to run `gh auth login` first. MUST NOT guess the login
-   b. Check `repo/.claude/settings.<login>.json` with Read. If missing, create it with the Write tool from the standard permission defaults below
-   c. Check `readlink repo/.claude/settings.local.json`. If it prints `settings.<login>.json`, skip. If `repo/.claude/settings.local.json` is a real file, merge its content into `settings.<login>.json`, then `unlink repo/.claude/settings.local.json`. Then `ln -sf settings.<login>.json repo/.claude/settings.local.json` (relative target: the link lives in the same folder)
+   b. Check `repo/.claude/settings.<login>.json` with Read. If missing, create it with the Write tool from the Permission Defaults in the `project-defaults` skill
+   c. Link `settings.local.json`:
+      - Run `git -C repo ls-files .claude/settings.local.json`. If it prints the path, the file is tracked by git and `.gitignore` alone will not untrack it. Report that it MUST be untracked with `git -C repo rm --cached .claude/settings.local.json`, a git write the user runs or approves; MUST NOT run it here. Continue with the steps below
+      - Check `readlink repo/.claude/settings.local.json`. If it prints `settings.<login>.json`, skip the rest of 8c
+      - If `repo/.claude/settings.local.json` is a real file (including one moved there by step 5a), Read it. `settings.<login>.json` is committed, so MUST check the real file for secrets before merging: `env` values that look like tokens, keys, or passwords; names containing `TOKEN`, `KEY`, `SECRET`, or `PASSWORD`; `apiKeyHelper`; `Authorization` headers. MUST NOT copy a secret into `settings.<login>.json`: list each one for the user and suggest `~/.claude/settings.json` (user scope, never committed). Merge everything else into `settings.<login>.json`, then `unlink repo/.claude/settings.local.json`
+      - `ln -sf settings.<login>.json repo/.claude/settings.local.json` (relative target: the link lives in the same folder)
    d. Run `grep -n "settings.local.json" repo/.gitignore`. If no match, add `.claude/settings.local.json` to `repo/.gitignore` with Edit (or Write if the file does not exist)
 
    Then check `repo/.claude/settings.<login>.json` with Read. If missing deny rules, update it with the standard settings from the `project-defaults` skill, including the `env` block with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`, `CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY`, `CLAUDE_CODE_NO_FLICKER`, and the full allow/deny lists. If the file exists but is missing the `env` block or any env vars, add them. `CLAUDE_CODE_NO_FLICKER` MUST be set to `"1"`. This enables fullscreen rendering that eliminates terminal flicker.
 
-   **Stale-deny migration (Claude Code 2.1.117+):** the dedicated Grep and Glob tools were removed in Claude Code 2.1.117. Settings written before that release deny `Bash(grep:*)`, `Bash(find:*)`, and `Bash(rg:*)`. Those denies now strand the agent (no dedicated alternative exists). When updating an existing `settings.<login>.json`:
+   **Stale-deny migration:** older settings deny `Bash(grep:*)`, `Bash(find:*)`, and `Bash(rg:*)`. On macOS, Linux, and WSL, Claude Code leaves the Grep and Glob tools out by default, so those denies leave the agent no way to search. When updating an existing `settings.<login>.json`:
    - If `Bash(grep:*)` appears in `permissions.deny`, remove it from `deny` and add it to `allow` (alphabetical position).
    - Same for `Bash(find:*)` and `Bash(rg:*)`.
-   - Report each migration: e.g., "Migrated `Bash(grep:*)` from deny to allow (Claude Code 2.1.117 removed the Grep tool)."
+   - Report each migration: e.g., "Migrated `Bash(grep:*)` from deny to allow (Bash search is the default where the Grep tool is absent)."
    - Leave the other denies (`cat`, `sed`, `awk`, `head`, `tail`, `cd`, `for`, `kill`, `pkill`, `sleep`) intact: those still have dedicated-tool replacements (Read, Edit, etc.).
 
-   **`autoMode` MUST NOT be written here.** Claude Code reads `autoMode` from user settings, the `--settings` flag, and managed settings only; it is ignored in `.claude/settings.json` and `.claude/settings.local.json`. If an `autoMode` block is found in either project file, report it as non-functional and move it to `~/.claude/settings.json` (step 8a).
+   **`autoMode` MUST NOT be written here.** Claude Code reads `autoMode` from user settings, the `--settings` flag, and managed settings only; it is ignored in `.claude/settings.json` and `.claude/settings.local.json`. If an `autoMode` block is found in either project file, report it as non-functional and move it to `~/.claude/settings.json` (step 8e).
 
-8a. Check the auto-mode push guardrail. Read `~/.claude/settings.json` and look for `autoMode.hard_deny` containing `Bash(git push:*)`. If missing, ask the user before adding:
+8e. Check the auto-mode push guardrail. Read `~/.claude/settings.json` and look for `autoMode.hard_deny` containing `Bash(git push:*)`. If missing, ask the user before adding:
    ```json
    {
      "autoMode": {
@@ -90,7 +94,7 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    }
    ```
    This is what makes the `simpleapps:git-safety` rule enforceable in auto mode: `hard_deny` blocks the classifier from auto-approving a push regardless of allow rules. Manual approval at the prompt still works. This is a global setting; ask before modifying. If already configured, report it as already set up.
-9. Check the project boundary. Agents stay inside `{project}/` and read other repos through `clones/` (see `project-defaults` "clones/"). MUST NOT suggest `additionalDirectories` for other project folders. Read `~/.claude/settings.json`; if `additionalDirectories` lists globs such as `~/projects/*/repo` or `~/projects/*/wiki`, report them as superseded by `clones/` and ask the user before removing them. This is a global setting.
+9. Check the project boundary. Agents stay inside `{project}/` and read other repos through `clones/` (see `project-defaults` "clones/"). MUST NOT suggest `permissions.additionalDirectories` for other project folders. Read `~/.claude/settings.json`; if `permissions.additionalDirectories` lists globs such as `~/projects/*/repo` or `~/projects/*/wiki`, report them as superseded by `clones/` and ask the user before removing them. A top-level `additionalDirectories` key (outside `permissions`) is invalid and fails Claude Code's settings validation; report it as invalid and ask before removing it. This is a global setting.
 10. Check if the augur-skills bin directory is in the user's PATH:
    - The bin path is: `$HOME/.claude/plugins/marketplaces/augur-skills/plugins/simpleapps/bin`
    - Run `grep -q 'augur-skills/plugins/simpleapps/bin' ~/.zshrc` to check
