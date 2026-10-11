@@ -4,7 +4,7 @@
     "args": ["run", "${CLAUDE_PLUGIN_ROOT}/mcp/basecamp.py"]
   },
   "augur-api": {
-    "command": "uvx",
-    "args": ["--with", "mcp[cli]<2", "simpleapps-com-augur-mcp"]
+    "type": "http",
+    "url": "https://augur-api.io/mcp"
   }
 }

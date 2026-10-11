@@ -92,15 +92,15 @@ Two scopes, project overrides user:
 ```
 ~/.simpleapps/                    # User global
 ├── settings.json                 # Config (projectRoot, orgName)
-├── basecamp.json                 # Basecamp MCP credentials
-└── augur-api.json                # Augur API MCP credentials
+└── basecamp.json                 # Basecamp MCP credentials
 
 {project}/.simpleapps/            # Project (gitignored)
 ├── settings.json                 # Project config overrides
 ├── site.json                     # Site profile (defaults, PII, auth)
-├── basecamp.json                 # Project basecamp overrides (if needed)
-└── augur-api.json                # Project augur-api overrides (if needed)
+└── basecamp.json                 # Project basecamp overrides (if needed)
 ```
+
+The Augur API MCP is hosted and signs in with OAuth, so it reads no `.simpleapps/` file. An `augur-api.json` left from the retired local server is unused and holds stale JWTs, so it SHOULD be deleted.
 
 ### File types
 
@@ -109,7 +109,6 @@ Two scopes, project overrides user:
 | `settings.json` | Global + project | Infrastructure config | All skills via project-defaults |
 | `site.json` | Project only | Site profile: defaults, search terms, PII, auth | Skills needing site context |
 | `basecamp.json` | Global + project | Basecamp MCP credentials | Basecamp MCP server |
-| `augur-api.json` | Global + project | Augur API MCP credentials | Augur API MCP server |
 
 ### settings.json
 
