@@ -113,7 +113,7 @@ When a check fails, the solution is ALWAYS to fix the underlying code. NEVER:
 - Suppress warnings, lower coverage thresholds, or modify quality configs
 - Add `--no-verify`, `--force`, or flags that bypass checks
 
-These actions hide problems; they do not fix them. If a rule or test seems wrong, investigate why it exists before concluding it should change. Rules exist for reasons. If after investigation it genuinely does not apply, explain the reasoning to the user and let them decide. Do not unilaterally disable it.
+These actions hide problems; they do not fix them. Suppressions already in the code are defects too: fix them in the same run (see `Skill("quality-tooling")` "Suppressions are defects"). Deleting a test that covers removed behaviour is cleanup, not hiding; deleting a test because it fails is hiding. If a rule or test seems wrong, investigate why it exists before concluding it should change. Rules exist for reasons. If after investigation it genuinely does not apply, explain the reasoning to the user and let them decide. Do not unilaterally disable it.
 
 ## Branch hygiene before starting work
 

@@ -12,7 +12,7 @@ Run all code quality checks on the FULL codebase and fix issues found.
 
 **Bias warning**: You may be checking code you wrote earlier in this session. Approach with skepticism. Adopt the stance of a reviewer who did not write the code. A clean pass should be earned, not assumed.
 
-**Output rule**: The user's primary question is "what ran and did it pass?" Lead the output with a one-line plan listing every check about to run (by script name). Then run them. Steps that are N/A (e.g., step 3 if no augur-\* packages) MUST be skipped silently. Do not print "Not applicable". Discovery details, missing tooling, and suppression scans belong at the END of the report, not interleaved with the runs.
+**Output rule**: The user's primary question is "what ran and did it pass?" Lead the output with a one-line plan listing every check about to run (by script name). Then run them. Steps that are N/A (e.g., step 3 if no augur-\* packages) MUST be skipped silently. Do not print "Not applicable". Discovery details and missing tooling belong at the END of the report, not interleaved with the runs. The suppression count is a result, so it goes in Results.
 
 ## 1. Discover quality tools
 
@@ -83,7 +83,7 @@ For each failing check:
 - Work-habits "Leave it better" and "Resolve, never hide" apply: fix every issue, never suppress checks
 - If a fix is unclear, explore the codebase to understand the intent before changing code
 - If a test fails because of a real bug, fix the bug
-- Scan for existing suppressions (`eslint-disable`, `@ts-ignore`, `.skip`, `noqa`, etc.) and flag them to the user as hidden technical debt
+- After the checks in step 5, run the suppression scan from the `quality-tooling` skill ("Suppressions are defects") and fix every match in this run. Only the documented upstream-blocked exception may remain, with its issue link
 
 ## 7. Loop until clean
 
@@ -91,7 +91,7 @@ After fixing all issues from one round:
 
 1. Re-run ALL checks from the beginning
 2. If new issues appear, fix them
-3. Repeat until all checks pass with zero issues
+3. Repeat until all checks pass with zero issues and the suppression scan finds 0 suppressions (upstream-blocked exceptions excepted)
 4. MUST restart from step 4 after ANY code change. A fix in one area can break another.
 
 ## 8. Report
@@ -105,6 +105,7 @@ After fixing all issues from one round:
 - Typecheck: clean
 - Test: 12/12 passing
 - Validate: 17 skills, no drift
+- Suppressions: 0 (4 fixed, 1 upstream-blocked: <issue link>)
 
 ### Files modified
 - path/to/file.ts: fixed lint issues
@@ -113,7 +114,6 @@ After fixing all issues from one round:
 ### Asides
 **Tools discovered**: lint, format, typecheck, test, validate
 **Missing tooling**: knip (dead-code detection)
-**Suppressions found**: none
 ```
 
 Results is the headline. Asides go last so the user sees pass/fail status before discovery commentary.

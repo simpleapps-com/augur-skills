@@ -83,9 +83,42 @@ If the user cites a constraint (hosting, compatibility, library support policy),
 
 ## Fix everything, hide nothing
 
-See work-habits: "Leave it better than you found it" and "Resolve, never hide." Both apply fully to quality checks. Fix every issue regardless of who introduced it. NEVER suppress checks. Fix the code.
+See work-habits: "Leave it better than you found it" and "Resolve, never hide." Both apply fully to quality checks. Fix every issue regardless of who introduced it. MUST NOT add a suppression. Fix the code.
 
-When reviewing code, scan for existing suppressions (`eslint-disable`, `@ts-ignore`, `.skip`, `noqa`, `phpcs:ignore`, etc.) and flag every instance to the user. These are hidden technical debt.
+## Suppressions are defects
+
+An existing suppression is a defect to fix in the same run, not a finding to report. MUST NOT report one as "pre-existing" or "technical debt" and move on. A clean run means **0 suppressions**, not "0 new suppressions".
+
+### Defect classes
+
+| Ecosystem | Directives |
+|-----------|-----------|
+| JS / TS | `eslint-disable`, `eslint-disable-next-line`, `eslint-disable-line` (any rule), `@ts-ignore`, `@ts-expect-error`, `prettier-ignore`, `.only` / `.skip` / `xit` / `xdescribe` on tests |
+| Python | `# noqa`, `# type: ignore`, `pytest.mark.skip` |
+| PHP | `phpcs:ignore`, `@phpstan-ignore*`, `markTestSkipped` |
+
+### Scope
+
+Discover the source directories from the project, not a fixed list: `tsconfig.json` `include`, the ESLint config, `pyproject.toml` packages, `composer.json` autoload. Search from `repo/` with one `grep -rn` (or `rg`) per directive. Exclude `node_modules/`, `vendor/`, build output, and generated files.
+
+### A justification comment does not make it acceptable
+
+`// eslint-disable-next-line -- deps are stable` documents the hiding; it does not fix it. The check still cannot see the code. The comment is not a pass.
+
+### Fix recipes
+
+| Suppressed rule | Fix |
+|-----------------|-----|
+| `react-hooks/exhaustive-deps` | Stabilise the dependency: `useCallback`, `useMemo`, or a `useRef`-held value; list the real dependencies |
+| `@typescript-eslint/no-explicit-any` | Use the real type, or `unknown` plus narrowing |
+| `@ts-expect-error` on a CSS module import | Add a `css-modules.d.ts` declaration |
+| `@ts-expect-error` on an untyped JS subpath | Add a local `.d.ts` module declaration |
+| `@typescript-eslint/no-deprecated` from an `@simpleapps-com/augur-*` package | Migrate to the replacement API |
+| `.skip` / `.only` on a test | Fix the test so it passes. If the test is obsolete, delete it; no user approval is needed for an obsolete test |
+
+### The one exception
+
+A deprecated augur-* API with **no non-deprecated replacement yet**. Then: file an upstream issue (`/file-issue` to `simpleapps-com/augur-packages`) and leave the suppression with the issue URL on the same line. Report it as upstream-blocked, with the link. No other exception exists.
 
 ## pnpm lockfile sync
 
