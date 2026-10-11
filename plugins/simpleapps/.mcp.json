@@ -1,7 +1,7 @@
 {
   "basecamp": {
-    "command": "uv",
-    "args": ["run", "${CLAUDE_PLUGIN_ROOT}/mcp/basecamp.py"]
+    "type": "http",
+    "url": "https://basecamp2.simpleapps.work/mcp"
   },
   "augur-api": {
     "type": "http",

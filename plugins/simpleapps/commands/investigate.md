@@ -47,7 +47,7 @@ Based on the problem statement, systematically investigate:
 5. **Trace the flow**: follow the code path affected by the problem
 6. **Check for existing packages**: search `repo/package.json` for dependencies that may already solve the problem. Check if the project is duplicating functionality that a dependency provides.
 7. **Check git history**: `git -C repo log --oneline -10 -- <file>` for recent changes to relevant files
-8. **Download and review attachments**: if the WIP lists BC attachments, use Basecamp MCP tools to download and read them
+8. **Review attachments**: if the WIP lists BC attachments without a summary, call `download_attachment` and read the content from the tool result (see `simpleapps:basecamp` "Attachments")
 
 **Stopping condition**: Stop when you can describe the root cause, identify the files to modify, and propose an approach. You do not need to understand the entire system, just enough to act. Investigate until you can inform implementation decisions, then write up findings and stop. Prefer using existing package functionality over custom code.
 

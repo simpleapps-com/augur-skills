@@ -27,4 +27,4 @@ Fyxer AI records and summarizes meetings. Use the `/fyxer` command to process re
 
 - Check the index: `list_documents(project_id)` then find `Fyxer Index` then `get_document`
 - View a specific transcript: `get_message(project_id, message_id)` using the message_id from the index
-- Browse all messages: `list_messages(project_id)`. Fyxer posts use the title format `Fyxer: YYYY-MM-DD`.
+- Browse all messages: `list_messages(project_id)`, calling again with `page + 1` while `more` is true. Fyxer posts use the title format `Fyxer: YYYY-MM-DD`.

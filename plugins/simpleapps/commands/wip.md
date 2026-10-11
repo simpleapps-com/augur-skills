@@ -50,7 +50,7 @@ Based on the item type extracted from the URL:
 | `uploads/<id>` | `get_upload(project_id, upload_id)` | content, comments |
 | `forwards/<id>` | `get_forward(project_id, forward_id)` | subject, content |
 
-The MCP response includes comments inline. Extract:
+The MCP response is Basecamp's JSON (see `simpleapps:basecamp` "Output"), with comments inline. Extract:
 - **Title**: todo content, message subject, or upload name
 - **Body**: full content/description
 - **Comments**: all comments with author and date
@@ -63,8 +63,8 @@ Attachments hold load-bearing context: screenshots of bugs, mockups, error overl
 
 For **every** attachment found on the todo/message and on every comment:
 
-1. Call `download_attachment(project_id, attachment_id)`, which saves to `~/.simpleapps/downloads/{project_id}/`
-2. Use the `Read` tool on the local file path. Read works multimodally on images (PNG, JPG, etc.) and on PDFs, Excel, and text
+1. Call `download_attachment(project_id, attachment_id)`. The tool result holds the attachment record, then the content: text inline, images as image content, other files (PDFs) as an embedded resource. Nothing is saved to disk
+2. Look at the content in the tool result. A linked document (e.g. Google Docs) returns an error naming its link: record the link and note that the content was not readable
 3. Write a summary into the WIP's Attachments section that captures what the agent saw: for images, describe what is visible (UI state, error text, highlighted region, before/after); for PDFs/docs, capture the key facts; for spreadsheets, capture the columns and a sample of rows. The goal is that a future agent reading only the WIP has enough context to act without re-downloading
 
 MUST NOT skip attachments because they "look unimportant". The user posted them for a reason. MUST NOT just list filenames; the WIP needs the contents.
@@ -185,14 +185,14 @@ wiki_candidates:
 
 ## Attachments
 
-{For each attachment: name, type, ID, local path under `~/.simpleapps/downloads/{project_id}/`, and a **Summary** that describes what was seen. For images, describe the visible UI state, error text, highlighted regions, and any before/after framing. For PDFs/docs, capture the key facts. For spreadsheets, capture columns and a sample of rows. The summary MUST be written from a Read of the downloaded file, never inferred from the filename alone. Omit this section only if no attachments exist.}
+{For each attachment: name, type, ID, its `app_url`, and a **Summary** that describes what was seen. For images, describe the visible UI state, error text, highlighted regions, and any before/after framing. For PDFs/docs, capture the key facts. For spreadsheets, capture columns and a sample of rows. The summary MUST be written from the content returned by `download_attachment`, never inferred from the filename alone. Omit this section only if no attachments exist.}
 
 Format each entry as:
 
 ### {filename} ({content type})
 
 - ID: {attachment_id}
-- Local path: `~/.simpleapps/downloads/{project_id}/{filename}`
+- Link: {app_url}
 - Summary: {what the agent saw, multi-paragraph if needed}
 
 ## Comments

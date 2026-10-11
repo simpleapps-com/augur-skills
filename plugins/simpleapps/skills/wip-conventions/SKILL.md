@@ -170,7 +170,7 @@ Rules:
 
 ## Attachments
 
-When a WIP is scaffolded from a Basecamp todo, message, or upload, every attachment on the source item AND on every comment MUST be downloaded via `download_attachment` and summarized inline in the WIP's Attachments section. Images are read multimodally with the `Read` tool and described: UI state, error text, highlighted regions, before/after framing. PDFs, spreadsheets, and docs are read and their key facts captured. The bar is that a future agent reading only the WIP has enough context to act without re-downloading.
+When a WIP is scaffolded from a Basecamp todo, message, or upload, every attachment on the source item AND on every comment MUST be fetched with `download_attachment` and summarized inline in the WIP's Attachments section. The tool returns the content in its result (images as image content, PDFs as an embedded resource, text inline); nothing is saved to disk. Images are described: UI state, error text, highlighted regions, before/after framing. PDFs, spreadsheets, and docs are read and their key facts captured. The bar is that a future agent reading only the WIP has enough context to act without re-downloading.
 
 MUST NOT list attachments by filename alone. MUST NOT skip an attachment because it "looks unimportant". The user posted it for a reason. If a download fails, note the failure with the attachment ID so the user can intervene; do not silently drop it.
 
@@ -181,7 +181,7 @@ The same rule applies on `/wip` updates: new attachments added to the source sin
 - Secrets, tokens, credentials
 - Final user-facing documentation (that's the wiki)
 - Production code (that's the repo)
-- The raw binary contents of attachments (the file lives under `~/.simpleapps/downloads/`; the WIP holds the summary and the local path)
+- The raw contents of attachments (the WIP holds the summary and the attachment's `app_url`)
 
 ## Related
 
