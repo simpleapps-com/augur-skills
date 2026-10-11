@@ -89,9 +89,9 @@ The full workflow from task to delivery, each step feeding the next:
 | Browser checks | `/verify` | Walk through wiki's Testing.md checklist in Chrome |
 | Submit | `/submit` | Commit and create a PR for review |
 | Stage | `/stage` | Stage to staging (merge PRs, trigger staging build) |
-| Release | `/publish` | Version bump, tag, release to production (with verification) |
+| Release | `/publish` | Pre-flight checks, version bump, tag, release to production |
 
-Not every task uses all steps. Most daily work ends at `/submit`. `/stage` and `/publish` are used less frequently. `/publish` is intentionally rare and requires explicit verification of the exact version going to production.
+Not every task uses all steps. Most daily work ends at `/submit`. `/stage` and `/publish` are used less frequently. `/publish` is intentionally rare. Invoking it is the approval: it runs pre-flight checks and releases without a second confirmation, stopping only when a check fails.
 
 The three shipping commands (`/submit`, `/stage`, `/publish`) read project-specific steps from `wiki/Deployment.md`. They refuse to operate if the Deployment page is missing. Run `/wiki-curate` to generate it from the codebase.
 

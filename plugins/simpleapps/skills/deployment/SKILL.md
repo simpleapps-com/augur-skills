@@ -40,11 +40,11 @@ Not all projects need all three. Client sites may only have Submit and Deploy. P
 
 ## Command approval model
 
-The user invoking a command IS the approval to execute all its steps, including git writes. Do not stop to ask for confirmation mid-execution.
+The user invoking a command IS the approval to execute all its steps, including git writes. MUST NOT ask for confirmation before or during execution: not "should I proceed?", not "which version?", not "confirm this release?".
 
 - `/submit`: execute all steps (commit, push, PR). Report at the end.
 - `/stage`: execute all steps. Report at the end.
-- `/publish`: **EXCEPTION**. Must complete the verification gate below and get secondary confirmation BEFORE executing any publish steps. This is the only command that pauses for approval.
+- `/publish`: execute all steps after the pre-flight checks below pass. MUST NOT ask for a second confirmation of the version or the release; invoking `/publish` is the approval. Stop only when a check fails.
 
 ## Guard Rails
 
@@ -62,14 +62,14 @@ Example: wiki says `pnpm typecheck && pnpm test` → make two Bash calls: `pnpm 
 
 Translation does NOT mean skipping or reordering the wiki's logic. It means executing the same operations through compliant tool calls. If a wiki step truly requires a compound operation that cannot be split (rare), flag it and ask the user before proceeding.
 
-## Publish Verification Gate
+## Publish Pre-flight Checks
 
-Before executing any Publish steps, MUST:
+Before the first Publish git write, MUST:
 
-1. Show the **current version** and the **proposed new version**
-2. Show **what changes** are included since the last release (`git log` from last tag)
-3. Show **CI/test status** if available (`gh run list` or local test run)
-4. Present a summary: version transition, commit count, test status
-5. Require the user to **explicitly confirm** the specific version going to production
+1. Show the **current version** and the **new version**, computed from the versioning scheme. MUST NOT ask the user for the version
+2. Show **what changes** are included since the last release (`git log` from last tag). Zero commits: stop
+3. Show **CI/test status** (`gh run list` or local test run). Any failure: stop
+4. Confirm a clean tree that matches its remote. Otherwise: stop
+5. Present a summary (version transition, commit count, test status), then continue without waiting
 
-This is not just git-safety. It is an active verification checklist. The user MUST see exactly what they are releasing and confirm that specific version.
+The checks exist to catch a broken release, not to ask permission. The user already approved by invoking `/publish`; a second "confirm this version?" prompt MUST NOT be added.
