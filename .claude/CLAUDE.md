@@ -32,6 +32,6 @@ pnpm validate       # Plugin validator: frontmatter, naming, token budgets,
 
 ## Deploy
 
-**MUST NOT deploy without explicit user approval.** Full procedure: [Versioning](../../wiki/Versioning.md#version-bump-procedure).
+**MUST NOT deploy unless the user runs `/publish` or says "publish".** That is the approval; do not ask again or ask for the version. Full procedure: [Versioning](../../wiki/Versioning.md#version-bump-procedure).
 
 Use `gh auth setup-git` before pushing.

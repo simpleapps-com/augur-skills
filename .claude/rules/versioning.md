@@ -12,4 +12,4 @@ Format: `2026.03.1` = first release of March 2026. Versions signal knowledge fre
 
 ## Deployment
 
-MUST NOT deploy without explicit user approval. Full procedure: [Deployment](../../../wiki/Deployment.md#publish).
+MUST NOT deploy unless the user runs `/publish` or says "publish". That is the approval: MUST NOT ask again or ask for the version (CalVer determines it). Full procedure: [Deployment](../../../wiki/Deployment.md#publish).
