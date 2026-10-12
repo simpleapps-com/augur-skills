@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 # SimpleApps status line (basic): user:repo | version | model
+# Replaced by the simpleapps-statusline plugin (Claude Code 2.1.287+):
+#   /plugin install simpleapps-statusline@augur-skills, then remove "statusLine" from ~/.claude/settings.json.
+# Kept for older Claude Code versions.
 # Usage: set in ~/.claude/settings.json:
 #   "statusLine": { "type": "command", "command": "statusline-basic" }
 input=$(cat)

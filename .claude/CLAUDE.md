@@ -1,6 +1,6 @@
 # augur-skills
 
-Claude Code plugin marketplace. No build step. Content is static markdown; the executable exceptions are `scripts/validate.mjs`, the plugin's `mcp/` server, and the `bin/` helper scripts.
+Claude Code plugin marketplace. No build step. Content is static markdown; the executable exceptions are `scripts/validate.mjs`, the `simpleapps` plugin's `mcp/` server and `bin/` helper scripts, and the `simpleapps-statusline` mod.
 
 ## Wiki (Source of Truth for Dev Docs)
 
@@ -24,11 +24,12 @@ The wiki is cloned at `../../wiki/` relative to this file. Read it locally:
 ## Quick Reference
 
 ```bash
+pnpm quality        # format:check, lint, typecheck, knip, test (100% coverage), validate
 pnpm validate       # Plugin validator: frontmatter, naming, token budgets,
                     # Skill() references, version sync, rule drift
 ```
 
-`pnpm validate` is the only check in this repo. The lefthook pre-push hook runs it, and CI runs it on every push and PR.
+The lefthook pre-push hook and CI (every push and PR) run `pnpm quality`. It lints and formats mods too; their validation, tests, and type check run locally only (`claude plugin validate --strict`, `claude plugin test`, `tsc` against the generated types). See [Testing](../../wiki/Testing.md#test-tiers).
 
 ## Deploy
 

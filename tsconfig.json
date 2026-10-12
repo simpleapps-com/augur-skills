@@ -1,0 +1,17 @@
+{
+  "extends": "@simpleapps-com/augur-config/tsconfig/base",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    // Plain JS without JSDoc on every parameter: keep strict null and property checks, skip implicit-any
+    "noImplicitAny": false,
+    "types": ["node"],
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false
+  },
+  // Mods are checked by `claude plugin validate --strict`: their `claude-code` types exist only
+  // after `claude --plugin-dir` generates them
+  "include": ["scripts/**/*.mjs", "*.mjs", "types/**/*.d.ts"]
+}

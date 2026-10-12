@@ -1,4 +1,4 @@
 pre-push:
   commands:
-    validate:
-      run: pnpm validate
+    quality:
+      run: pnpm quality

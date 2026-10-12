@@ -1,0 +1,10 @@
+{
+  "name": "simpleapps-statusline",
+  "description": "Two status lines under the prompt: GitHub user, project, branch, open issues and PRs, Anthropic account and Claude Code version; then the model, session cost, and meters for context and each plan limit. Replaces the statusline-* scripts.",
+  "version": "2026.10.5",
+  "author": {
+    "name": "SimpleApps",
+    "email": "stuart@simpleapps.com"
+  },
+  "types": "./types/index.d.ts"
+}

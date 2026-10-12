@@ -4,17 +4,47 @@
   "description": "Curated skills marketplace for Claude Code",
   "license": "MIT",
   "type": "module",
+  "packageManager": "pnpm@10.28.2",
   "engines": {
     "node": ">=24.0.0",
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "validate": "node scripts/validate.mjs"
+    "validate": "node scripts/validate.mjs",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node --test --experimental-test-coverage --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100 --test-coverage-exclude='**/*.test.mjs' 'scripts/**/*.test.mjs'",
+    "knip": "knip",
+    "prepare": "lefthook install",
+    "quality": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm knip && pnpm test && pnpm validate"
+  },
+  "knip": {
+    "entry": [
+      "scripts/*.mjs",
+      "plugins/*/hooks/register.tsx",
+      "plugins/*/tests/*.test.ts"
+    ],
+    "ignoreDependencies": [
+      "claude-code"
+    ]
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["lefthook"]
+    "onlyBuiltDependencies": [
+      "lefthook"
+    ]
   },
   "devDependencies": {
-    "lefthook": "^2.1.4"
+    "@eslint/js": "^9.39.5",
+    "@simpleapps-com/augur-config": "^2.4.0",
+    "@types/node": "^24.19.2",
+    "eslint": "^9.39.5",
+    "globals": "^17.13.0",
+    "knip": "^6.41.0",
+    "lefthook": "^2.1.4",
+    "prettier": "^3.9.10",
+    "typescript": "^5.9.3"
   }
 }

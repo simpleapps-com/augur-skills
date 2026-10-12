@@ -1,0 +1,8 @@
+node_modules/
+pnpm-lock.yaml
+# Skills, commands, rules and docs are hand-written markdown; rules are also compared byte-for-byte with their mirror
+**/*.md
+.claude/
+# What Claude Code generates into a mod under --plugin-dir
+plugins/*/.claude-plugin/types/
+plugins/*/tsconfig.json

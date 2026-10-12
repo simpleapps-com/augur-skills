@@ -105,14 +105,11 @@ Run each command as a separate, simple call. MUST NOT combine commands.
      ```
    - Tell the user to run `source ~/.zshrc` or open a new terminal for the change to take effect
    - If already present, report it as already configured
-11. Check if a status line is configured. Read `~/.claude/settings.json` and check for a `statusLine` field. If missing, suggest setting one up. Two options are available via the plugin bin scripts:
-   - `statusline-basic`: model, project name, version
-   - `statusline-full`: model, project name, git branch, version, context %
-   Ask the user which they prefer, then add to `~/.claude/settings.json`:
-   ```json
-   { "statusLine": { "type": "command", "command": "statusline-basic" } }
-   ```
-   If already configured, report it as already set up.
+11. Check the status line. Run `claude plugin list` and look for `simpleapps-statusline`, and read `~/.claude/settings.json` for a `statusLine` field.
+   - Plugin missing: suggest `/plugin install simpleapps-statusline@augur-skills`, then `/reload-plugins` (Claude Code 2.1.287+). It draws two lines under the prompt: project, branch, open issues and PRs, account, model, session cost, and plan-limit meters.
+   - Plugin installed and `statusLine` still set to `statusline-full` or `statusline-basic`: tell the user to delete `statusLine` from `~/.claude/settings.json` so the replaced script does not draw a second status line.
+   - Older Claude Code: the replaced `statusline-full` / `statusline-basic` scripts still work as `{ "statusLine": { "type": "command", "command": "statusline-full" } }`.
+   - Plugin installed and no `statusLine`: report the status line as already set up.
 12. Check GitHub labels. Determine the repo from `git -C repo remote -v`. List existing labels with `gh label list --repo <org>/<repo>`. Compare against the standard set:
 
    **Type labels:**
