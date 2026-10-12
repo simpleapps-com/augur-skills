@@ -1,6 +1,6 @@
 {
   "name": "augur-skills",
-  "version": "2026.10.5",
+  "version": "2026.10.6",
   "description": "Curated skills marketplace for Claude Code",
   "owner": {
     "name": "SimpleApps",
@@ -11,13 +11,13 @@
       "name": "simpleapps",
       "description": "SimpleApps core development practices, workflows, and tools",
       "source": "./plugins/simpleapps",
-      "version": "2026.10.5"
+      "version": "2026.10.6"
     },
     {
       "name": "simpleapps-statusline",
       "description": "Status lines under the prompt: project, branch, open issues and PRs, account, model, session cost, and plan-limit meters (a mod)",
       "source": "./plugins/simpleapps-statusline",
-      "version": "2026.10.5"
+      "version": "2026.10.6"
     }
   ]
 }
