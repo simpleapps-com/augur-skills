@@ -10,7 +10,7 @@ Self-learned behavioral rules earned from real failures in this project — alwa
 
 ## Status answers
 
-- MUST answer a repeated "what is open?" with only what changed and what needs the user, in a few lines at the end, never the full inventory again: on 2026-11-10 I re-posted the same ~40-line list (Fable fixes, decisions, untested paths, nice-to-haves) five times in one session for GH77, and the user said they had to scroll to find the answer to a simple question. The full list lives in the WIP; point to it. But each item MUST still carry one plain sentence of what it is and why it matters: the next answer cut to bare labels ("Fable's four items", "the #77 comment") and the user said they need enough content to know what I am talking about.
+- MUST answer a repeated "what is open?" with only what changed and what needs the user, in a few lines at the end, never the full inventory again: on 2026-11-10 I re-posted the same ~40-line list (Fable fixes, decisions, untested paths, nice-to-haves) five times in one session for GH77, and the user said they had to scroll to find the answer to a simple question. The full list lives in the WIP; point to it. But each item MUST still carry one plain sentence of what it is and why it matters: the next answer cut to bare labels ("Fable's four items", "the #77 comment") and the user said they need enough content to know what I am talking about. Any questions at the end of a long report (the GH76 `/verify` on 2026-11-11 hid two in a findings list and the TL;DR) MUST also be pulled out as a short numbered list, so the user does not have to hunt for them.
 
 ## Shipping commands
 
