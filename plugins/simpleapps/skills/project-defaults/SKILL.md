@@ -50,12 +50,15 @@ Every project MUST use this layout:
 ├── goals/              # Active goal tracking (not in git)
 ├── wip/                # Work-in-progress files (not in git)
 ├── tmp/                # Temporary files (not in git)
+├── worktrees/          # Git worktrees of repo/, made by Claude Code (not in git)
 └── .simpleapps/        # Config, credentials, site profile (not in git)
 ```
 
 Repo-specific folders (e.g. a `work/` folder for per-person data) MUST NOT be added to this standard layout. The repo's own onboarding procedure creates them (see `/project-init`).
 
 The parent `{project}/` is NOT a git repo. It keeps code and wiki side-by-side. The git repo is always at `repo/`. Use `git -C repo` for git operations from the project root.
+
+**Default branch: `main`.** Code repos are moving from `master` to `main`; new repos MUST use `main`. When an agent finds a code repo whose default branch is still `master` (`git -C repo symbolic-ref --short refs/remotes/origin/HEAD` prints `origin/master`), it MUST tell the user once per session that the standard is `main` and that `/project-init` walks through the rename, then carry on with `master`. It MUST NOT rename the branch itself. Wiki repos keep `master`: GitHub fixes that for `.wiki.git`.
 
 | Content | Location | Examples |
 |---------|----------|---------|
@@ -67,6 +70,7 @@ The parent `{project}/` is NOT a git repo. It keeps code and wiki side-by-side. 
 | Active goals | `goals/` | Current cycle/sprint objectives being tracked |
 | Active task context | `wip/` | `{issue-number}-{short-desc}.md` files |
 | Temporary files | `tmp/` | Scratch space: commit msgs, PR bodies, intermediate output. Full access. |
+| Git worktrees | `worktrees/` | `worktrees/agent-<id>` from an isolated subagent (see below) |
 | SimpleApps config | `.simpleapps/` | Settings, site profile, credentials (see below) |
 
 **goals/**: Project-level scratch space (sibling of `repo/`) for the goals/objectives currently being worked. Short-lived: reviewed regularly, archived or deleted when the goal is met, like `wip/` but goal-scoped rather than task-scoped. Not in git; lives on one machine. MUST NOT hold durable team-shared goals (those go in `wiki/`) or secrets.
@@ -81,7 +85,9 @@ The parent `{project}/` is NOT a git repo. It keeps code and wiki side-by-side. 
 
 **tmp/**: Project-level scratch space (sibling of `repo/`) for commit messages, PR/issue bodies, intermediate output, and throwaway files. Read, write, and delete freely without asking; create the folder if missing; clean up after use.
 
-MUST keep scratch files in the **project-level** `tmp/`, NEVER `repo/tmp/` (or `wiki/tmp/`). Files inside a git tree get swept into commits by `git add -A`/`git add .`; a real incident put `tmp/commit-msg.txt` onto a project's main branch this way. Add `tmp/` to each repo's `.gitignore` as a safety net, but the convention is to stay outside the tree entirely so the accident cannot recur.
+MUST keep scratch files in the **project-level** `tmp/`, NEVER `repo/tmp/` (or `wiki/tmp/`). Files inside a git tree get swept into commits by `git add -A`/`git add .`; a real incident put `tmp/commit-msg.txt` onto a project's main branch this way. A repo MUST NOT have a `tmp/` folder at all, and its `.gitignore` needs no `tmp/` entry: scratch space lives outside the tree, so the accident cannot happen.
+
+`tmp/` is emptied regularly: `/process-wips` (daily) and `/project-init` delete everything in it older than one day with `find tmp -mindepth 1 -mtime +0 -delete`. The one-day margin protects files a running session still needs. Anything worth keeping MUST NOT live in `tmp/`: findings go in `wip/`, durable knowledge in `wiki/`.
 
 Standard patterns. Note the `../tmp/` indirection: `git -C repo` / `git -C wiki` resolves `-F` and other paths relative to that subdir, so a plain `tmp/` would wrongly mean `repo/tmp/`:
 - Commit message → Write `tmp/commit-msg.txt`, then `git -C repo commit -F ../tmp/commit-msg.txt`
@@ -91,6 +97,19 @@ Standard patterns. Note the `../tmp/` indirection: `git -C repo` / `git -C wiki`
 - Clean up with `rm tmp/<file>` after each op
 
 See `simpleapps:github` for the full git/gh command conventions.
+
+**worktrees/**: Git worktrees of `repo/`, one folder per worktree, not in git. The plugin's `WorktreeCreate` hook (Claude Code 2.1.300+) puts every worktree Claude Code makes (`EnterWorktree`, `claude -w`, subagent `isolation: "worktree"`) at `worktrees/<name>`, **detached** at the fetched default branch, so no local branch is created and none is left to clean up. A new worktree holds only what is pushed to the default branch: not uncommitted changes in `repo/`, and not commits on a local branch. Work a subagent needs MUST be pushed first, or its briefing MUST say the worktree does not have it. Optional: Claude Code's `"worktree": { "baseRef": "head" }` setting (in `.claude/settings.local.json`, `.claude/settings.json`, or `~/.claude/settings.json`) starts worktrees at `repo/`'s current commit instead, so local commits come along; uncommitted changes never do. The hook reads those files itself, so `--settings` and managed settings do not apply. Worktrees MUST NOT be created by hand in `tmp/`, `clones/`, or inside `repo/`.
+
+A session or subagent in a worktree is sealed inside it by Claude Code: writes and `git -C` outside it are blocked, even with `--add-dir`, and `blockReadsOutsideWorkingDirectories` blocks reads of `wip/`, `tmp/`, `wiki/`, and `repo/`. Workflow commands (`/wip` through `/submit`) MUST therefore run from `{project}/`, and a subagent's brief MUST carry the WIP and wiki content it needs. Parallel work goes to a subagent with `isolation: "worktree"`; the main session stays in `{project}/` and works on the result by path:
+- Install first: subagent worktrees skip it to stay fast, and git hooks need it. `pnpm --dir worktrees/<name> install --frozen-lockfile`, then, where the repo uses lefthook, `pnpm --dir repo exec lefthook install` (the install points the shared git hooks at the worktree, which breaks pushes once it is removed; the hook does this itself for named worktrees)
+- Review and test: `git -C worktrees/<name> status`, `pnpm --dir worktrees/<name> test`
+- Commit: `git -C worktrees/<name> commit -F ../../tmp/commit-msg.txt` (paths resolve from the worktree, two levels down)
+- Push: HEAD is detached, so name the branch: `git -C worktrees/<name> push origin HEAD:refs/heads/<type>/<N>-<slug>`
+- Remove once pushed or merged: `git -C repo worktree remove ../worktrees/<name>`, then `git -C repo fetch --prune origin`. Before removing, `git -C worktrees/<name> log --oneline HEAD --not --remotes` MUST print nothing: git refuses only on uncommitted files, so a commit no remote holds would be orphaned
+
+Cleanup is automatic where it is safe. The hook keeps any worktree holding work: uncommitted or untracked changes, commits no branch or remote holds, or a checked-out branch. An unchanged subagent worktree is removed when the subagent finishes, and when the session ends every worktree it made or last re-entered that holds no work is removed (workflow agents' and named ones included; not on `/clear` or `/resume`, and never the folder the session is in). Session-end cleanup is best-effort: Claude Code gives session-end hooks about 1.5 s, and a plugin hook's own timeout may not raise it, so with several worktrees some can be left behind. Launching with `CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS=30000 claude` gives it more time. One holding work is kept for the main session, and `/project-init` reports leftovers. Files listed in `repo/.worktreeinclude` (gitignore syntax) that are also gitignored, such as `.env`, are copied into every new worktree. `ExitWorktree` remove needs `discard_changes: true` for a hook-made worktree; that leaves the hook as the only check, and it still refuses a worktree holding work. MUST NOT commit with `--no-verify` when an install failed; install instead.
+
+Limits: `claude -w --tmux` does not run a plugin hook. Matching subagents to `worktrees/agent-<id>` relies on observed naming, not documented behaviour; session-end cleanup catches what that misses. The Windows `pnpm` path is untested. In a plain repo (no `{project}/repo/`), worktrees go to `<repo>/.claude/worktrees/<name>`, also detached, and the hook replaces Claude Code's own worktree setup: no `worktree-<name>` branch, and `claude -w "#<PR>"` starts from the default branch, not the PR head.
 
 ## Plugin Rules
 
@@ -191,6 +210,7 @@ Every project SHOULD configure `repo/.claude/settings.<login>.json` (loaded as `
   "permissions": {
     "allow": [
       "Bash(basename:*)",
+      "Bash(cat:*)",
       "Bash(dirname:*)",
       "Bash(find:*)",
       "Bash(grep:*)",
@@ -202,6 +222,7 @@ Every project SHOULD configure `repo/.claude/settings.<login>.json` (loaded as `
       "Bash(pwd:*)",
       "Bash(readlink:*)",
       "Bash(rg:*)",
+      "Bash(sed:*)",
       "Bash(wc:*)",
       "Bash(which:*)",
       "mcp__plugin_simpleapps_augur-api__*"
@@ -209,9 +230,7 @@ Every project SHOULD configure `repo/.claude/settings.<login>.json` (loaded as `
     "deny": [
       "Bash(cd:*)",
       "Bash(kill:*)",
-      "Bash(pkill:*)",
-      "Edit(~/.claude/plugins/**)",
-      "Write(~/.claude/plugins/**)"
+      "Bash(pkill:*)"
     ],
     "ask": []
   }
@@ -219,9 +238,10 @@ Every project SHOULD configure `repo/.claude/settings.<login>.json` (loaded as `
 ```
 
 **Deny reasons:**
-- `cd` - Use `git -C repo` instead; compound `cd && git` triggers unblockable prompts
-- `kill`/`pkill` - Use `TaskStop` to manage background tasks
-- `Edit(~/.claude/plugins/**)` / `Write(~/.claude/plugins/**)` - Plugin tree is a cache; edit source repo instead
+- `cd` - Keeps the session inside the project folder (see "clones/"). Use `git -C repo` and path arguments instead
+- `kill`/`pkill` - Protects the user's own processes. Use `TaskStop` for background tasks this session started; ask the user about anything else
+
+The deny list is exactly these three. Older defaults also denied `cat`, `sed`, `awk`, `head`, `tail`, `for`, `sleep`, `Edit(~/.claude/plugins/**)`, and `Write(~/.claude/plugins/**)`; all are retired (`/project-init` removes them). A `Write(...)` file rule is never matched and Claude Code warns about it on every run.
 
 ## Auto Mode Guardrail (user settings only)
 

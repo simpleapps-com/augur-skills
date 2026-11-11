@@ -7,6 +7,7 @@
 //   - command frontmatter (name, description) present and name matches file
 //   - rules: no frontmatter (always-loaded plain markdown) + .claude/rules/ mirrors
 //     the shared plugin rules (same-named files, plugin canonical)
+//   - hooks/hooks.json parses, has hooks or modules, and every ${CLAUDE_PLUGIN_ROOT} file exists
 //   - CLAUDE.md under 200 lines
 //
 // Run from the repo root (cwd = repo root); all paths are resolved relative to it.
@@ -230,6 +231,45 @@ async function checkRules(run) {
   for (const plugin of plugins) await checkRuleMirrors(run, plugin);
 }
 
+/**
+ * hooks/hooks.json: valid JSON with a `hooks` object or a `modules` list, and every
+ * `${CLAUDE_PLUGIN_ROOT}/<file>` it runs exists, so a typo cannot ship a hook that fails on every event.
+ * @param {Run} run
+ */
+async function checkHooks(run) {
+  for (const plugin of await listDir(run.pluginsDir)) {
+    const rel = `plugins/${plugin}/hooks/hooks.json`;
+    const text = await readText(join(run.root, rel));
+    if (text !== null && checkHooksShape(run, rel, text))
+      await checkHookFiles(run, plugin, rel, text);
+  }
+}
+
+/** True when `text` parses; errors for bad JSON or a config with neither hooks nor modules. */
+function checkHooksShape(run, rel, text) {
+  let config;
+  try {
+    config = JSON.parse(text);
+  } catch {
+    run.errors.push(`${rel} is not valid JSON`);
+    return false;
+  }
+  if (typeof config?.hooks !== "object" && !Array.isArray(config?.modules)) {
+    run.errors.push(`${rel} MUST have a "hooks" object or a "modules" list`);
+  }
+  return true;
+}
+
+/** Every `${CLAUDE_PLUGIN_ROOT}/<file>` the hooks run exists in the plugin. */
+async function checkHookFiles(run, plugin, rel, text) {
+  for (const match of text.matchAll(/\$\{CLAUDE_PLUGIN_ROOT\}\/(?<file>[^"\s]+)/g)) {
+    const file = String(match.groups?.file);
+    if ((await readText(join(run.pluginsDir, plugin, file))) === null) {
+      run.errors.push(`${rel} runs plugins/${plugin}/${file}, which does not exist`);
+    }
+  }
+}
+
 /** @param {Run} run */
 async function checkClaudeMd(run) {
   for (const rel of [".claude/CLAUDE.md"]) {
@@ -259,6 +299,7 @@ export async function validate(root) {
   const skills = await checkSkills(run);
   await checkCommands(run, skills);
   await checkRules(run);
+  await checkHooks(run);
   await checkClaudeMd(run);
   return { errors: run.errors, warnings: run.warnings, skillCount: skills.size };
 }

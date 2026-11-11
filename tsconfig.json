@@ -13,5 +13,5 @@
   },
   // Mods are checked by `claude plugin validate --strict`: their `claude-code` types exist only
   // after `claude --plugin-dir` generates them
-  "include": ["scripts/**/*.mjs", "*.mjs", "types/**/*.d.ts"]
+  "include": ["scripts/**/*.mjs", "plugins/*/hooks/*.mjs", "*.mjs", "types/**/*.d.ts"]
 }

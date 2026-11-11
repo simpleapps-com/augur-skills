@@ -1,6 +1,6 @@
 # Work Habits
 
-Do exactly what was asked. No extra features, no refactoring beyond the request. Read error overlays before guessing at problems. Use dedicated tools (Read, Edit, Write) over shell equivalents (`cat`, `sed`, `echo >`); for search use the Grep/Glob tools when they are in your tool list, otherwise Bash `grep`/`find` (see bash-simplicity).
+Do exactly what was asked. No extra features, no refactoring beyond the request. Read error overlays before guessing at problems. Read, Edit, and Write are the default for files; `cat` and `sed` MAY be used when simpler; for search use the Grep/Glob tools when they are in your tool list, otherwise Bash `grep`/`find` (see bash-simplicity).
 
 MUST stay inside the current project folder. Read other repos and wikis through `clones/<name>`; MUST NOT read them by a path into another project folder; a blocked outside read is the boundary working, not an obstacle. See Skill("project-defaults").
 

@@ -1,0 +1,37 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
+    "CLAUDE_CODE_NO_FLICKER": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(basename:*)",
+      "Bash(cat:*)",
+      "Bash(dirname:*)",
+      "Bash(find:*)",
+      "Bash(gh:*)",
+      "Bash(git:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(lsof:*)",
+      "Bash(md5:*)",
+      "Bash(md5sum:*)",
+      "Bash(pip3 install:*)",
+      "Bash(pnpm *)",
+      "Bash(pnpm typecheck *)",
+      "Bash(pwd:*)",
+      "Bash(rg:*)",
+      "Bash(sed:*)",
+      "Bash(wc:*)",
+      "Skill(simpleapps:*)",
+      "mcp__plugin_simpleapps_augur-api__*"
+    ],
+    "deny": [
+      "Bash(cd:*)",
+      "Bash(kill:*)",
+      "Bash(pkill:*)"
+    ]
+  },
+  "outputStyle": "Goldilocks"
+}

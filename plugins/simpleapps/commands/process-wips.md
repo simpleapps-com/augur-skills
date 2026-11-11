@@ -1,7 +1,7 @@
 ---
 name: process-wips
 description: Daily WIP reconciliation. Walks wip/*.md, reconciles frontmatter vs ground truth, auto-deletes shipped WIPs older than 7 days, and confirms wiki promotions interactively.
-allowed-tools: Bash(gh issue:*), Bash(gh pr:*), Bash(git -C:*), Bash(rm:*), Bash(ls:*), Skill(wip-conventions), Skill(wiki-conventions), Skill(github), Skill(bash-simplicity), Skill(work-habits), Read, Write, Edit
+allowed-tools: Bash(gh issue:*), Bash(gh pr:*), Bash(git -C:*), Bash(rm:*), Bash(ls:*), Bash(find tmp:*), Skill(wip-conventions), Skill(wiki-conventions), Skill(github), Skill(bash-simplicity), Skill(work-habits), Read, Write, Edit
 ---
 
 First, use Skill("wip-conventions") to load the frontmatter schema and retention rules, then Skill("wiki-conventions") for the project wiki, then Skill("github") for gh CLI conventions, then Skill("bash-simplicity") for Bash conventions, then Skill("work-habits") for autonomous execution rules.
@@ -149,7 +149,11 @@ For every WIP that remains after the run (not deleted, not promoted away), bump 
 
 Then rewrite the WIP files table in `wip/README.md` per the Index format in `simpleapps:wip-conventions`, copying the Open issues without a WIP section forward, minus any row whose issue now has a WIP.
 
-## 12. Report
+## 12. Empty tmp/
+
+`{project}/tmp/` is scratch space and fills up (see `simpleapps:project-defaults` "tmp/"). Run `ls tmp` to count what is there, then `find tmp -mindepth 1 -mtime +0 -delete` to delete everything older than one day, files and folders alike. Run `ls tmp` again and report how many entries went and how many recent ones stayed. Do not ask first: nothing in `tmp/` is meant to last. Skip this step when `tmp/` does not exist. MUST NOT touch a `tmp/` inside `repo/` or `wiki/`; if one exists, report it, since the repo MUST NOT have one.
+
+## 13. Report
 
 ```
 ## WIP processing report
@@ -162,6 +166,7 @@ Processed: <count> files
 - Deferred (skipped or user chose keep): <count>
 - Still active: <count>
 - Conflicts (status disagrees with ground truth): <count, list each>
+- tmp/ emptied: <removed count> removed, <kept count> from the last day kept
 
 Next run: tomorrow. Use /process-wips again to continue.
 ```

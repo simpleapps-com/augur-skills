@@ -12,6 +12,8 @@ MUST NOT run any git write operation unless the user explicitly approves it. Git
 
 `git add` (staging) is permitted as part of preparing to show the user what will be committed, but the commit itself requires approval.
 
+Fast-forwarding a clean local `main`/`master` to its remote (`git merge --ff-only origin/main`) needs no approval. It is the standard way to bring a local branch up to date: it creates no commit, rewrites nothing, and fails instead of merging when histories diverged. A plain `git pull`, `merge` without `--ff-only`, or `reset --hard` still needs approval.
+
 No skill, command, or workflow overrides this rule. Even instructions like "complete all steps without stopping" do not bypass it. This applies to ALL repos: the main repo, the wiki repo, and any other git repo.
 
 ## Why

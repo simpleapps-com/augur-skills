@@ -1,7 +1,7 @@
 ---
 name: submit
 description: Submit work for review. Commit and create a PR as defined in the project wiki Deployment page.
-allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(rm:*), Bash(wc:*), Bash(date:*), Bash(ls:*), Skill(deployment), Skill(git-safety), Skill(conventional-commits), Skill(github), Skill(bash-simplicity), Skill(wip-conventions), Skill(work-habits), Read, Write, Edit
+allowed-tools: Bash(git -C:*), Bash(gh:*), Bash(pnpm:*), Bash(rm:*), Bash(wc:*), Bash(date:*), Bash(ls:*), Skill(deployment), Skill(git-safety), Skill(conventional-commits), Skill(github), Skill(bash-simplicity), Skill(project-defaults), Skill(wip-conventions), Skill(work-habits), Read, Write, Edit
 ---
 
 First, load these skills:
@@ -39,7 +39,17 @@ This command IS the user's approval to commit and push. Execute all steps withou
 7. Update linked issues (see below)
 8. Update the WIP frontmatter (see below)
 9. Report what was done at the end
-10. After a successful push, if the current branch is not the default branch (`main` / `master`), switch back to it automatically: `git -C repo switch main` (or `master`). This is part of `/submit`. Do NOT ask. The tree is clean post-commit; the work is already pushed and recoverable. If the tree is unexpectedly dirty, report it and stay on the current branch rather than risk uncommitted changes.
+10. After a successful push, if the current branch is not the default branch (`main` / `master`), switch back to it automatically: `git -C repo switch main` (or `master`), then `git -C repo fetch origin main` and `git -C repo merge --ff-only origin/main` so local `main` is current. This is part of `/submit`. Do NOT ask. The tree is clean post-commit; the work is already pushed and recoverable. If the tree is unexpectedly dirty, report it and stay on the current branch rather than risk uncommitted changes.
+
+### Work in a worktree
+
+When the work sits in `worktrees/<name>` (a kept subagent worktree), run every step from `{project}/` against that folder instead of `repo/`. Commands: `Skill("project-defaults")` "worktrees/".
+- Before the first commit, install dependencies so the git hooks run: `pnpm --dir worktrees/<name> install --frozen-lockfile` (subagent worktrees are created without them). MUST NOT fall back to `--no-verify`. Where the repo uses lefthook, that install points the shared git hooks at the worktree, so MUST then run `pnpm --dir repo exec lefthook install` to point them back at `repo/`.
+- Stage, commit, and push with `git -C worktrees/<name>`. The commit message file is `../../tmp/commit-msg.txt` from there.
+- HEAD is detached, so the branch check in step 2 reads empty and the push MUST name the branch: `HEAD:refs/heads/<type>/<N>-<slug>` (or `HEAD:main` where the Deployment page pushes to main). PRs take `--head <type>/<N>-<slug>`.
+- Step 10 becomes: once pushed, check `git -C worktrees/<name> log --oneline HEAD --not --remotes` prints nothing, then remove the worktree with `git -C repo worktree remove ../worktrees/<name>` and `git -C repo fetch --prune origin`. No `--force`; if git refuses or a commit is unpushed, report it and keep the worktree.
+- After a `HEAD:main` push, `repo/`'s local `main` is behind `origin/main`. If `repo/` is on `main` with a clean tree, fast-forward it: `git -C repo merge --ff-only origin/main`. A fast-forward needs no approval (see `git-safety`). If `repo/` is on another branch or dirty, report it and leave it.
+- Issue detection below has no branch name to read: take `N` from the WIP being submitted or from `Closes #N` in the commit message.
 
 ## Update Linked Issues
 

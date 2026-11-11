@@ -1,6 +1,6 @@
 ---
 name: bash-simplicity
-description: Bash command conventions. One command per call, use dedicated tools over shell equivalents, check wiki for approved commands. Load this skill before running Bash commands.
+description: Bash command conventions. One command per call, no shell plumbing, Read/Edit/Write by default with cat/sed allowed, check wiki for approved commands. Load this skill before running Bash commands.
 user-invocable: false
 ---
 
@@ -22,7 +22,7 @@ The entire plugin system exists to remove the user as the bottleneck. Every perm
 | 2 | Simple Bash (one command, no operators) | **MAY** run immediately if pre-approved | `pnpm typecheck`, `grep -rn pattern repo` |
 | 3 | Complex Bash (operators, plumbing) | **WILL** trigger a permission prompt | `pnpm typecheck 2>&1; echo $?` |
 
-Prefer tier 1 over tier 2. Use tier 2 only when no dedicated tool exists. NEVER use tier 3.
+Tiers 1 and 2 are both fine; pick whichever is simpler for the job. NEVER use tier 3.
 
 ## The Bash Tool Is Not a Terminal
 
@@ -41,15 +41,17 @@ The Bash tool is a managed environment, not a raw shell. It already captures std
 
 **One command per Bash call. No operators. No plumbing. If the command has a `;`, `&&`, `|`, `$()`, `2>&1`, or `2>/dev/null` in it, it is wrong.**
 
-## Use Dedicated Tools
+## Files: Tools or Shell
 
-Dedicated tools are faster, require no permission, and produce better output. MUST use them instead of Bash equivalents when one exists:
+Read, Edit, and Write are the default: they need no permission and their output is tracked. `cat`, `head`, `tail`, `sed`, `awk`, and heredocs are allowed too, and MAY be used when simpler:
 
-| Instead of | Use |
-|------------|-----|
-| `cat`, `head`, `tail` | Read tool |
-| `sed`, `awk` | Edit tool |
-| `echo >`, `cat <<EOF` | Write tool |
+| Job | Default | Shell is fine for |
+|-----|---------|-------------------|
+| Read | Read tool | `sed -n '40,60p' file`, `tail -n 50 log` |
+| Edit | Edit tool | A one-line `sed -i` substitution in one file |
+| Write | Write tool | A short heredoc |
+
+SHOULD use Edit for exact or multi-line replacements: `sed` escaping is fragile and its flags differ between GNU and BSD/macOS (`sed -i ''`). MUST NOT batch a multi-file rewrite into one clever `sed`/`rg` command; do one file per call, or ask. Still one command per call, no plumbing.
 
 **Search depends on your tool list.** If Grep and Glob are in it (the Windows default), MUST use them. Claude Code leaves them out by default on macOS, Linux, and WSL; there, `grep` and `find` in Claude's shell run embedded `ugrep` and `bfs`, so they always work. `rg` is faster and respects `.gitignore`, but it is not embedded and MAY be missing. Search files with one of:
 
@@ -61,7 +63,7 @@ Dedicated tools are faster, require no permission, and produce better output. MU
 
 MUST NOT state tool availability as a version fact ("removed in 2.1.N") in rules or skills: it depends on platform and launch flags, and a pinned claim goes stale silently.
 
-Reserve Bash for these and for commands that never had a dedicated tool: build tools, test runners, git, package managers, system commands.
+Bash is also the place for build tools, test runners, git, package managers, and system commands.
 
 **JSON: prefer `jq`.** For JSON files, default to `jq` for field extraction rather than Read or `grep`. Reading a large JSON file with the Read tool dumps the whole structure (base64 blobs, embedding vectors, inlined doc strings) into context for the rest of the session; `grep` can't navigate JSON structure.
 
@@ -74,9 +76,9 @@ Reserve Bash for these and for commands that never had a dedicated tool: build t
 Each is one command with no operators. The one-command-per-call rule still holds. `Read` and `grep` remain right for small JSON where the structure is unknown, malformed JSON, and cross-file string search.
 
 These commands are **denied** in project settings and will always be rejected. Do not attempt them:
-`cd`, `cat`, `sed`, `awk`, `head`, `tail`, `sleep`, `kill`, `pkill`
+`cd` (keeps the session inside the project folder; use `git -C` and path arguments), `kill`, `pkill` (protect the user's processes; use `TaskStop`)
 
-`sleep` is denied because foreground sleeping burns a turn to accomplish nothing. To wait on a condition, use the `Monitor` tool; to collect a background task's output, use `TaskOutput`/`TaskGet`. MUST NOT build a poll-and-sleep loop.
+`sleep` is not denied, but foreground sleeping burns a turn to accomplish nothing. To wait on a condition, use the `Monitor` tool; to collect a background task's output, use `TaskOutput`/`TaskGet`. MUST NOT build a poll-and-sleep loop.
 
 `lsof` is **allowed** and useful for reading state (finding what holds a port). It MUST NOT be used as a step toward stopping a process: the answer to "something is on the port" is `TaskStop`, or asking the user, never `kill`.
 
@@ -130,7 +132,7 @@ MUST NOT search the entire filesystem. If the clone is missing, ask the user bef
 
 Subagents do NOT inherit this skill. They see only the prompt you give them. The primary agent MUST brief every subagent on bash-simplicity before delegating shell work, and owns the output that comes back.
 
-Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Use dedicated tools (Read, Edit, Write) over their shell equivalents (`cat`, `sed`, `awk`, `echo >`). Search with the Grep/Glob tools if you have them; otherwise Bash `grep -rn`, `find`, `ls` (or `rg` if installed)."
+Every subagent prompt that touches Bash MUST include a one-liner: "One command per Bash call. No operators. Read, Edit, and Write by default; `cat` and `sed` are allowed when simpler. Search with the Grep/Glob tools if you have them; otherwise Bash `grep -rn`, `find`, `ls` (or `rg` if installed)."
 
 If a subagent returns a command containing any forbidden operator (see the table above), that is the primary agent's failure. Reject and ask for a re-plan, or translate into separate simple calls. Do not execute it. A subagent violating this is running on a stale prompt; fix the prompt.
 

@@ -22,14 +22,10 @@ Do not add features, refactor surrounding code, or "improve" beyond the request.
 
 ## Use the right tool
 
-Prefer dedicated tools over Bash equivalents when one exists. They are faster, need no permissions, and produce cleaner output:
-- Read not `cat`/`head`/`tail`
-- Edit not `sed`/`awk`
-- Write not `echo >`/`cat <<EOF`
+Read, Edit, and Write are the default for files: they need no permissions and produce cleaner output. `cat`, `head`, `tail`, and `sed` MAY be used when simpler; SHOULD use Edit for exact or multi-line replacements (see `simpleapps:bash-simplicity` "Files: Tools or Shell").
 
 Search with the Grep/Glob tools when they are in your tool list. Claude Code leaves them out by default on macOS, Linux, and WSL; there, use Bash `grep -rn`, `find`, and `ls` (or `rg` if installed), one command per call (no `-exec`, no piping to `head`). See `simpleapps:bash-simplicity`.
 
-Reserve Bash for searches above and for commands that never had a dedicated tool.
 
 MUST NOT use `cd` in any Bash command, not even in compound commands like `cd /path && git log`. Use `git -C repo` for git, and path arguments for everything else. The `cd` deny rule does not suppress Claude Code's built-in security prompt for compound cd+git commands, so any `cd` usage will interrupt the user.
 
@@ -133,6 +129,8 @@ When invoked for issue `#N`:
 
 The only pause condition is a dirty tree, because proceeding could destroy work the agent didn't make. Clean main + known issue is not a stop condition; neither is being on someone else's clean feature branch. The agent switches and proceeds.
 
+**Parallel work goes in a worktree, not a second switch.** When issue `N`'s work must not disturb the branch in `repo/`, delegate it to a subagent with `isolation: "worktree"`; it lands in `worktrees/agent-<id>`, detached. The main session stays in `{project}/` and MUST NOT move into the worktree itself (`EnterWorktree` seals the session away from `wip/` and `tmp/`). The subagent is sealed the same way, so its brief MUST carry the WIP and wiki content it needs. Commands and the cleanup rule: `Skill("project-defaults")` "worktrees/".
+
 ## Branch hygiene at end-of-turn
 
 The mirror of "before starting work" (above): the agent leaves the checkout clean, not just finds it clean. After completing work that left the checkout on any branch other than `main`/`master`, switch back to `main` before ending the turn: after `/submit` lands, after an admin-merge leaves you on the source branch, after a cleanup PR, or whenever the user moves on to a new task.
@@ -142,8 +140,11 @@ Do it **silently**, not as an announced step. Just leave the checkout in the rig
 1. `git -C repo branch --show-current`
 2. `git -C repo switch main` (if not already there)
 3. `git -C repo fetch origin main`
+4. `git -C repo merge --ff-only origin/main` when the tree is clean, so local `main` is current, not just fetched. If it refuses (local `main` has its own commits), report it and leave it
 
 The only pause condition is a dirty tree on a branch unrelated to the next task (same rule as start-of-work: MUST NOT touch uncommitted work the agent didn't make). A clean tree on any branch transitions cleanly.
+
+A kept worktree whose work is pushed MUST be removed the same way: `git -C repo worktree remove ../worktrees/<name>`, then `git -C repo fetch --prune origin`. First `git -C worktrees/<name> log --oneline HEAD --not --remotes` MUST print nothing, because git refuses only on uncommitted files and would orphan an unpushed commit. Never with `--force`; a refusal means it still holds work, so ask.
 
 Branching mistakes compound silently and the cost of recovery scales with how many commands later they are caught. But the answer is the agent doing the safe transition autonomously, not screaming the sky is falling at the user every time the workflow requires a routine `git switch`.
 

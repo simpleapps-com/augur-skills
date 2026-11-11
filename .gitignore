@@ -5,6 +5,7 @@ __pycache__/
 *.log
 .env
 .env.*
+.claude/settings.local.json
 # Mod API types Claude Code generates under --plugin-dir
 plugins/*/.claude-plugin/types/
 plugins/*/tsconfig.json

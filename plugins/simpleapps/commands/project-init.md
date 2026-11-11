@@ -2,7 +2,7 @@
 name: project-init
 description: Check and fix the project directory structure. Create missing folders, set up symlinks, clone repos, verify layout.
 argument-hint: "[repo-name]"
-allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(ln:*), Bash(readlink:*), Bash(unlink:*), Bash(rmdir:*), Bash(gh repo clone:*), Bash(gh label:*), Bash(gh api user:*), Bash(git -C repo ls-files:*), Bash(pnpm --dir repo install:*), Bash(grep:*), Bash(cp:*), Bash(md5sum:*), Bash(md5:*), Read, Write, Edit, Skill(project-defaults), Skill(bash-simplicity), Skill(context-efficiency)
+allowed-tools: Bash(ls:*), Bash(mkdir:*), Bash(find tmp:*), Bash(ln:*), Bash(readlink:*), Bash(unlink:*), Bash(rmdir:*), Bash(gh repo clone:*), Bash(gh label:*), Bash(gh api user:*), Bash(git -C repo ls-files:*), Bash(git -C repo worktree list:*), Bash(git -C repo symbolic-ref:*), Bash(git -C repo remote set-head:*), Bash(git -C worktrees:*), Bash(git -C:*), Bash(pnpm --dir repo install:*), Bash(grep:*), Bash(cp:*), Bash(md5sum:*), Bash(md5:*), Read, Write, Edit, Skill(project-defaults), Skill(bash-simplicity), Skill(context-efficiency)
 ---
 
 First, use Skill("project-defaults") to load project conventions.
@@ -19,9 +19,12 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    - `mkdir -p goals` (if missing)
    - `mkdir -p wip` (if missing)
    - `mkdir -p tmp` (if missing)
+   - `mkdir -p worktrees` (if missing)
    - `mkdir -p .simpleapps` (if missing)
 
-   MUST NOT create `.claude` with `mkdir`; it is a symlink (step 5). MUST NOT create repo-specific folders such as `work/`; the repo's onboarding procedure owns those (step 15).
+   If `tmp/` already existed, empty it of everything older than one day: `find tmp -mindepth 1 -mtime +0 -delete` (see `project-defaults` "tmp/"), and report how much went. If `repo/tmp` or `wiki/tmp` exists, report it: a repo MUST NOT have one. Ask before deleting it, since it may hold files the user has not moved.
+
+   MUST NOT create `.claude` with `mkdir`; it is a symlink (step 5). MUST NOT create repo-specific folders such as `work/`; the repo's onboarding procedure owns those (step 17).
 3. Check current symlink state: `readlink CLAUDE.md`, `readlink .claude`, and `readlink .mcp.json`
 4. If `repo/` exists, ensure symlink targets exist:
    - `mkdir -p repo/.claude/rules` (if missing)
@@ -78,8 +81,11 @@ Run each command as a separate, simple call. MUST NOT combine commands.
    **Stale-deny migration:** older settings deny `Bash(grep:*)`, `Bash(find:*)`, and `Bash(rg:*)`. On macOS, Linux, and WSL, Claude Code leaves the Grep and Glob tools out by default, so those denies leave the agent no way to search. When updating an existing `settings.<login>.json`:
    - If `Bash(grep:*)` appears in `permissions.deny`, remove it from `deny` and add it to `allow` (alphabetical position).
    - Same for `Bash(find:*)` and `Bash(rg:*)`.
+   - If `Edit(~/.claude/plugins/**)` or `Write(~/.claude/plugins/**)` appears in `permissions.deny`, remove it. The deny list is now only `Bash(cd:*)`, `Bash(kill:*)`, `Bash(pkill:*)` (see `project-defaults` Permission Defaults); a `Write(...)` file rule is never matched and Claude Code warns about it on every run.
    - Report each migration: e.g., "Migrated `Bash(grep:*)` from deny to allow (Bash search is the default where the Grep tool is absent)."
-   - Leave the other denies (`cat`, `sed`, `awk`, `head`, `tail`, `cd`, `for`, `kill`, `pkill`, `sleep`) intact: those still have dedicated-tool replacements (Read, Edit, etc.).
+   - Same for `Bash(cat:*)` and `Bash(sed:*)`: move each from `deny` to `allow`, and add each to `allow` if missing.
+   - For `Bash(awk:*)`, `Bash(head:*)`, `Bash(tail:*)`, `Bash(for:*)`, and `Bash(sleep:*)`: remove each from `deny` (do not add it to `allow`).
+   - Keep `Bash(cd:*)`, `Bash(kill:*)`, and `Bash(pkill:*)` in `deny`. They are the whole list: `cd` keeps the session inside the project folder, and `kill`/`pkill` protect the user's own processes.
 
    **`autoMode` MUST NOT be written here.** Claude Code reads `autoMode` from user settings, the `--settings` flag, and managed settings only; it is ignored in `.claude/settings.json` and `.claude/settings.local.json`. If an `autoMode` block is found in either project file, report it as non-functional and move it to `~/.claude/settings.json` (step 8e).
 
@@ -133,8 +139,14 @@ Run each command as a separate, simple call. MUST NOT combine commands.
 
    Report which labels were created and which already existed.
 13. Install dependencies. Run `ls repo/package.json`. If it exists, run `pnpm --dir repo install`. That also runs the repo's `prepare` script (e.g. `lefthook install` for git hooks). If it does not exist, skip.
-14. Final verification: `ls -la` (confirms the `CLAUDE.md`, `.claude`, and `.mcp.json` symlinks) and `ls -la repo/.claude/` (confirms the `settings.local.json` symlink)
-15. Hand off to the repo's own onboarding. Run `ls repo/procedures/onboarding.md`. If it exists, end the report by telling the user to ask Claude to follow `repo/procedures/onboarding.md`. Repo-specific setup (MCP sign-ins, per-person data, folders like `work/`) lives there, not in this command. If it does not exist, skip.
+14. Check worktrees (see `project-defaults` "worktrees/"). If `repo/` exists, run `git -C repo worktree list`. Report every worktree other than `repo/` itself: those under `{project}/worktrees/` (named, `agent-*`, or any other leftover) and strays outside it (e.g. in `tmp/`). For each, run `git -C <path> status --short` and `git -C <path> log --oneline HEAD --not --remotes`, report what it still holds, and suggest `git -C repo worktree remove <path>` (never `--force`) only when both print nothing. MUST ask before removing any; MUST NOT move or delete one here.
+15. Check the default branch (see `project-defaults` "Default branch"). If `repo/` exists, run `git -C repo symbolic-ref --short refs/remotes/origin/HEAD`. If it prints `origin/master`, tell the user the standard is `main` and offer the rename. MUST ask first, and MUST NOT run any of it without a yes; it changes the repo for everyone:
+   - GitHub (renames the branch, retargets open PRs, redirects old links): `gh api -X POST repos/<org>/<repo>/branches/master/rename -f new_name=main`, or Settings → Branches
+   - Then locally: `git -C repo branch -m master main`, `git -C repo fetch origin`, `git -C repo branch -u origin/main main`, `git -C repo remote set-head origin -a`
+   - Remind the user that other clones need the same four local commands, and that CI workflows or branch protection naming `master` need updating
+   If it prints `origin/main`, report it as already on the standard. If the command fails (no `origin/HEAD`), run `git -C repo remote set-head origin -a` and check again. The `wiki/` repo stays on `master`; do not check it.
+16. Final verification: `ls -la` (confirms the `CLAUDE.md`, `.claude`, and `.mcp.json` symlinks) and `ls -la repo/.claude/` (confirms the `settings.local.json` symlink)
+17. Hand off to the repo's own onboarding. Run `ls repo/procedures/onboarding.md`. If it exists, end the report by telling the user to ask Claude to follow `repo/procedures/onboarding.md`. Repo-specific setup (MCP sign-ins, per-person data, folders like `work/`) lives there, not in this command. If it does not exist, skip.
 
 ## Output
 
@@ -145,11 +157,14 @@ Report what was checked, what was created, and what was already correct. Use a s
 - [ ] `clones/` created
 - [ ] `goals/` created
 - [ ] `wip/` created
+- [ ] `worktrees/` created
+- [x] No worktrees besides `repo/` (or: list each with what it holds and the suggested removal)
 - [x] `CLAUDE.md` → `repo/.claude/CLAUDE.md`
 - [x] `.claude` → `repo/.claude`
 - [x] `.mcp.json` → `repo/.mcp.json` (or: skipped, no `repo/.mcp.json`)
 - [x] `repo/.claude/settings.local.json` → `settings.<login>.json`, gitignored
 - [x] Dependencies installed (or: skipped, no `repo/package.json`)
+- [x] Default branch is `main` (or: still `master`, rename offered)
 - [x] `~/.claude/settings.json` `autoMode.hard_deny` blocks `git push`
 - Next: ask Claude to follow `repo/procedures/onboarding.md` (only when it exists)
 

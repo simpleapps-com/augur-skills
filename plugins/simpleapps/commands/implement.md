@@ -30,6 +30,8 @@ Decision matrix:
 
 The only pause condition is a dirty tree, because proceeding could destroy work the agent didn't make. Clean state (even on someone else's feature branch) is never a stop; transition and continue.
 
+When the work must run alongside the branch in `repo/`, delegate it to a subagent with `isolation: "worktree"` instead of switching, and stay in `{project}/`. See `Skill("work-habits")` "Branch hygiene before starting work".
+
 ## 1. Determine the plan
 
 ### With a WIP file

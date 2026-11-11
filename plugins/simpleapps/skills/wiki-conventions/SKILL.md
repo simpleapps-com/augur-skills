@@ -85,7 +85,7 @@ Every page serves junior devs (explanations, examples), senior devs (quick refer
 - Links: `[[Page-Name]]` or `[[Display Text|Page-Name]]`
 - Anchor links MUST target specific sections (`[[Versioning#version-bump-procedure]]`), not just pages
 - Repo references: use relative paths (`../../../wiki/Versioning.md`)
-- Wiki repo default branch: `master` (GitHub's `.wiki.git` convention; applies to the `wiki/` repo only, not the code repo). Code repos may use `main` or `master`. Check with `git -C repo branch --show-current`.
+- Wiki repo default branch: `master` (GitHub's `.wiki.git` convention; applies to the `wiki/` repo only, not the code repo). Code repos are moving to `main` (see `simpleapps:project-defaults` "Default branch"); some still use `master`. Check with `git -C repo symbolic-ref --short refs/remotes/origin/HEAD`.
 
 ## Cross-Linking
 

@@ -1,0 +1,22 @@
+# Lessons
+
+Self-learned behavioral rules earned from real failures in this project — always loaded, binding, not advisory. When the user corrects me or I catch my own mistake, I MUST record the lesson here before continuing. Each lesson MUST be one line: a reusable RFC 2119 behavioral rule carrying at least one concrete anchor (a function name, a measured number, a file) from the incident that earned it — the anchor is the pattern-match that lets a future session recognize the same failure taking shape, and a rule stripped of its anchor is easy to rationalize past. Before adding one, MUST check for an existing lesson, here or in a topical rule, that already covers it and tighten that in place rather than append; new lessons file under the heading that fits, and the list stays consolidated. A stabilizing lesson promotes down the layers (CLAUDE.md → rule → skill): its extended detail SHOULD move to the matching topical rule and then into the on-demand skill, but each always-loaded layer above MUST keep a `Skill('...')` or file pointer down to it — a skill loads only when invoked, so unlinked detail is forgotten.
+
+## Bash
+
+- MUST NOT batch a multi-file rewrite into one clever command, and MUST keep each Bash call to one plain command: the skill rename (2026-10-03) ran `sed -i '' -E` with 8 `-e` expressions across 25 files and a backtick-laden `rg` regex that died with zsh `unmatched "`. That is unreviewable and unsafe to retry. `cat` and a single-file `sed` are allowed (owner, 2026-11-10); when many files need the same edit, do one file per call (Edit or `sed`), or ask. See `Skill('bash-simplicity')`.
+
+- MUST run a command's Bash steps exactly as written, and a `|` inside a quoted `--jq`/`jq` filter counts as plumbing: during `/triage` (2026-10-10) I swapped the spec's `gh issue list ... --json number,title,labels` for a `--jq ".[] | ... | @tsv"` variant plus an unrequested `--search "\"blocked by\" in:body"` call, and the user denied them. Run the spec command plain and parse the JSON in the response.
+
+## Status answers
+
+- MUST answer a repeated "what is open?" with only what changed and what needs the user, in a few lines at the end, never the full inventory again: on 2026-11-10 I re-posted the same ~40-line list (Fable fixes, decisions, untested paths, nice-to-haves) five times in one session for GH77, and the user said they had to scroll to find the answer to a simple question. The full list lives in the WIP; point to it. But each item MUST still carry one plain sentence of what it is and why it matters: the next answer cut to bare labels ("Fable's four items", "the #77 comment") and the user said they need enough content to know what I am talking about.
+
+## Shipping commands
+
+- MUST treat invoking `/publish` as the approval to release and MUST NOT ask "should I publish vX?": on 2026-10-11 I showed the `v2026.10.2` gate three times across `/publish` runs, and the user said "when I give the publish command I want it to publish, I do not want a second confirmation". Stop only when a pre-flight check fails (dirty tree, red CI, zero commits, version mismatch). CalVer fixes the next version, so MUST NOT ask "which version?" either. The shipped `commands/publish.md` and `skills/deployment` now say the same.
+- MUST check a command's name with `ls repo/plugins/simpleapps/commands/`, never from the installed skill list: on 2026-10-11 I "corrected" `/wiki-curate` to `/curate-wiki` across the wiki because the session's cached plugin (2026.08.3) still listed `curate-wiki`, but `c540ceb` (2026.10.1) had renamed it to `wiki-curate`. The cache is the last install, not the repo.
+
+## Project boundary
+
+- MUST stay inside the current project folder; another repo or wiki is read through `clones/<repo>` (cloned there if missing, after asking), never by path into its project folder: during the GH73 `/investigate` (2026-10-09) I ran `ls -la ~/Projects/simpleapps/simpleapps-work` and `.../augur-entity`, and when Read hit `blockReadsOutsideWorkingDirectories` I kept going with `ls`. That block is the boundary working as intended, not an obstacle to route around; stop and ask instead. Promoted to the shipped `work-habits` rule; detail in `Skill('project-defaults')` "clones/".

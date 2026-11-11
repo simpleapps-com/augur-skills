@@ -1,6 +1,6 @@
 # augur-skills
 
-Claude Code plugin marketplace. No build step. Content is static markdown; the executable exceptions are `scripts/validate.mjs`, the `simpleapps` plugin's `mcp/` server and `bin/` helper scripts, and the `simpleapps-statusline` mod.
+Claude Code plugin marketplace. No build step. Content is static markdown; the executable exceptions are `scripts/validate.mjs`, the `simpleapps` plugin's `mcp/` server, `bin/` helper scripts, and `hooks/worktree.mjs` worktree hook, and the `simpleapps-statusline` mod.
 
 ## Wiki (Source of Truth for Dev Docs)
 

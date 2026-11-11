@@ -176,6 +176,38 @@ test("with no plugins/ folder the rules are not checked", async () => {
   assert.deepEqual(await validate(root), { errors: [], warnings: [], skillCount: 0 });
 });
 
+test("hooks.json: valid JSON, hooks or modules, and every plugin-root file it runs exists", async () => {
+  const command = (file) =>
+    JSON.stringify({
+      hooks: {
+        Stop: [
+          {
+            hooks: [{ type: "command", command: "node", args: [`\${CLAUDE_PLUGIN_ROOT}/${file}`] }],
+          },
+        ],
+      },
+    });
+  const good = await repo({
+    "plugins/demo/hooks/hooks.json": command("hooks/run.mjs"),
+    "plugins/demo/hooks/run.mjs": "",
+    "plugins/mod/hooks/hooks.json": '{ "modules": ["./register.tsx"] }',
+  });
+  assert.deepEqual((await validate(good)).errors, []);
+
+  const bad = await repo({
+    "plugins/demo/hooks/hooks.json": command("hooks/missing.mjs"),
+    "plugins/empty/hooks/hooks.json": "{}",
+    "plugins/nulled/hooks/hooks.json": "null",
+    "plugins/broken/hooks/hooks.json": "{ not json",
+  });
+  assert.deepEqual((await validate(bad)).errors, [
+    "plugins/broken/hooks/hooks.json is not valid JSON",
+    "plugins/demo/hooks/hooks.json runs plugins/demo/hooks/missing.mjs, which does not exist",
+    'plugins/empty/hooks/hooks.json MUST have a "hooks" object or a "modules" list',
+    'plugins/nulled/hooks/hooks.json MUST have a "hooks" object or a "modules" list',
+  ]);
+});
+
 test("CLAUDE.md warns past 180 lines, fails past 200, and may be absent", async () => {
   const lines = (count) => Array.from({ length: count }, (_, i) => `line ${i}`).join("\n");
   const near = await validate(await repo({ ".claude/CLAUDE.md": lines(190) }));
