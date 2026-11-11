@@ -107,15 +107,32 @@ export function rows(r: Reading | undefined, now: number): Row[] {
 
 const SHORT: Record<string, string> = { five_hour: "5h", seven_day: "week" };
 
-/** One labelled figure in the bar; `percent` draws a meter. */
-export type Part = { label: string; value: string; percent?: number; note?: string };
+/**
+ * One labelled figure in the bar; `percent` draws a meter. `pending` is a figure Claude Code has
+ * not reported yet (context, before the session's first response): an empty meter, no value.
+ */
+export type Part = {
+  label: string;
+  value: string;
+  percent?: number;
+  note?: string;
+  pending?: boolean;
+};
 
-/** The bar's figures: session cost, context, then each limit with its reset. */
-export function parts(r: Reading, now: number): Part[] {
+/** The session's own figures: cost, then context. */
+export function figureParts(r: Reading): Part[] {
   const cost: Part[] =
     r.cost === undefined ? [] : [{ label: "session", value: `$${r.cost.toFixed(2)}` }];
-  const context: Part = { label: "ctx", value: pct(r.contextPercent), percent: r.contextPercent };
-  const limits = r.limits.map((l): Part => {
+  const context: Part =
+    r.contextPercent === undefined
+      ? { label: "ctx", value: "", pending: true }
+      : { label: "ctx", value: pct(r.contextPercent), percent: r.contextPercent };
+  return [...cost, context];
+}
+
+/** Each plan limit with its reset. Drawn as one group, so the limits wrap together. */
+export function limitParts(r: Reading, now: number): Part[] {
+  return r.limits.map((l): Part => {
     const reset = resetLabel(l.resetsAt, now);
     const label = SHORT[l.kind] ?? limitName(l.kind).toLowerCase();
     return {
@@ -125,7 +142,11 @@ export function parts(r: Reading, now: number): Part[] {
       note: reset ? `↻ ${reset}` : undefined,
     };
   });
-  return [...cost, context, ...limits];
+}
+
+/** The bar's figures: session cost, context, then each limit with its reset. */
+export function parts(r: Reading, now: number): Part[] {
+  return [...figureParts(r), ...limitParts(r, now)];
 }
 
 /** A model id as people say it: `claude-opus-5-5[1m]` → `Opus 5.5 (1M)`. */
@@ -410,6 +431,29 @@ export const register: Register = (on) => {
     const theirs = await next(e);
     const now = await $.clock.now();
     const counts = countsLabel(s.reading);
+    const limits = limitParts(s.reading, now);
+    const drawPart = (p: Part) => {
+      const [filled, empty] =
+        p.percent === undefined ? [0, p.pending ? WIDTH : 0] : meter(p.percent);
+      const color = p.percent === undefined ? undefined : meterColor(p.percent);
+      return (
+        <Box flexDirection="row" flexShrink={0} columnGap={1}>
+          <Text dimColor>{p.label}</Text>
+          {(p.percent !== undefined || p.pending) && (
+            <Text>
+              <Text color={color}>{"━".repeat(filled)}</Text>
+              <Text dimColor>{"━".repeat(empty)}</Text>
+            </Text>
+          )}
+          {p.value ? (
+            <Text weight="semibold" color={color}>
+              {p.value}
+            </Text>
+          ) : null}
+          {p.note && <Text dimColor>{p.note}</Text>}
+        </Box>
+      );
+    };
     return (
       <Box flexDirection="column">
         {theirs}
@@ -423,7 +467,7 @@ export const register: Register = (on) => {
           </Text>
           {counts && (
             <Box flexShrink={0}>
-              <Text bold>{counts}</Text>
+              <Text weight="semibold">{counts}</Text>
             </Box>
           )}
           {s.reading.account && (
@@ -437,31 +481,21 @@ export const register: Register = (on) => {
             </Box>
           )}
         </Box>
+        {/* Two groups, each wrapping as a unit: the session's figures, then the plan limits */}
         <Box flexDirection="row" flexWrap="wrap" columnGap={3}>
-          {s.reading.model && (
-            <Box flexShrink={0}>
-              <Text color="yellow">{s.reading.model}</Text>
+          <Box key="figures" flexDirection="row" flexWrap="wrap" columnGap={3}>
+            {s.reading.model && (
+              <Box flexShrink={0}>
+                <Text color="yellow">{s.reading.model}</Text>
+              </Box>
+            )}
+            {figureParts(s.reading).map(drawPart)}
+          </Box>
+          {limits.length > 0 && (
+            <Box key="limits" flexDirection="row" flexWrap="wrap" columnGap={3}>
+              {limits.map(drawPart)}
             </Box>
           )}
-          {parts(s.reading, now).map((p) => {
-            const [filled, empty] = p.percent === undefined ? [0, 0] : meter(p.percent);
-            const color = p.percent === undefined ? undefined : meterColor(p.percent);
-            return (
-              <Box flexDirection="row" flexShrink={0} columnGap={1}>
-                <Text dimColor>{p.label}</Text>
-                {p.percent !== undefined && (
-                  <Text>
-                    <Text color={color}>{"━".repeat(filled)}</Text>
-                    <Text dimColor>{"━".repeat(empty)}</Text>
-                  </Text>
-                )}
-                <Text bold color={color}>
-                  {p.value}
-                </Text>
-                {p.note && <Text dimColor>{p.note}</Text>}
-              </Box>
-            );
-          })}
         </Box>
       </Box>
     );

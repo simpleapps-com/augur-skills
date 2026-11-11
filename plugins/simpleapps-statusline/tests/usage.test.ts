@@ -201,8 +201,9 @@ test("parts and meters", async () => {
     ["week", "91%", 91],
   ]);
   expect(p[2]?.note).toMatch(/^↻ \d\d:\d\d$/);
+  // Context Claude Code has not reported yet is pending: no `?`, an empty meter when drawn
   expect(parts(toReading({ rateLimits: [{ kind: "spend_limit" }] }, NOW), NOW)).toEqual([
-    { label: "ctx", value: "?", percent: undefined },
+    { label: "ctx", value: "", pending: true },
     { label: "spend limit", value: "?", percent: undefined, note: undefined },
   ]);
   expect([meter(0), meter(1), meter(42), meter(100), meter(150)]).toEqual([
@@ -514,6 +515,29 @@ test("before the first reading, only Claude Code's own hint is drawn", async ($,
   const ui = await $.ui.mount({ ...HINT, surface: "terminal" });
   expect(await ui.find({ type: "Text", text: "the usual hint" })).toBeDefined();
   expect(await ui.find({ type: "Text", text: "octo" })).toBeUndefined();
+  await ui.unmount();
+});
+
+test("before the first response, context shows an empty meter and the limits stay grouped", async ($, on) => {
+  // Limits arrive before the first response; context does not
+  const { context: _context, ...beforeFirstResponse } = USAGE;
+  stubs(on, () => beforeFirstResponse);
+  await $.session.start(START);
+  const ui = await $.ui.mount({
+    ...HINT,
+    viewport: { columns: 70, rows: 40 },
+    surface: "terminal",
+  });
+  expect(await ui.find({ type: "Text", text: "?" })).toBeUndefined();
+  expect(await ui.find({ type: "Text", text: "ctx" })).toBeDefined();
+  expect(await ui.find({ type: "Text", text: "━".repeat(10) })).toBeDefined();
+  const limits = JSON.stringify(await ui.find({ key: "limits" }));
+  expect(limits).toContain("5h");
+  expect(limits).toContain("week");
+  const figures = JSON.stringify(await ui.find({ key: "figures" }));
+  expect(figures).toContain("Opus 5.5");
+  expect(figures).toContain("ctx");
+  expect(figures).not.toContain("5h");
   await ui.unmount();
 });
 
